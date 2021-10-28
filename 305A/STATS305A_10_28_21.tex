@@ -1,0 +1,81 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305A - Lecture 12}
+\author{John Duchi\\ Scribed by Michael Howes}
+\date{10/28/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305A - Lecture 12}
+\lhead{10/28/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+\begin{itemize}
+    \item Etude 2 due today 5pm.
+    \item No class next Tuesday.
+\end{itemize}
+\section{Model Selection and prediction}
+\subsection{Motivation}
+Up to this point we've treated the model $Y=X\beta + \eps$ as ``god-give''. This is a bit inaccurate. In real life we will typically have data and no model and have to figure it out and select a model. When selecting a model we have two desiderata:
+\begin{itemize}
+    \item Identify important features thhat are relating $x$ to our response $y$.
+    \item Pure predictive accuracy: how well can we predict $y$ from $x$?
+\end{itemize}
+These two are intertwinned. We don't always have to choose one over the other.
+\subsection{Bias/Variance Decomposition}
+Suppose we are in a setting where $y = f(x)+\eps$ and $\E[\eps|x]=0$. This is equivalent to having $f(x) = \E[Y|X=x]$ since if $\eps = y-f(x)$, then \[\E[\eps|x] = \E[y|x] - f(x).\]
+Thus $\E[\eps|x]=0$ if and only if $f(x) = \E[y|x]$. Define $\sigma^2(x) = \E[\eps^2|x]$ which is the conditional variance of $\eps$. 
+
+Our goal is to fit a predictor $\wh{f}$ using a sample $\{(x_i,y_i)\}_{i=1}^n$. Note that if we think of the sample of $\{(x_i,y_i)\}_{i=1}^n$ as random, then the predictor $\wh{f}$ is random (like how $\wh{\beta}$ is random in the linear model). Thus we can take the expectation of quantities involving $\wh{f}$ over all samples $\{(x_i,y_i)\}_{i=1}^n$. This idea will be used many times over the course of this lecture. 
+\begin{defn}
+    If we have a predictor $\wh{f}$ of a model $y = f(x)+\eps$, then we define the \emph{in-sample (MSE) risk} of $\wh{f}$ to be 
+    \[R_{in}(\wh{f}) = \E\left[\frac{1}{n}\sum_{i=1}^n (\wh{f}(x_i)-f(x_i))^2\right], \]
+    where the above expectation is taken over all samples $\{(x_i,y_i)\}_{i=1}^n$ with $x_i$ fixed. (That is we fix $x$ and calculate $\wh{f}$ using different samples $(x,y)$, we then calculate the quantity $\frac{1}{n}\sum_{i=1}^n (\wh{f}(x_i)-f(x_i))^2$ and take the expectation over all samples $(x,y)$.)
+\end{defn}
+\begin{aside}
+    Sometimes the in-sample risk is called the $L^2(P_n)$ risk. This is because $R_{in}$ is the expectation of the $L^2$ norm error of $\wh{f}-f$ with respect to the distribution
+    \[P_n = \frac{1}{n}\sum_{i=1}^n \one_{x_i}.\]
+\end{aside}
+\begin{defn}
+    Sometimes the insample risk is defined with respect to a fresh sample $\{Y_i^*\}_{i=1}^n$ where 
+    \[Y_i^* = \text{ a new sample of } Y_i = f(x_i) + \eps_i^*, \]
+    where $\eps_i^*$ is an independent copy of $\eps_i$. We then define
+    \[R_{in}^*(\wh{f}) = \E\left[\frac{1}{n}\sum_{i=1}^n \left(Y_i^*-\wh{f}(x_i)\right)^2\right], \]
+    where here the expectation is over both $Y_1,\ldots, Y_n$ (used to calculate $\wh{f}$) and over $Y_1^*,\ldots, Y_n^*$ (used to calculate $(Y_i^*-\wh{f}(x_i))^2$).
+\end{defn}
+Note that 
+\begin{align}
+    R^*_{in}(\wh{f}) &= \E\left[\frac{1}{n} \sum_{i=1}^n (Y_i^*-\wh{f}(x_i))^2\right]\\
+    &=\E\left[\frac{1}{n} \sum_{i=1}^n (Y_i^*-f(x_i))^2\right]+\E\left[\frac{1}{n}\sum_{i=1}^n (\wh{f}(x_i)-f(x_i))^2\right]\\
+    &=\frac{1}{n}\sum_{i=1}^n \sigma^2(x_i)+R_{in}(\wh{f}).
+\end{align}
+We call $\frac{1}{n}\sum_{i=1}^n \sigma^2(x_i)$ the irreducible error. 
+
+Now suppose that we have a function $g:\X \to \R$ where $\X$ is the space $X$ lives in. Note that $g$ is different to $\wh{f}$. The predictor $\wh{f}$ is something that the depend on the sample $(x,y)$ used to fit $\wh{f}$. The function $g$ is simply a function. It is a way of taking an $X$ and producing a number. With this in mind we define
+\begin{defn}
+    Given a function $g : \X \to \R$, the \emph{(MSE) out of sample risk} of $g$ is
+    \[R_{out}(g) = \E[(Y-g(X))^2] = \int_\X \E[(Y-g(x))^2|X=x]p(x)dx. \]
+    Here the expectation is over both $Y$ and $X$ (hence out of sample - we are allowing $X$ to change).
+\end{defn}
+Note that 
+\begin{align*}
+    R_{out}(g) &= \E\left[(Y-f(X)+f(X)+g(X))^2\right]\\
+&=\E\left[(Y-f(X))^2\right]+\E[(f(X)-g(X))^2]+2\E\left[(Y-f(X))(f(X)-g(X))\right]\\
+&=\E[\sigma^2(X)]+\E[(f(X)-g(X))^2].
+\end{align*}
+We again call $\E[\sigma^2(X)]$ the irreducible error and we could call $\E[(f(X)-g(X))^2]$ the error in mean prediction (this last term is just a term John used - he said that there isn't really a term in literature for it).
+
+In the out of sample risk we average over all the $X$'s we could possible draw. In the in sample we fix the value $x_i$ and average over all possible $y_i$. Note that if our data if i.i.d., then 
+\[R_{out}(g) = \E[(g(X_{n+1})-Y_{n+1})^2]. \]
+
+ 
+
+
+\end{document}
