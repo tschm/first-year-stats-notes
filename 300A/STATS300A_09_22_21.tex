@@ -1,0 +1,125 @@
+\include{preamble}
+\include{definitions}
+
+\title{STATS 300A - Lecture 2}
+\author{Michael Howes}
+
+\begin{document}
+\maketitle
+\section{Recap}
+Last lecture we introduced decision theory and the concept of ``inadmissability'' as a way to compare two decision procedures. We quickly saw that very rarely will we be able to compare two decision processes by inadmissability. We learnt that there were two ways to work around this
+\begin{enumerate}
+    \item We could restrict the class of decision procedures. For instance we could focus on unbiased estimators rather than all estimators. 
+    \item We could collapse the risk function to a single number (rather than a function of $\theta$). We saw the ideas of Bayes risk and minimax risk.
+\end{enumerate}
+We also introduced the concept of sufficiency as a means of data reduction and stated the NFFC. This is where we will start today's class.
+
+
+
+\section{Neymann-Fisher Factorisation Condition}
+Recall that a statistic $T(X)$ is sufficient for a family $\Po = \{P_\theta : \theta \in \Om\}$ if the distribution of $X|T=t$ does not depend on $\theta$. We stated the NFFC as a way of checking and finding sufficient statistics.
+\begin{thrm}
+    Suppose each $P_\theta$ has a density $p(x| \theta)$ (wrt a common measure $\mu$), then $T(X)$ is sufficient for $X$ if and only if
+    \[p(x|\theta) = g_\theta(T(x))h(x), \]
+    for all $x \in X$ and $\theta \in \Om$.
+\end{thrm}
+\begin{proof}
+    We will prove the discete case (ie $\mu$ is the counting measure on a countable set). First assume that we have the factorisation $p(x|\ta) = g_\ta(T(x))h(x)$. Then for all $x \in \X$ and $\ta \in \Om$, we have
+    \begin{IEEEeqnarray*}{rCl}
+        P_\ta(X=x|T(X)=t) &=& \frac{P_\ta(X=x,T(X)=t)}{P_\ta(T(X)=t)}\\
+        &=& \frac{\one_{T(x)=(t}(x,t))P_\ta(X=x)}{\sum_{x' \in \X, T(x')=t}P_\ta(X=x')}\\
+        &=&\frac{\one_{T(x)=t}(x,t)p(x|\ta)}{\sum_{x' \in \X, T(x')=t}p(x|\ta)}\\
+        &=&\frac{\one_{T(x)=t}g_\ta(T(x))h(x)}{\sum_{x' \in \X, T(x')=t}g_\ta(T(x'))h(x')}\\
+        &=&\frac{g_\ta(t)\one_{T(x)=t}(x,t)h(x)}{g_\ta(t)\sum_{x' \in \X, T(x')=t}h(x')}\\
+        &=&\frac{\one_{T(x)=t}(x,t)h(x)}{\sum_{x' \in \X, T(x')=t}h(x')}.
+    \end{IEEEeqnarray*}
+    The above expression does not depend on $\ta$ and hence $T$ is sufficient.
+
+    Now suppose that $T$ is a sufficient statistic for $X$. Fix $\ta_0 \in \Om$ and define $g_\ta(t) = P_\ta(T(X)=t)$ and define $h(x) = P_{\ta_0}(X=x|T(X)=T(x))$. Note that by sufficiency $h(x) = P_\ta(X=x|T(X)=x)$ for all $\ta \in \Om$. We thus have that
+    \begin{IEEEeqnarray*}{rCl}
+        p(x|\ta) &=& P_\ta(X=x)\\
+        &=& P_\ta(X=x, T(X)=T(x))\\
+        &=& P_\ta(T(X)=T(x))P_\ta(X=x|T(X)=T(x))\\
+        &=& g_\ta(T(x))h(x).
+    \end{IEEEeqnarray*}
+    Thus $p(x|\ta)$ factorises in the required way.
+\end{proof}
+For the rest of today's lecture we will focus on two topics.
+\begin{enumerate}
+    \item Exponential families.
+    \item The concept of minimal sufficeny and optimal data reduction.
+\end{enumerate}
+
+
+\section{Exponential Families}
+\begin{defn}
+    A collection of distributions $\Po = \{P_\ta | \ta \in \Om\}$ is an \emph{$s$-dimensional exponential family} if each distribution $P_\ta$ has a density $p(x|\ta)$ (wrt to a common reference measure $\mu$) such that
+    \[p(x|\ta) = h(x)\exp\left\{\sum_{j=1}^s \eta_j(\ta)T_j(x)-B(\ta)\right\} .\]
+    The function $h(x)$ is called the \emph{base measure}. The function $\eta_j(\ta)$ are called \emph{natural parameters} and $B(\ta)$ is called the \emph{log partition function}.
+\end{defn}
+Note that $(T_1(X),\ldots,T_s(X))$ is a sufficient statistic for $P_\ta$ by the NFFC. Also note that $B(\ta)$ is determined by $h,\eta_j$ and $T_j$ since we must have $\int_\X p(x|\ta)d\mu(x) = 1$ and thus \[B(\ta) = \log\left(\int_\X h(x)\exp\left\{\sum_{j=1}^s \eta_j(\ta)T_j(x)\right\}d\mu(x)\right).\]
+\begin{defn}
+    The \emph{canonical form} of an exponential family is 
+    \[p(x| \eta) =  h(x)\exp\left\{\sum_{j=1}^s \eta_jT_j(x)-A(\eta)\right\}. \]
+\end{defn}
+
+\begin{ex}
+    Suppose that $P_\ta =\text{Binom}(n,\ta)$ where $n$ is fixed and $\ta \in [0,1]$. Then 
+    \begin{IEEEeqnarray*}{rcL}
+        p(x|\ta) &=& \binom{n}{x}\ta^x(1-\ta)^{n-x}\\
+        &=&\binom{n}{x}\exp\left\{\log(\ta)x+\log(1-\ta)(n-x)\right\}\\
+        &=&\binom{n}{x}\exp\left\{\frac{\log(\ta)}{\log(1-\ta)}x+\log(1-\ta)n\right\}.
+    \end{IEEEeqnarray*}    
+    Thus the binomial family is a 1-dimensional exponential family with $h(x) = \binom{n}{x}$, $T_i(x)=x$, $\eta_i(\ta) = \frac{\log(\ta)}{\log(1-\ta)}$ and $B(\ta) = -\log(1-\ta)n$.
+\end{ex}
+The Poission, Beta, Gamma, Gaussian, Dirichlet, Pareto and Wishart distribution are all also exponential families.
+\begin{defn}
+    Suppose we have a fixed choice of $h(x)$ and $T_j(x)$ as in the definition of an exponential family in canonical form. Then the \emph{natural parameter space} is the set $\Theta$ of all $\eta$ such that 
+    \[0 < \int_\X h(x)\exp\left\{\sum_{j=1}^s \eta_jT_j(x)\right\}d\mu(x) < \infty. \]
+\end{defn}
+This is the space where the normalisation constant is in $(0,\infty)$. An application of H\"older's inequality proves that $\Theta$ is convex.
+
+The following definitions are intended to rule out circumstances where our model has been over parameterised.
+\begin{defn}
+    A canonical exponential family $\Po = \{P_\eta : \eta \in H\}$ is minimal if 
+    \begin{itemize}
+        \item For all $(\la_j)_{j=0}^s$, if $\sum_{j=1}^s \la_jT_j(x) = \la_0$ for all $x \in \X$, then $\la_j = 0$ for all $j=0,1,\ldots,s$. (That is the function $(T_j)$ do not satisfy any affine constraints).
+        \item For all $(\la_j)_{j=0}^s$, if $\sum_{j=1}^s \la_j\eta_j = \la_0$ for all $\eta \in H$, then $\la_j = 0$ for all $j=0,1,\ldots,s$. (That is the set $H$ does not satisfy any affine constraints).
+    \end{itemize}
+\end{defn}
+
+\begin{defn}
+    Suppose $\Po = \{P_\eta : \eta \in H\}$ is an $s$-dimensional exponential family in canonical form. If $H$ contains an open $s$-dimensional rectangle, then $\Po$ is called \emph{full rank}. If $H$ does not contain any open $s$-dimensional rectangles, then $\Po$ is said to be curved.
+\end{defn}
+
+Exponential famillies have the following nice properties
+\begin{enumerate}
+    \item An iid sampple from an exponential family is again an exponential family.
+    \item If $f(X)$ is integrable (ie $\E_\eta[\abs{f(X)}]<\infty$) for all $\eta$ in an open subset of $H$, then the function
+    \[G(f,\eta) = \int f(x)\exp\left\{\sum_{j=1}^s \eta_jT_j(x)\right\}h(x)d\mu(x), \]
+    is infinitely continuously differentiable on said open subset and integration and differentiation can be exchanged (see TSH 2.7.1 for details).
+\end{enumerate}
+This second point is powerful and can be used for moment calculations. Let's take $f(x) = 1$, then 
+\[G(f,\eta) = \int\exp\left\{\sum_{i=1}^s\eta_j T_j(x)\right\}h(x)d\mu(x) = \exp(A(\eta)). \]
+Thus
+\begin{IEEEeqnarray*}{rCl}
+    \frac{\partial}{\partial \eta_i} A(\eta) &=& \frac{\frac{\partial}{\partial \eta_i} \exp(A(\eta))}{\exp(A(\eta))}\\
+    &=&\frac{\int T_j(x)h(x)\exp\left\{\sum_{j=1}^s\eta_jT_j(x)\right\}d\mu(x)}{\exp(A\eta)}\\
+    &=& \E_\eta[T_i(X)].
+\end{IEEEeqnarray*}
+Higher moments of $T$ can be calculated by taking higher derivatives. We now turn to minimal sufficiency.
+\section{Optimal data reduction}
+\begin{defn}
+    A sufficient statistic $T$ is \emph{minimal} if for every sufficient statistics $T'$, $T$ is a function of $T'$. That is, if $T'(x) = T'(y)$, then $T(x)=T(y)$.
+\end{defn}
+This means that $T$ is the ``coarest'' minimal statistic. The following theorem gives a sufficient condition for a statistic to minimal sufficient.
+
+\begin{thrm}
+    Suppose that $P_\ta$ has a density $p(x|\ta)$ for all $\ta \in \Om$ (with respect to a common measure $\mu$). A statistic $T$ is minimal sufficient if the following condition holds. For all $x,y \in \X$, $T(x) = T(y)$ if and only if there exists $C_{x,y}$ such that 
+    \[p(x|\ta) = C_{x,y}p(y|\ta), \]
+    for all $\ta \in \Om$.
+\end{thrm}
+If the support of $X$ does not depend on $\ta$, then the condition that there exists $C_{x,y}$ such that $p(x|\ta) = C_{x,y}p(y|\ta)$ is equivalent to saying that the ratio 
+\[\frac{p(x|\ta)}{p(y|\ta)}, \]
+does not depend on $\ta$. We will prove this theorem in the next lecture.
+\end{document}

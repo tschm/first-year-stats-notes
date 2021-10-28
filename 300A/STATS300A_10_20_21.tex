@@ -1,0 +1,115 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS3100A - Lecture 10}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/20/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 10}
+\lhead{10/20/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+\begin{itemize}
+    \item No new homework this week.
+    \item Last years midterm+solutions are on Canvas.
+    \item Midterm review session Monday 6pm on Zoom.
+    \item Midterm in one week time. Midterm is open book and 90 minutes long.
+    \item The relevant content is everything up to and including today.
+\end{itemize}
+\section{Minimaxity and limits of Bayes estimators}
+Recall that if a Bayes estimator $\delta_\Lambda$ has constant risk, then $\delta_\Lambda$ is minimax. 
+\begin{ex}
+    Suppose $X_1,\ldots, X_n \iid N(\ta,\sigma^2)$ where $\sigma^2$ is known and $L(\ta,d)=(\ta-d)^2$. We have seen that $\bar{X}$ has constant risk but it cannot be the Bayes estimator for any proper prior since it is unbiased. One can show that $\bar{X}$ is a generalized Bayes estimator w.r.t. the improper prior $\pi(\ta)=1$. We wish to show that $\bar{X}$ is minimax. To do this we will look at limits of Bayes estimators
+\end{ex}
+\begin{defn}
+    Let $(\Lambda_m)_{m=1}^\infty$ be a sequence of priors with $r_{\Lambda_m} :=\inf_\delta r(\Lambda_m, \delta)$. The sequence $(\Lambda_m)$ is called \emph{least favourable} if $r_{\Lambda_m} \to r$ and $r \ge r_{\Lambda'}$ for all priors $\Lambda'$.
+\end{defn}
+\begin{thrm}
+    \emph{[TPE 5.1.12]} Suppose $(\Lambda_m)$ is a sequence of priors with $r_{\Lambda_m} \to r < \infty$. Let $\delta$ be an estimator such that $\sup_\ta R(\ta,\delta) = r$, Then $\delta$ is minimax and $(\Lambda_m)$ is least favourable.
+\end{thrm}
+\begin{proof}
+    Let $\delta'$ be an estimator. We know that 
+    \[\sup_\ta R(\ta,\delta') \ge \int_\Om R(\ta,\delta')d\Lambda_m \ge r_{\Lambda_m}. \]
+    Letting $m \to \infty$ we can conclude that 
+    \[\sup_\ta R(\ta,\delta') \ge r = \sup_{\ta}R(\ta,\delta). \]
+    Thus $\delta$ is minimax. Now let $\Lambda'$ be a prior. We know that 
+    \begin{align*}
+        r_{\Lambda'}&\le \int_\Om R(\ta,\delta)d\Lambda'\\
+        &\le\sup_\ta R(\ta,\delta)\\
+        &=r.
+    \end{align*}
+    Thus $(\Lambda_m)$ is least favourable.
+\end{proof}
+\begin{ex}
+    Returning to our example with $X_1,\ldots,X_n \iid N(\ta,\sigma^2)$ and $L(\ta,d) = (\ta-d)^2$. Consider the prior $\Lambda_m \sim N(0,m^2)$. We have seen that 
+    \[\Ta|X \sim N\left(\frac{\frac{n}{\sigma^2}}{\frac{n}{\sigma^2}+\frac{1}{m^2}}\bar{X}, \frac{1}{\frac{n}{\sigma^2}+\frac{1}{m^2}}\right).\]
+    Thus $\delta_{\Lambda_m} = \frac{n}{\sigma^2}{\frac{n}{\sigma^2}+\frac{1}{m^2}}\bar{X}$ is the posterior mean and hence the Bayes estimator for $\Lambda_m$. Note that $\delta_{\Lambda_n}(X)$ is the mean of $\Ta|X$ and thus
+    \begin{align*}
+        r_{\Lambda_m}&=\E\left[L(\Ta,\delta_{\Lambda_m}(X))\right]\\
+        &=\E\left[(\Ta-\delta_{\Lambda_n}(X))^2\right]\\
+        &=\E\left[\E[(\Ta-\delta_{\Lambda_n}(x))^2|X=x]\right]\\
+        &=\E\left[\V(\Ta|X=x)\right]\\
+        &=\frac{1}{\frac{n}{\sigma^2}+\frac{1}{m^2}}.
+    \end{align*} 
+    Thus as $m\to \infty$ we have $r_{\Lambda_m} \to \frac{\sigma^2}{n} = R(\ta,\bar{X})$. Thus $\bar{X}$ is minimax.
+\end{ex}
+\section{Randomized estimators}
+Recall that a randomized estimator is one of the form $\delta(X,U)$ where $U \sim \text{Unif}([0,1])$ and $U\ind X$. This is in constrast to estimators of the form $\delta(X)$ which are deterministic functions of the data. We saw that for convex loss functions we can ignore randomized estimators since by Jensen's inequality
+\[\E_\ta L(\ta,\delta(X,U)) \ge \E_\ta L(\ta, \E[\delta(X,U)|X]) = \E_\ta L(\ta, \eta(X)). \]
+For non-convex loss functions the minimax estimator may be randomized.
+\begin{ex}
+    Consider $X$ a binomial random variable with parameters $(n,\ta)$ where $n$ is fixed and $\ta \in [0,1]$. Consider the 0-1 loss
+    \begin{align*}
+        L(\ta,d) = \begin{cases}
+            0&\text{if } \abs{d-\ta} < \al,\\
+            1&\text{else}.
+        \end{cases}
+    \end{align*}
+    If $\delta$ is a non-randomized estimator, $\delta$ can take at most $n+1$ values. For $\al < \frac{1}{2(n+1)}$, there exists $\ta_0$ such that $\abs{\delta(x)-\ta_0} \ge \al$ for all $x$ and thus the worst case risk of $\delta$ is 1. Consider $\delta'(X,U) = U$. For every $\ta$,
+    \[R(\ta,\delta') = \Pa(\abs{U-\ta} \ge \al) \le 1-\al. \]
+    Thus the worst case risk of $\delta'$ is $1-\al < 1$.
+\end{ex}
+\section{``Boosting'' via submodel restrictions}
+Consider $X_1,\ldots, X_n \iid N(\ta,\sigma^2)$ where $\sigma^2$ and $\ta$ are both unknown but $\sigma^2 \le B_0$. Consider squared error loss $L(\ta,d)= (\ta-d)^2$. Is $\bar{X}$ minimax? To prove this we need to show that
+\[\sup_{\ta,\sigma^2 \le B_0} R((\ta,\sigma^2), \delta) \ge \sup_{\ta,\sigma^2\le B_0}R((\ta,\sigma^2),\bar{X}), \]
+where $\delta$ is any estimator. We know that 
+\[\sup_{\ta,\sigma^2\le B_0}R((\ta,\sigma^2),\bar{X}) = \sup_{\ta,\sigma^2\le B_0} \frac{\sigma^2}{n} = \frac{B_0}{n}. \]
+Thus (and this is crucial)
+\[\sup_{\ta,\sigma^2\le B_0}R((\ta,\sigma^2),\bar{X}) =\sup_{\ta,\sigma^2= B_0}R((\ta,\sigma^2),\bar{X}).  \]
+We know that for fixed variance $\bar{X}$ is minimax. Thus for any estimator $\delta$ we have
+\begin{align*}
+    \sup_{\ta,\sigma^2 \le B_0} R((\ta,\sigma^2), \delta)&\ge \sup_{\ta,\sigma^2 = B_0} R((\ta,\sigma^2), \delta)\\
+    &\ge \sup_{\ta,\sigma^2 = B_0} R((\ta,\sigma^2), \bar{X})\\
+    &=\sup_{\ta,\sigma^2 \le B_0} R((\ta,\sigma^2), \bar{X}).
+\end{align*}
+Thus $\bar{X}$ is minimax. Formalizing this example, we have:
+\begin{lemma}
+    \emph{[TPE 5.1.15]} If $\delta$ is minimax for a submodel $\Om_0 \subseteq \Om$ and $\sup_{\ta \in \Om}R(\ta,\delta)= \sup_{\ta \in \Om_0}R(\ta,\delta)$, then $\delta$ is minimax for the full model $\Om$.
+\end{lemma}
+\begin{proof}
+    This is the same argument we saw in the example. For any estimator $\delta'$,
+    \begin{align*}
+        \sup_{\ta \in \Om} R(\ta,\delta')&\ge \sup_{\ta \in \Om_0} R(\ta,\delta')\\
+        &\ge \sup_{\ta \in \Om_0}R(\ta,\delta)\\
+        &=\sup_{\ta \in \Om} R(\ta,\delta) \qedhere
+    \end{align*}
+\end{proof}
+\begin{ex}
+    [Non-parametric] Suppse $X_1,\ldots, X_n \iid F$, where $F \in \F$ has mean $\mu(F)$ and variance $\sigma^2(F) < B$. Our goal is to estimate $\mu(F)$ under $L(F,d) = (\mu(F)-d)^2$. We wish to show that the minimax estimator is $\delta(X)=\bar{X}$.  We know that $\bar{X}$ is minimax on the submodel $\F_0 = \{N(\ta,\sigma^2):\sigma^2 \le B\}$. On the full model $\F$, the estimator $\bar{X}$ has risk $R(F,\bar{X}) = \frac{\sigma^2(F)}{n} \le \frac{B}{n}$. Thus we hav 
+    \[\sup_{F\in \F_0}R(F,\bar{X}) = \sup_{F \in \F} R(F,\bar{X}). \]
+    Thus by boosting, $\bar{X}$ is sufficient on the full model.
+\end{ex}
+\begin{ex}
+    [Another non-parametric example] Now suppose that $\F$ is the set of all distributions with support on $[0,1]$. Again we will do estimation with squared error loss $L(F,d) = (\mu(F)-d)^2$. Suppose $X_i \iid \F$. Consider the submodel $\F_0$ of all Bernoulli distributions with parameter $\ta \in (0,1)$. We have seen that in this setting the minimax estimator is
+    \[\delta_n(X) = \frac{\sum_{i=1}^n X_i+\frac{\sqrt{n}}{2}}{n+\sqrt{n}}. \]
+    By studying the risk of $\delta_n$ on the full model we can show that $\delta_n$ is minimax on $\F$.
+\end{ex}
+\end{document}

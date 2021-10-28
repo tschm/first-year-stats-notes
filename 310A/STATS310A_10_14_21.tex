@@ -1,0 +1,141 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 8}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/14/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 8}
+\lhead{10/14/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Integration}
+\subsection{Definition}
+Let $(\Om, \F, \mu)$ be a measure space and let $f: \Om \to [-\infty, \infty]$ be measurable. We wish to define
+\[\int f d\mu = \int_\Om f d\mu = \int_\Om f(\w) \mu(d\w). \]
+\begin{defn}
+    The function $f$ is a \emph{simple function} if there exists a finite partition of $\Om$ $\{A_i\}_{i=1}^n$ such that $A_i \in \F$ and values $x_i \in [-\infty,\infty]$ such that 
+    \[f(\w) = \sum_{i=1}^n x_i \delta_{A_i}(\w), \]
+    where we use the conventions $0\cdot \infty = \infty \cdot 0 = 0$ and $x \cdot\infty = \infty \cdot x= \infty$ if $x\in(0,\infty]$.
+\end{defn}
+\begin{lemma}
+    If $f \ge 0$, then there exists a sequence of simple functions $f_n \ge 0$ such that $f_n(\w)\nearrow f(\w)$ for all $\w \in \Om$.
+\end{lemma}
+\begin{proof}
+    Fix $n$ and define
+    \[f_n(\w) = \begin{cases}
+        \frac{k-1}{2^n} & \text{if } \frac{k-1}{2^n}\le f(\w) < \frac{k}{2^n} \text{ for some } k =1,\ldots, n2^n,\\
+        n & \text{if } f(\w) \ge n.
+    \end{cases} \qedhere\]
+\end{proof}
+\begin{defn}
+    Suppose $f(\w) \ge 0$ for all $\w$. Define
+    \[\int_\Om f(\w)\mu(d\w) = \sup\left(\sum_{i=1}^n \nu_i \mu(A_i)\right), \]
+    where the supremum is over all measurable partitions of $\Om$ and $\nu_i = \inf_{\w \in A_i} f(\w)$. For a general $f$ define
+    \[f_+(\w) = \max\{f(\w),0\} \text{ and } f_-(\w) = \max\{-f(\w),0\}. \]
+    Note that $f_+, f_-\ge 0$ and $\abs{f} = f_+ +f_-$ and $f = f_+ -f_-$. We define $\int f d\mu$ based on cases.
+    \begin{itemize}
+        \item If $\int f_+ d\mu < \infty$ and,$\int f_- d\mu < \infty$, then define $\int f = \int f_+d\mu - \int f_-d\mu$. 
+        \item If $\int f_+ d\mu = \infty$ and $\int f_- d\mu < \infty$, then define $\int fd\mu = \infty$.
+        \item If $\int f_+ d\mu < \infty$ and $\int f_- d\mu = \infty$, then define $\int fd\mu = - \infty$.
+        \item If $\int f_+ d\mu = \infty$ and $\int f_- d\mu = \infty$, then $\int f d\mu$ is not defined. 
+    \end{itemize}
+
+\end{defn}
+\subsection{Properties}
+\begin{prop}
+    Suppose $f,g,f_n \ge 0$.
+    \begin{enumerate}
+        \item If $f(\w) = \sum_{i=1}^n x_i \delta_{A_i}(\w)$ is simple, then $\int f d\mu = \sum_{i=1}^n x_i \mu(A_i)$.
+        \item If $f(\w) \le g(\w)$ for all $\w$, then $\int fd\mu \le \int g d\mu$.
+        \item If $f_n(\w) \nearrow f(\w)$ for all $n$ and $\w$, then $\int f_n d\mu \nearrow \int f d\mu$. (Monotone convergence theorem).
+        \item If $\al,\beta \ge 0$, then $\int \al f + \beta g d\mu = \al \int f d\mu + \beta \int g d\mu$.
+    \end{enumerate}
+\end{prop}
+\begin{proof}
+    \begin{enumerate}
+        \item Fix a partition $\{B_i\}_{i=1}^m$ and let $\beta_j = \inf\limits_{\w \in B_j}f(\w)$. If $\w \in A_I \cap B_j$, then $\beta_j \le f(\w) = x_i$. Thus
+        \begin{align*}
+            \sum_{j=1}^m \beta_j \mu(B_j) &= \sum_{j=1}^m \beta_j \sum_{i=1}^n \mu(A_i \cap B_j)\\
+            &= \sum_{i=1}^n \sum_{j=1}^m \beta_j \mu(A_i \cap B_j)\\
+            &\le \sum_{i=1}^n \sum_{j=1}^m x_i \mu(A_i \cap B_j)\\
+            &=\sum_{i=1}^n x_i \sum_{j=1}^m \mu(A_i \cap B_j)\\
+            &= \sum_{i=1}^n x_i\mu(A_i).
+        \end{align*}
+        Thus $\int f d\mu \le \sum_{i=1}^n x_i \mu(A_i)$. The other direction we get for free since $\{A_i\}_{i=1}^n$ is a partition and $f$ equals $x_i$ on $A_i$.
+        \item This follows from the definition since 
+        \[\inf\{f(\w): \w \in A_i \} \le \inf \{g(\w) : \w \in A_i\}, \]
+        for any measurable set $A_i$.
+        \item By (b) we know that $\int f_n d\mu$ is an increasing sequence and that $\int f_n d\mu$ is bounded above by $\int f d\mu$. Thus $\lim_n \int f_n d\mu$ exists and $\lim_n \int f_nd\mu \le \int f d\mu$. It remains to prove that $\int f d\mu \le \lim_n \int f_n d\mu$. Thus we must show that for every partition $\{A_i\}_{i=1}^m$, we have 
+        \[\sum_{i=1}^m \nu_i \mu(A_i) \le\lim_n\int f_nd\mu,\]
+        where $\nu_i = \inf\{f(\w): \w \in A_i\}$. Let $S = \sum_{i=1}^m \nu_i \mu(A_i)$. We will consider different cases.
+        \begin{enumerate}
+            \item Supppose that $S$ is finite and $0 < \nu_i < \infty$ and $0 < \mu(A_i)< \infty$ for all $i$. Choose $\varepsilon$ such that $\eps< \mu(A_i)$ for all $i$. Define
+            \[ A_{n,i} =\{\w \in A_i : f_n(\w) \ge \nu_i - \eps\}.\]
+            Since $f_n \nearrow f$, we know that $A_{n,i} \nearrow A_i$ as $n \to \infty$. Thus $\mu(A_{n,i}) \nearrow \mu(A_i)$. Note that
+            \[\int f_n d\mu \ge \sum_{i=1}^m (\nu_i-\eps)\mu(A_{n,i}). \]
+            Thus 
+            \[\lim_n \int f_n d\mu \ge \sum_{i=1}^n (\nu_i-\eps)\mu(A_i) = \sum_{i=1}^m \nu_i \mu(A_i) - \eps\sum_{i=1}^m\mu(A_i). \]
+            Letting $\eps \to 0$, we see that $\lim_n \int f_n d\mu \ge \sum_{i=1}^n \nu_i\mu(A_i)=S$. Thus $\lim_n \int f_n d\mu \ge \int f d\mu$.
+            \item Now suppose that $S<\infty$ and $\nu_i$ or $\mu(A_i)$ is equal to 0 or $\infty$ for some $i$. By reording we have $0< \nu_i, \mu(A_i) < \infty$ for $i = 1,\ldots,i_0$ and the rest of the terms are of the form $0\cdot \infty$, $\infty \cdot 0$ or $0\cdot 0$. We can then apply case 1 to the partition $\{A_i\}_{i=1}^{i_0} \cup \left\{\left(\bigcup_{i=1}^{i_0} A_i\right)^c\right\}$.
+            \item Suppose that $S=\infty$. Then for some $i_0$ we have $\nu_{i_0}\mu(A_{i_0}) = \infty$. Thus either $\nu_{i_0} = \infty$ and $\mu(A_{i_0})>0$ or $\nu_{i_0} > 0$ and $\mu(A_{i_0}) = \infty$. Choose $x,y >0$ so that $0 < x< \nu_{i_0}$ and $0 < y < \mu(A_{i_0})$. Let $B_n= \{\w: f_n(\w) >x\}$. Then $B_n \nearrow B = \{\w: f(w)\ge \w\}$. So $\mu(B_n) \nearrow \mu(B) \ge \mu(A_{i_0}) \ge y$. Thus by using the parition $\{B_n,B_n^c\}$, we see that 
+            \[\int f_n d\mu \ge x\cdot \mu(B_n). \]
+            Thus $\lim_n \int f_n d\mu \ge xy$. The product $xy$ can be arbitrary large and thus $\int f_n d\mu \ge \infty$.
+        \end{enumerate}
+        \item Suppose $f$ and $g$ are both simple functions $f = \sum_{i=1}^n x_i \delta_{A_i}$ and $g = \sum_{i=1}^m y_i \delta_{B_i}$. Then
+        \[\al f + \beta g = \sum_{i=1}^n \sum_{j=1}^m (\al x_i + \beta y_j) \delta_{A_i \cap B_j}. \]
+        Thus
+        \begin{align*}
+            \int \al f + \beta g d\mu &= \sum_{i=1}^n \sum_{j=1}^m (\al x_i + \beta y_j) \mu(A_i \cap B_j)\\
+        &= \al \sum_{i=1}^n x_i \sum_{j=1}^m \mu(A_i \cap B_j) + \beta \sum_{j=1}^m y_j \sum_{i=1}^n \mu(A_i \cap B_j)\\
+        &= \al \sum_{i=1}^n x_i \mu(A_i) + \beta \sum_{j=1}^m y_j \mu(B_j)\\
+        &= \al \int f d\mu + \beta \int g d\mu.
+        \end{align*}
+        Now for general $f$ and $g$, let $f_n \nearrow f$ and $g_n \nearrow g$ be approximating sequences of simple functions. Then $(\al f_n + \beta g_n) \nearrow \al f + \beta g$. Thus 
+        \begin{align*}
+            \int \al f+\beta g d \mu &= \int \al f_n + \beta g_n d \mu \\
+            &= \al \int f_n d \mu + \beta \int g_n d \mu \\
+            &= \al\int fd \mu + \beta\int g d \mu. \qedhere
+        \end{align*}
+    \end{enumerate}
+\end{proof}
+\subsection{Remarks}
+\begin{enumerate}
+    \item  If we have a  continuous function $f : [a,b] \to \R$ and $\mu$ is Lebesgue measure on $[a,b]$, then $\int f d\mu$ agrees with the Riemann integral.
+    \item In the same setting as (a), the function $f = \delta_{\Q \cap [a,b]}$ is not Riemann integrable but $\int fd\mu$ does exist and $\int f d\mu = 0$.
+    \item We still need Riemann integrals for improper integrals. For example $\int_0^\infty \frac{\sin(x)}{x}dx$ is not Lebesgue integrable but it does have a convergent improper Riemann integral. 
+    \item Riemann integration is also needed for calculations, for Brownian motion and many other things.
+    \item The Henstock integral generalises both the Riemann and Lebesgue integrals.
+\end{enumerate}
+\begin{ex}
+    In general $f_n \to f$, does not imply $\int f_n d \mu \to \int f d \mu$. Consider
+    \[f_n(\w) = \begin{cases}
+        n^2 & \text{if } \w \in (0, 1/n)\\
+        0 & \text{else.}
+    \end{cases} \]
+    Then $f_n(\w) \to 0$ for all $\w$ but $\int f_n d\mu = n^2 \cdot \frac{1}{n} = n \nearrow \infty$.
+\end{ex}
+The properties (a)-(d) hold if the hyptheses hold \emph{almost surely}. For example for (b) we can prove
+\[\mu(\{\w : f(\w) > g(\w)\}) =0 \Longrightarrow \int f d\mu \le \int g d\mu. \]
+\begin{proof}
+    Let $G = \{\w : f(\w) \le g(\w)\}$. By hypothesis $\mu(G^c) = 0$. For every partition $\{A_i\}_{i=1}^m$, $\mu(A_i) = \mu(A_i \cap G)$. It follows that
+    \begin{align*}
+        \sum_{i=1}^n \inf_{A_i} f(\w) \mu(A_i) &= \sum_{i=1}^m \inf_{A_i} f(\w) \mu(A_i\cap G)\\
+        &\le \sum_{i=1}^m \inf_{A_i\cap G} f(\w) \mu(A_i\cap G)\\
+        &\le \sum_{i=1}^m \inf_{A_i \cap G} g(\w) \mu(A_i\cap G)\\
+        &=\sum_{i=1}^m \inf_{A_i \cap G} g(\w) \mu(A_i\cap G) + \inf_{G^c}g(\w) \mu(G^c)\\
+        &\le \int g d\mu. \qedhere
+    \end{align*}
+\end{proof}
+\begin{defn}
+    If $(\Om, \F, \mu)$ is a probability space and $X:(\Om,F) \to \R$ is a random variable, then we call $\int f d\mu$ \emph{the expectation of $f$} and we write
+    \[\E[X] := \int X d\mu. \]
+\end{defn}
+\end{document}

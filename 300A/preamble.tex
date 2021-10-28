@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage{ae,aecompl}
+\usepackage{todonotes}
+\usepackage{chngcntr}
+\usepackage{tikz-cd}
+\usepackage{graphicx}
+\usepackage[all,cmtip]{xy}
+\usepackage{amsmath, amscd}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{qsymbols}
+\usepackage{latexsym}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{cite}
+\usepackage{color}
+\usepackage{url}
+\usepackage{enumerate}
+\usepackage{verbatim}
+\usepackage[draft=false, colorlinks=true]{hyperref}
+\usepackage{pdfpages}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{IEEEtrantools}
+
+\usepackage{fancyhdr}
+
+
+\usepackage[nameinlink]{cleveref}
+
+
+\renewcommand{\labelenumi}{(\alph{enumi})}
+\renewcommand{\labelenumii}{\roman{enumii}.}
+
+\DeclareMathOperator*{\amax}{argmax}
+\DeclareMathOperator*{\amin}{argmin}
+\DeclareMathOperator*{\Aut}{Aut}
+\newcommand {\al}{{\alpha}}
+\newcommand {\abs}[1]{{\left\lvert#1\right\rvert}}
+\newcommand {\A}{{\mathcal{A}}}
+\newcommand {\AM}{{\mathrm{AM}}}
+\newcommand {\AMp}{{\AM_{p}^{X}\!(\Ri_\w)}}
+\newcommand {\B}{{\mathcal{B}}}
+\DeclareMathOperator*{\Be}{Bern}
+\newcommand {\Br}{{\dot{B}}}
+\newcommand {\Ba}{{\mathfrak{B}}}
+\newcommand {\C}{{\mathbb C}}
+\newcommand {\ce}{\mathrm{c}}
+\newcommand {\Ce}{\mathrm{C}}
+\newcommand {\Cc}{\mathrm{C_{c}}}
+\newcommand {\Ccinf}{\mathrm{C_{c}^{\infty}}}
+\newcommand {\D}{D}
+\newcommand {\Di}{{\mathbb D}}
+\newcommand {\dom}{\mathrm{dom}}
+\newcommand {\ud}{\mathrm{d}}
+\newcommand {\ue}{\mathrm{e}}
+\newcommand {\eps}{\varepsilon}
+\newcommand {\veps}{\varepsilon}
+\newcommand {\vrho}{{\varrho}}
+\newcommand {\E}{{\mathbb{E}}}
+\newcommand {\Ec}{{\mathcal{E}}}
+\newcommand {\Ell}{L}
+\newcommand {\Ellp}{{L_{p}[0,1]}}
+\newcommand {\Ellpprime}{{L_{p'}([0,1])}}
+\newcommand {\Ellq}{{L_{q}([0,1])}}
+\newcommand {\Ellqprime}{{L_{q'}([0,1])}}
+\newcommand {\Ellr}{L^{r}}
+\newcommand {\Ellone}{{L_{1}([0,1])}}
+\newcommand {\Elltwo}{{L_{2}([0,1])}}
+\newcommand {\Ellinfty}{L^{\infty}}
+\newcommand {\Ellinftyc}{L_{\mathrm{c}}^{\infty}}
+\newcommand {\exb}[1]{\exp\left\{#1\right\}}
+\DeclareMathOperator*{\Exp}{Exp}
+\DeclareMathOperator*{\Ext}{Ext}
+\newcommand {\F}{{\mathcal{F}}}
+\newcommand{\Fe}{{\mathbb{F}}}
+\newcommand
+{\G}{{\mathcal{G}}}
+\newcommand {\HF}{\mathcal{H}_{\text{FIO}}^{1}(\Rd)}
+\newcommand {\Hr}{H}
+\newcommand {\HT}{\mathcal{H}}
+\newcommand {\ui}{\mathrm{i}}
+\newcommand {\I}{{I}}
+\newcommand {\J}{{\mathcal{J}}}
+\newcommand {\id}{{\mathrm{id}}}
+\newcommand {\iid}{\stackrel{\mathclap{\normalfont\mbox{iid}}}{\sim}}
+\newcommand {\im}{{\text{im }}}
+\newcommand {\ind}{{\perp\!\!\!\perp}}
+\DeclareMathOperator*{\Int}{int}
+\newcommand {\intx}{{\overline{\int_{X}}}}
+\newcommand {\inte}{{\overline{\int_{\E}}}}
+\newcommand {\la}{\lambda}
+\newcommand {\rb}{\rangle}
+\newcommand {\lb}{{\langle}}
+\newcommand {\La}{{\mathcal{L}}}
+\newcommand {\calL}{{\mathcal{L}}}
+\newcommand {\lp}{{\mathcal{L}}^{p}}
+\newcommand {\lpo}{{\overline{\mathcal{L}}^{p}\!}}
+\newcommand {\Lpo}{{\overline{\Ell}^{p}\!}}
+\newcommand {\M}{{\mathbf{M}}}
+\newcommand {\Ma}{{\mathcal{M}}}
+\newcommand {\N}{{{\mathbb N}}}
+\newcommand {\Na}{{{\mathcal{N}}}}
+\newcommand {\norm}[1]{\left\|#1\right\|}
+\newcommand {\normm}[1]{{\left\vert\kern-0.25ex\left\vert\kern-0.25ex\left\vert #1 
+    \right\vert\kern-0.25ex\right\vert\kern-0.25ex\right\vert}}
+\newcommand {\Om}{{{\Omega}}}
+\newcommand {\one}{{{\bf 1}}}
+\newcommand {\pic}{\text{Pic }}
+\newcommand {\ph}{{\varphi}}
+\newcommand {\Pa}{{\mathbb{P}}}
+\newcommand {\Po}{{\mathcal{P}}}
+\newcommand {\Q}{{\mathbb{Q}}}
+\newcommand {\R}{{\mathbb R}}
+\newcommand {\Rd}{{\mathbb{R}^{d}}}
+\newcommand {\Rn}{{\mathbb{R}^{n}}}
+\newcommand {\cR}{{\mathcal{R}}}
+\newcommand {\Rad}{{\mathrm{Rad}}}
+\newcommand {\ran}{{\mathrm{ran}}}
+\newcommand {\Ri}{{\mathrm{R}}}
+\newcommand {\supp}{{\mathrm{supp}}}
+\newcommand {\Se}{\mathrm{S}}
+\newcommand {\Sp}{S^{*}(\Rn)}
+\newcommand {\St}{{\mathrm{St}}}
+\newcommand {\Sw}{\mathcal{S}}
+\newcommand {\T}{{\mathcal{T}}}
+\newcommand {\ta}{{\theta}}
+\newcommand {\Ta}{{\Theta}}
+\DeclareMathOperator {\V}{Var}
+\newcommand {\w}{{\omega}}
+\newcommand {\W}{{\mathrm{W}}}
+\newcommand {\Wnp}{\text{$\mathrm{W}$\textsuperscript{$n,\!p$}}}
+\newcommand {\Wnpeq}{\text{$\mathrm{W}$\textsuperscript{$n\!,\!p$}}}
+\newcommand {\Wonep}{\text{$\mathrm{W}$\textsuperscript{$1,\!p$}}}
+\newcommand {\Wonepeq}{\text{$\mathrm{W}$\textsuperscript{$1\!,\!p$}}}
+\newcommand {\X}{{\mathcal{X}}}
+\newcommand {\Z}{{{\mathbb Z}}}
+\newcommand {\Za}{{\mathcal{Z}}}
+\newcommand {\Zd}{{\Z[\sqrt{d}]}}
+\newcommand {\vanish}[1]{\relax}
+
+\newcommand {\wh}{\widehat}
+\newcommand {\wt}{\widetilde}
+\newcommand {\red}{\color{red}}

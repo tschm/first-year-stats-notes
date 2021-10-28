@@ -1,0 +1,160 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS 310 - Lecture 2}
+\author{Michael Howes}
+\date{09/23/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS 310 - Lecture 2}
+\lhead{09/23/21}
+
+\begin{document}
+\maketitle
+\section{Strong law of large numbers}
+Recall that we have $\Om = (0,1]$ and for $\w \in \Om$ we write $\w = 0.d_1(\w)d_2(\w)\ldots$ where $d_i(\w)$ is the $i^{th}$ binary digit of $\Om$. If $\w$ has two binary expansions, we pick the expansion that ends in all 1's. We also defined $r_i = 2d_i -1 \in \{-1,1\}$ and $S_n = \sum_{i=1}^n r_i$. Let $B \subseteq \Om$ be the subset
+\[B = \left\{\w \in \Om : \lim_{n \to \infty}\abs{S_n(\w)/n} = 0 \right\}.   \]
+Recall also that a subset $A \subseteq \Om$ is said to nelligable if for every $\varepsilon >0$, there exists a countable collection of intervals $\{(a_i,b_i]\}_{i=1}^\infty$ such that $A \subseteq \cup_i (a_i,b_i]$ and $\sum_i b_i-a_i = \sum_i p((a_i,b_i]) < \varepsilon$. The strong law of large numbers (slln) states that $B^c$ is nelligable.
+\begin{proof}
+    Fix $\delta > 0$ and note that $\{\abs{S_n/n} > \delta\} = \{S_n^4 > \delta^4n^4\}$. By Markov's inequality we can thus conclude that 
+    \[p(\{\abs{S_n/n} > \delta\}) \le \frac{1}{\delta^4n^4}\int_0^1 S_n(w)^4d\w. \]
+    Since $S_n = \sum_{i=1}^n r_i$ we know that $(S_n)^4 = \sum\limits_{i,j,k,l = 1}^n r_ir_jr_kr_l$. Note that there are fives possibilities for the term $r_ir_jr_kr_l$. These are
+    \begin{enumerate}
+        \item The case $r_i^4$. This case occurs $n$ times and when it occurs $\int_0^1 r_i(\w)r_j(\w)r_k(\w)r_l(\w)d\w = \int_0^1 1d \w=1$.
+        \item The case $r_i^2r_jr_k$ when $i,j,k$ are distinct. In this case $\int_0^1 r_ir_jr_kr_ld\w = \int_0^1r_jr_kd\w = 0$.
+        \item The $r_i^2r_j^2$ when $i \neq j$. This case occurs $3n(n-1)$ times and in this case $\int_0^1 r_ir_jr_kr_ld\w = \int_0^1 1d\w = 1$.
+        \item The case $r_i^3r_j$ where $i\neq j$. In this case $r_ir_jr_kr_l = r_ir_j$ and thus $\int_0^1 r_ir_jr_kr_ld\w = 0$.
+        \item The case $r_ir_jr_kr_l$ and $i,j,k,l$ are all distinct. In this case $\int_0^1r_ir_jr_kr_l = 0$.
+    \end{enumerate}
+    Combining all of the above we have
+    \[\int_0^1 S_n(\w)^4d\w = \sum_{i,j,k,l=1}^n \int_0^1 r_i(\w)r_j(\w)r_k(\w)r_l(\w)d\w = n+3n(n-1) \le 3n^2. \]
+    Thus we have $p(\{\abs{S_n/n} > \delta\}) \le \frac{3}{\delta^4n^2}$. Now set $\delta_n = \frac{1}{n^{1/8}}$ so that $\delta_n \to 0$ and $\sum_{n=1}^\infty \frac{3}{\delta_n^4n^2}< \infty$. Note that for all $m \in \N$, we have
+    \[\bigcap_{n = m}^\infty\{\w : \abs{S_n(\w)/n} \le \delta_n \} \subseteq B. \]
+    By taking complements we see
+    \[B^C \subseteq \bigcup_{n = m}^\infty \{\w : \abs{S_n(\w)/n} > \delta_n \}. \]
+    The set $\{w : \abs{S_n(\w)/n} > \delta_n \}$ can be written as a finite union of disjoint intervals $\cup_{i=1}^{k_n}I_{n,i}$ such that $\sum_{i=1}^{k_n}p(I_{n,i}) < \frac{3}{\delta_n^4 n^2}$. Thus we have 
+    \[ B^c \subseteq \bigcup_{n = m}^\infty \bigcup_{i=1}^{k_n} I_{n,i},\] 
+    for all $m \in \N$. Thus given $\varepsilon > 0$ we can choose $m$ such that $\sum_{n= m}^\infty \frac{3}{\delta_n^4 n^2} < \varepsilon$ and note that 
+    \[\sum_{n = m}^\infty\sum_{i=1}^{k_n}p(I_{n,i}) \le \sum_{n = m}^\infty \frac{3}{\delta_n^4 n^2} < \varepsilon.  \]
+    Showing that $B^c$ is nelligiable,
+\end{proof}
+Thus we can say that $\lim_{n \to \infty} \frac{S_n(\w)}{n} = 0$ for \emph{almost all} $\w \in \Om$ or simply that $\lim_{n \to \infty} \frac{S_n}{n} = 0$ \emph{almost surely}. But! \grumpy 
+This statement does not have any qualitative bounds to it. Also how well does our model actually reflect coin flipping? A true model would have a lot of physics and observations of how people flip coins. Persi has written papers about such things. One is ``Dynamic bias in the coin toss'' written with collaborators.
+
+\section{Assigning Probabilities}
+See ``Ten Great Ideas About Chane'' by Persi. 
+\begin{defn}
+    Let $\Om$ be a set. A collection $\F_0$ of subset of $\Om$ is a \emph{field} is
+    \begin{enumerate}
+        \item The set $\Om$ is in $\F_0$.
+        \item If $A \in \F_0$, then $A^c \in \F_0$.
+        \item If $A, B \in \F_0$, then $A \cup B \in \F_0$.
+    \end{enumerate}
+\end{defn}
+We say that $\F_0$ is closed under compliments and finite unions.
+\begin{defn}
+    Let $\Om$ be a set and $\F$ a collection of subsets of $\Om$. The collection $\F$ is a $\sigma$-field if it is a field and closed under countable unions. That is if $A_1,A_2,\ldots \in \F$, then $\cup_i A_i \in \F$.
+\end{defn}
+\begin{exs}
+\begin{enumerate}
+    \item $\Om = (0,1]$ and $\F_0 = \{\text{finite unions of disjoint intervals of the form (a,b]}\}$. This is a field since $(a,b]^c = (0,a] \cup (b,1]$. It is not a $\sigma$-field since $(0,1/2) = \cup_{i=1}^\infty (0,1/2-1/i] \notin \F_0$.
+    \item The collection of all subsets of $\Om$ is a $\sigma$-field.
+    \item $\{\Om, \emptyset\}$ is a $\sigma$-field.
+    \item If $\F_i$ are $\sigma$-fields on $\Om$ for all $i \in I$, then 
+    \[\F = \bigcap_{i \in I}\F_i, \]
+    is a $\sigma$-field.
+    \item If $\mathcal{C}$ is any collection of subsets of $\Om$, then define
+     \[\sigma(\mathcal{C}) := \bigcap_{i} \F_i,\]
+    where the intersection is of all $\sigma$-fields on $\Om$ that contain $\mathcal{C}$. This is a $\sigma$-field and is called the $\sigma$-field generated by $\mathcal{C}$.
+    \item The Borel set (in $(0,1]$) is the $\sigma$-field generated by all the intervals in $(0,1]$. For example our set
+    \[B = \bigcap_{k=1}^\infty \bigcup_{m=1}^\infty \bigcap_{n = m}^\infty \{\abs{S_n/n} < 1/k \},\]
+    is a Borel set.
+\end{enumerate}
+\end{exs}
+\begin{defn}
+    Let $\Om$ be a set and $\F$ a field. The pair $(\Om,\F)$ is called a measurable space. A probability on $(\Om, \F)$ is a function 
+    \[P:\F \to [0,1], \quad A \mapsto P(A),\]
+    such that\
+    \begin{enumerate}
+        \item $P(\Om)=1$, $P(\emptyset) = 0$.
+        \item $P(A^C) = 1- P(A)$.
+        \item If $\{A_i\}_{i=1}^\infty$ are pairwise disjoint and $\cup_{i=1}^\infty A_i \in \F$, then $P(\cup_{i=1}^\infty A_i)= \sum_{i=1}^\infty P(A_i)$.
+    \end{enumerate}
+\end{defn}
+\begin{remark}
+    It is often ``easy'' to assign probabilities to a field $\F_0$ of sets and there is a standard way to uniquely extend these probabilites to the $\sigma$-field generated by $\F_0$. 
+\end{remark}
+\begin{defn}
+    Let $P$ be a probability on a field $\F_0$. For all $A \subseteq \Om$, define
+    \[P^*[A] := \inf\left\{\sum_{i=1}^\infty P(B_i): A \subseteq \bigcup_{i=1}^\infty B_i \text{ and } B_i \in \F_0\right\}. \]
+    The function $P^*$ is called the \emph{outer measure associated to $(\Om, \F, P)$}.
+\end{defn}
+The function $P^*$ has the following properties
+\begin{enumerate}
+    \item $P^*(\Om)  =1$, $P^*(\emptyset) = 0$.
+    \item $P^*$ is countable subadditive. That if if $A = \cup_{i=1}^\infty A_i$, then $P^*[A] \le \sum_{i=1}^\infty P^*[A_i]$.
+    \begin{proof}
+        Fix $\varepsilon > 0$ and let $(B_{i,j})_{j=1}^\infty$ be a countable cover of $A_i$ by intervals such that
+            \[\sum_{j=1}^\infty P[B_{i,j}] \le P^*[A_i]+\varepsilon 2^{-i}\].
+        Thus $\{B_{i,j}\}_{i,j = 1}^\infty$ is a countable cover of $A$ by elements of $\F_0$. Since $P[B_{i,j}] \ge 0$, we can rearrange the infinite series $\sum_{i,j=1}^\infty P[B_{i,j}]$ and thus conclude the following
+        \begin{IEEEeqnarray*}{rCl}
+            P^*[A] &\le & \sum_{i,j=1}^\infty P[B_{i,j}]\\
+            &=&\sum_{i}^\infty\sum_{j=1}^\infty P[B_{i,j}]\\
+            &\le&\sum_{i=1}^\infty P^*[A_i]+\varepsilon2^{-i}\\
+            &=&\sum_{i=1}^\infty P^*[A_i] + \varepsilon\sum_{i=1}^\infty 2^{-i}\\
+            &=&\sum_{i=1}^\infty P^*[A_i] + \varepsilon.
+        \end{IEEEeqnarray*}
+        Since $\varepsilon > 0$ was arbitrary, we can conclude that $P^*[A] \le \sum_{i=1}^\infty P^*[A_i]$.
+    \end{proof}
+\end{enumerate}
+\begin{defn}
+    \emph{[Caratheodory]} Let $P$ be a probability measure on a field $\F_0$. A set $A \in \Om$ is \emph{measurable} if for all $E \subseteq \Om$,
+    \[P^*[E] = P^*[E \cap A] + P^*[E \cap A^c]. \]
+    We will use $\Ma$ to denote the set of all measurable sets.
+\end{defn}
+We will prove:
+\begin{itemize}
+    \item $\Ma$ is a $\sigma$-field that contains $\F_0$.
+    \item $P^*$ restricted to $\Ma$ is a probability (in particular $P^*$ is countable additive on measurable sets).
+    \item $P^*$ restricted to $\F_0$ equals $P$.
+    \item $P^*$ is unique.
+\end{itemize}
+This goal will preoccupy us for the next lecture but we will start working on it today. With the notation as above we will show that $\Ma$ is a field. 
+
+\begin{proof}
+    The one main trick we will use is that to show $A \in \Ma$, it is enough to show
+    \[P^*(E \cap A)+P^*(E \cap A^c) \le P^*(E),\]
+    for all $E \subseteq \Om$. This is becuase we always have $P^*(E) \le P^*(E \cap A) + P^*(E \cap A^c)$ by subadditivity.
+
+
+    We can see immediatie that $\Om \in \Ma$ and that $\Ma$ is closed under complements. Thus suppose that $A,B \in \Ma$ and $E \subseteq \Om$, then
+    \begin{IEEEeqnarray*}{rCl}
+        P^*(E) &=&P^*(E \cap A) + P^*(E \cap A^c)\\
+        &=&P^*(E \cap A \cap B) + P^*(E \cap A \cap B^c) + P^*(E \cap A^c \cap B)+ P^*(E \cap A^c \cap B^c)\\
+        &\ge&P^*(E \cap ([A \cap B]\cup[A \cap B^c]\cup[A^c \cap B]))+P^*(E \cap [A^c \cap B^c])\\
+        &=&P^*(E \cap [A\cup B])+P^*(E \cap [A\cup B]^c).
+    \end{IEEEeqnarray*}
+    Thus, by the main trick, $A \cup B \in \Ma$.
+\end{proof}  
+\section{Conclusion}
+One might ask why are we doing all this just to talk about probabilities? There are several reasons
+\begin{itemize}
+    \item People want to work with infinite sequence spaces, random curves, Brownian motion and the set of all probabilities measures on $[0,1]$. These are complicated spaces and it can be hard to assign probabilities on them by hand.
+    \item We simply cannot assign a consistent notion of length to all subsets of $[0,1]$.
+    \item Keep an eye out for a halloween talk on non-measurable set.
+\end{itemize} 
+A remark on finite vs countable additivity. Let $\N = \{1,2,\ldots\}$. One would like to say that $j$ choosen ``at random'' from $\N$ has a 50\% chance of being even. We can make sense of this by defining
+\[P_n(A) = \frac{\abs{A \cap [n]}}{n}, \]
+where $\abs{B}$ is the number of elements in $B$ and $[n] = \{1,2,\ldots,n\}$. If $\lim_{n \to \infty}P_n(A)=l$ exists we say that $A$ has density $D(A) = l$. One can show
+\begin{itemize}
+    \item $D(\text{multiples of } j) = \frac{1}{j}$,
+    \item $D(\{\text{primes}\}) = 0$, and
+    \item $D(\{\text{square free numbers}\}) = \frac{6}{\pi^2}$.
+\end{itemize} 
+Not every set has a density. For example if 
+\[A = \{1,10,11,100,101,\ldots,199,1000,10001,\ldots,1999,10000\}. \]
+That is, $A$ is the set of numbers that start with a 1 when written in decimal. Then $P_n(A)$ moves up and down between 1/9 and 5/9 infinitely often. The answer to this problem is to use the Hahn-Bananch theorem to extend $D$ to all subsets of $\N$. This is gives us a measure that is finitely additive but not countably additive. This example is highly non-constructive and non unique since there are many possible Hahn Banach extensions and none of them are ``natural.''
+\end{document}

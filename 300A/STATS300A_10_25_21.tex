@@ -1,0 +1,103 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 11}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/25/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 11}
+\lhead{10/25/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Announcement}
+Please arrive at least 5 minutes early to the exam on Wednesday.
+
+\section{Admissibility $(d=1)$}
+We have seen that unique Bayes estimators are admissible. We wish to boost this result to $\bar{X}_n$ which a limit of Bayes estimators.
+
+\begin{ex}
+    Suppose $X_1,\ldots, X_n \iid \Na(\mu,\sigma^2)$ where $\sigma^2$ is unknown and we are using squared error loss. To show that $\bar{X}_n$ is admissible we will use a limiting Bayes argument. Suppose without loss of generality that $\sigma^2=1$ and that $\bar{X}_n$ is inadmissible. Note that the risk of $\bar{X}_n$ is $\frac{1}{n}$ constantly. Thus if $\bar{X}_n$ is inadmissible, then there exists an estimator $\delta$ such that $R(\ta,\delta) < 1/n$ for some $\ta$ and $R(\ta,\delta) \le 1/n$ for all $\ta$. 
+    
+    One can use the dominated convergence theorem to show that $\ta \mapsto R(\ta,\delta)$ is continuous. Thus there exists an interval $(\ta_0,\ta_1)$ such that $\ta_1-\ta_0 > 0$ and $R(\ta,\delta') \le 1/n - \eps$ for all $\ta \in (\ta_0,\ta_1)$. 
+
+    Let $r'_\tau$ be the average risk of $\delta$ with respect to the prior $\ta \sim \Na(0,\tau^2)$. Also let $r_\tau$ be the average risk of the Bayes estimator with respect to the prior $\ta \sim \Na(0,\tau^2)$. We know that $r_\tau$ is the posterior variance of $\tau$ and thus 
+    \[r_\tau = \frac{1}{n+1/\tau^2} = \frac{\tau^2}{n\tau^2+1}. \]
+    Thus $r_\tau$ approaches $1/n$ as $\tau \nearrow \infty$. We also know that $r_\tau' \le 1/n$ for all $\tau$. We will now look at the ratio $\frac{1/n-r'_\tau}{1/n-r_\tau}$. This is a sort of Taylor's expansion of $r_\tau$ and $r_\tau'$ about $1/n$. Note that
+    \begin{align*}
+        \frac{1/n-r_\tau'}{1/n-r_\tau} &= \frac{\int_\R (1/n - R(\ta,\delta))\frac{1}{\sqrt{2\pi}\tau}\exp(-1/2\ta^2)d\ta}{\frac{1}{n}-\frac{\tau^2}{n\tau^2+1}}\\
+        &=\frac{\int_\R (1/n - R(\ta,\delta))\frac{1}{\sqrt{2\pi}\tau}\exp(-1/2\ta^2)d\ta}{\frac{n\tau^2+1}{n(n\tau^2+1)}-\frac{n\tau^2}{n(n\tau^2+1)}}\\
+        &=\frac{\int_\R (1/n - R(\ta,\delta))\frac{1}{\sqrt{2\pi}\tau}\exp(-1/2\ta^2)d\ta}{\frac{1}{n(n\tau^2+1)}}\\
+        &=\frac{n(n\tau^2+1)}{\sqrt{2\pi}\tau}\cdot \int_\R (1/n - R(\ta,\delta))\exp(-1/2\ta^2)d\ta\\
+        &\ge \frac{n(n\tau^2+1)}{\sqrt{2\pi}\tau}\cdot \int_{\ta_0}^{\ta_1} (1/n - R(\ta,\delta))\exp(-1/2\ta^2)d\ta\\
+        &\ge \frac{n(n\tau^2+1)}{\sqrt{2\pi}\tau}\cdot \eps\int_{\ta_0}^{\ta_1}  \exp(-1/2\ta^2)d\ta.
+    \end{align*}
+    As $\tau \to \infty$, $\frac{n(n\tau^2+1)}{\sqrt{2\pi}\tau} \to \infty$ and by the dominanted convergence theorem $\int_{\ta_0}^{\ta_1}  \exp(-1/2\ta^2)d\ta \to \int_{\ta_0}^{\ta_1} 1d\ta = \ta_1-\ta_0 > 0$. Thus we have 
+    \[\lim_{\tau \to \infty}         \frac{1/n-r_\tau'}{1/n-r_\tau'} = \infty.  \]
+    In particular there exists $\tau>0$ such that $\frac{1/n-r_\tau'}{1/n-r_\tau} > 1$. This implies that $r_\tau' < r_\tau$ which is a contradiction.
+\end{ex}
+
+
+\section{Inadmissibility $(d \ge 3)$}
+We will now look at an example of simultaneous estimation and look at the James-Stein estimator. The take away will be that minimax estimators and UMRUES need not be admissible.
+
+Suppose $X\in \R^p$ and $X \sim \Na(\ta, I_p)$ for some $\ta \in \R^p$. Our goal is to estimate $\ta$ under the loss $L(\ta,d) = \sum_{j=1}^p (\ta_j-d_j)^2 = \norm{\ta-d}_2^2$. The estimator $\delta(X) =X$ is
+\begin{itemize}
+    \item A minimax estimator for $\ta$.
+    \item The UMRUES for $\ta$.
+    \item The MLE for $\ta$, that is $X = \arg\max_\ta p(x;\ta)$.
+\end{itemize}
+From many perspectives $X$ seems like the best estimator but $X$ is admissible for $p \ge 3$. Recall the emperical Bayes estimator for $\ta$
+\[\left(1-\frac{p}{\sum_i X_i^2}\right)X. \]
+This came up in the setting $\ta_i \iid \Na(0,\tau^2)$ and $X_i|\ta_i \stackrel{ind}{~} \Na(\ta_1,1)$. We will see that a similar estimator will outperform $\delta(X)=X$ uniformly in $\ta$ in a frequentist setting. 
+
+For intuition one may ask what is the problem with $\delta(X)=X$? The problem is that $\norm{X}_2^2$ is normally much larger $\norm{\ta}_2^2$ since $\E[\norm{X}_2^2] =\sum_{i=1}^P \left(\ta_i^2+1\right) = \norm{\ta}_2^2+p >> \norm{\ta}_2^2$.
+\begin{thrm}
+    \emph{[TPE 5.5.1]} Define the estimator $\delta^0$ by
+    \[\delta_j^0(X) = \left(1-\frac{p-2}{\norm{X}_2^2}\right)X_j. \]
+    The estimaot $\delta^0$ had strictly smaller risk than $\delta(X)=X$ for all $\ta$. Thus $\delta(X)=X$ is inadmissible.
+\end{thrm}
+We call $\delta^0$ a \emph{James-Stein estimator}.
+\begin{proof}
+    We know that $R(\ta,\delta) = p$ when $\delta(X)=X$. Now note that
+    \begin{align*}
+        R(\ta,\delta^0) &= \E_\ta\left[\sum_j \left(\ta_j - \left(1- \frac{p-2}{\norm{X}_2^2}\right)X_j\right)^2\right]\\
+        &= \E_\ta\left[\sum_j \left(\ta_j - X_j+ \frac{p-2}{\norm{X}_2^2}X_j\right)^2\right]\\
+        &=\sum_j \E_\ta[(\ta_j-X_j)^2]-2\sum_j \E_\ta\left[(X-\ta_j)\left(\frac{p-2}{\norm{X}_2^2}X_j\right)\right]+\sum_j \E_\ta\left[\frac{(p-2)^2X_j^2}{\norm{X}_2^4}\right]\\
+        &=p-2\sum_j \E_\ta\left[(X_j-\ta_j)\left(\frac{p-2}{\norm{X}_2^2}X_j\right)\right]+\sum_j \E_\ta\left[\frac{(p-2)^2X_j^2}{\norm{X}_2^4}\right].
+    \end{align*}
+    Recall Stein's identity if $X\sim \Na(\mu,\sigma^2)$ we have
+    \[\E[g(X)(X-\mu)] = \sigma^2\E[g'(X)]. \]
+    By conditioning this gives 
+    \[ \E_\ta\left[(X_j-\ta_j)\left(\frac{p-2}{\norm{X}_2^2}X_j\right)\right] = \E_\ta\left[(p-2)\frac{\partial}{\partial X_j}\left(\frac{X_j}{\norm{X}_2^2}\right)\right].\]
+    If we make this subsitution we have
+    \begin{align*}
+        R(\ta,\delta^0) &=p-2\sum_j \E_\ta\left[(p-2)\frac{\partial}{\partial X_j}\left(\frac{X_j}{\norm{X}_2^2}\right)\right]+\sum_j \E_\ta\left[\frac{(p-2)^2X_j^2}{\norm{X}_2^4}\right]\\
+        &=p-2\sum_j \E_\ta\left[(p-2)\frac{\norm{X}_2^2-2X_j^2}{\norm{X}_2^4}\right]+\sum_j \E_\ta\left[\frac{(p-2)^2X_j^2}{\norm{X}_2^4}\right]\\
+        &=p-2(p-2)\E_\ta\left[\sum_j \frac{\norm{X}_2^2-2X_j^2}{\norm{X}_2^4}\right]+(p-2)^2\E_\ta\left[\sum_j \frac{X_j^2}{\norm{X}_2^4}\right]\\
+        &=p-2(p-2)\E_\ta\left[\frac{p\norm{X}_2^2-2\norm{X}_2^2}{\norm{X}_2^4}\right]+(p-2)^2\E_\ta\left[\frac{\norm{X}^2_2}{\norm{X}_2^4}\right]\\
+        &=p-2(p-2)^2\E_\ta\left[\frac{1}{\norm{X}_2^2}\right]+(p-2)^2\E_\ta\left[\frac{1}{\norm{X}_2^2}\right]\\
+        &=p-(p-2)^2\E_\ta\left[\frac{1}{\norm{X}_2^2}\right]\\
+        &<p.
+    \end{align*}
+    Thus $\delta^0$ uniformly outperforms $\delta$.
+\end{proof}
+\begin{remark}
+    \begin{enumerate}
+        \item Why only $p > 2$? The random variable $\frac{1}{\norm{X}_2^2}$ is not integrable when $p=2$. Thus the regularity conditions of Stein's identity are not met.
+        \item The above theorem is surprising! We can improve the risk by sharing information across different dimensions. The components $X_{\setminus j}$ are used to estimate $\ta_j$ even though $X_j$ are independent and $\ta_j$ do not have any restrictions.
+        \item Define $\delta^v_j = \left(1 - \frac{p-2}{\norm{X_v}_2^2}\right)(X_j-v_j)$ for $v\in \R^p$. Then the above proof shows that $\delta^v$ also out performs $\delta$.
+        \item If $\sigma \neq 1$, then we can use $\wh{\ta}_{JS} = \left(1-\frac{\sigma^2(p-2)}{\norm{X}_2^2}X$.
+        \item $\wh{\ta}_{JS}$ is inadmissible, we can improve by using
+        \[\delta_j'(X) = \left(1- \frac{p-2}{\norm{X}_2^2}\right)_+X_j. \]
+        \item A warning: For some $j$, $\E[(\delta_j^0(X)-\ta_j)^2]$ may be larger than $\E[(X_j-\ta_j)^2]$. An example is ``Baseball batting averages - James-Stein estimator''
+    \end{enumerate}
+\end{remark}
+\end{document}

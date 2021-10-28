@@ -1,0 +1,121 @@
+\include{preamble}
+\include{definitions}
+
+\title{STATS 305A - Lecture 1}
+\author{John Duchi\\
+Scribed by Michael Howes}
+
+\begin{document}
+\maketitle
+
+Outline for today
+\begin{itemize}
+    \item Logistics
+    \item Overview and motivation
+    \item Background and linear models
+\end{itemize}
+
+
+
+\section{Logistics}
+\begin{itemize}
+    \item Lecturer: John Duchi, four TAs Michael, Suyesh, James and one more.
+    \item Email list: \hyperlink{mailto:stats305a-aut2122@lists.stanford.edu}{stats305a-aut2122@lists.stanford.edu}
+    \item Course webpage \hyperlink{stanford.edu/class/stats305a}{stanford.edu/class/stats305a}
+    \item Assessment:
+    \begin{itemize}
+        \item  ($\sim$50\%) 4 problem sets due fortnightly. Some combination of coding and maths. You can collaborate with each other and consult sources but do not ask the questions online on stackexchange, stack overflow, etc.
+        \item ($\sim$50\%) around 5 \emph{etudes}. These are smaller assignments. No student collaboration allowed.
+        \item The lowest scoring PSET or etude will be dropped.
+        \item Gradescope will be used for submitting assessment.
+    \end{itemize}
+    \item Course discussion will take place on ed-discussions.
+    \item Recommended background linear algebra + probability + statistics + coding. If you have 3+ of these you will be fine. You might struggle if you are missing 2 or more.
+    \item A variety of sources will be used. See the webpage. These textbooks can be accessed for free online at Springerlink. Lecture notes will also be online. You can order textbooks from Springerlink for \$25.
+\end{itemize}
+
+
+
+\section{Overview and motivation}
+
+\subsection{Statistics}
+The big picture of 305A/B/C is that stats helps us make important decisions and scientific discoveries.
+
+The point of this class (and most of statistics) is to make generalisation. This is normally done in the following steps: get data from a population, make inferences and learn things about the population, learn/make something new such as a better prediction or a new association.
+
+The setting for most of this class will consist of
+\begin{itemize}
+    \item Data in pairs $(x,y)$ called observations or examples.
+    \item The $x$'s are called covariates, independent variables or input variables.
+    \item The $y$'s are called targets, dependent variables  or labels.
+    \item We want to do \emph{supervised learning}. That is, we wish to predict new $y$'s from new $x$'s.
+\end{itemize}
+There are two broad approaches to supervised learning. The ML (machine learning) approach can be characterised by the following
+\begin{itemize}
+    \item Find a good predictor of $y| x$ ($y$ given $x$).
+    \item Algorithmic.
+    \item Rarely care much about the precise model that goes from $x$ to $y$.
+\end{itemize}
+In contrast, the statistical approach is characterised by
+\begin{itemize}
+    \item Find a model of $(X,Y)$. These models are always wrong but are often insigtful.
+    \item Model-based approach.
+    \item Care a \emph{lot} about uncertainty and we want to quantify the uncertainty in our estimates.
+\end{itemize}
+
+
+\subsection{Applied statistics}
+We wish to summarize and display data and communicate what we have done outside statistics. We have to consider the losses and consequenes of models/predictions. For example
+\begin{itemize}
+    \item If we want to evaluate a policy intervention, how do we decide which outcomes to measure? How do we work out how to measure them?
+    \item In around 2007 John was working at YouTube and his team was given the task of ``improving YouTube''. They had to decide on a metric for how to measure this and choose to you ``click through rate'' [what proportion of the time do viewers click on a suggested video]. They developed an ML algorithm called Sibyl that dramatically increased click through rate. Fourteen years later, it is quite clear that ``click through rate'' was not a good choice of metric as Sibyl has resulted in many people going into rabbit holes about conspiracy theories on YouTube.
+    \item Kathyrn Page Harden is a researcher who works on GWAS (genome-wide association studies). These studies associate gene expression $(X)$ with outcomes linke income, IQ, level of education and school success $(Y)$. A linear model is used to predict $Y$ from $X$. From a particular person's $x$ we can calculate their ``score'' $\E[Y|X = x]$. This raises some scary questions.
+    \begin{itemize}
+        \item What if this was used in job selection or college admissions?
+        \item What if embroys in IVF were chosen based on the scores?
+    \end{itemize}
+    The way in which the scores are communicated is very important. On a population level, there is a strong trend that the IQ/income/level of education do increase with these scores but on an individual level the variance within a group of people with the same score is much greater than the variance across the different categories.
+\end{itemize}
+In applied statistics we also have to think about how we gather the data and make good estimates and we have to talk to domain experts.
+
+
+
+\subsection{Models}
+Much of this course focus on the choice of model for the given data. There is a famous quote by the statistician Box ``All models are wrong but some are useful.'' One might ask: ``If all models are wrong, then what's the point?''. A partial answer is that we know the following:
+\begin{itemize}
+    \item Robustness: some methods may be ``optimal'' under the assumptions of one model but still perform ``okay'' when the assumptions are missing.
+    \item We can measure our errors and validate our models. We can see if we do better than without the model.
+    \item Models provide simplification. They can capture what's happening and give us enough understanding to make decisions.
+\end{itemize}
+
+
+\subsection{Supervised learning/Prediction Problems}
+As we before we have our observations/examples $(X,Y)$ which come in pairs. The $Y$ is the target/dependent variable/label and the $X$ is the covariate/input/indepent variable. In this section we could ask two questions.
+\begin{itemize}
+    \item \underline{Prediction}: Given a new $X$, can I predict the corresponding $Y$?
+    \item \underline{Causality}: If I intervened on $X$, what happens to $Y$?
+\end{itemize}
+Causal questions are more sciency and include asking if smoking cause cancer and if government spending causes economic growth. Causal questions are much harder to answer and won't be taught much in this course. Prediction is still very useful as sometime we cannot perform interventions, eg path of a hurricane.
+
+The variables $X$ and $Y$ may be any one of a number of different types. Some common types for $Y$ are $\R$ (real numbers), $\{0,1\}$ or $\{1,-1\}$ (binary classification), $\{1,\ldots, k\}$ (classification), ordered lists, $\R^d$ or structure prediction. Some possibilities for $X$ are $\emptyset$ (no covariates), $\{0,1\}$ or $\{1,\ldots,k\}$ (analysis of variance (ANOVA)), $\R^d$ and more! In this class we will be focusing on the case when $Y \in \R$ but we will see each of the possibilities for $X$. The course 305B will look at when $Y$ is in $\{0,1\}$,$\{1,\ldots, k\}$ or an ordered list. Finally 305C will look at when $Y \in \R^d$. The tools of natural language processing (NLP) can be used for structured prediction.
+
+
+
+\section{Linear Models}
+An example of a linear model is
+\[Y_i = \beta_0+\beta_1x_i + \epsilon_i, \]
+where $\beta_0,\beta_1 \in \R$ are our parameters and $\epsilon_i$ is random noise. We will often assume $\epsilon_i \iid (0,\sigma^2)$ (that is $\epsilon_i$ are independent and indentically distributed, $\E[\epsilon_i]=0$, and the variance of $\epsilon_i$ is $\sigma^2$). Other times we make the stronger assumption that $\epsilon_i \iid N(0,\sigma^2)$ which states in addition that each $\epsilon_i$ is normally distributed. Depending on the context/application will we write either
+\[\E[Y_i] = \beta_0+\beta_1x_i \quad \text{or} \quad \E[Y|X=x_i] = \beta_0 +\beta_1x_i. \]
+The parameter $\beta_0$ is called the intercept and $\beta_1$ is called a parameter of interest.
+
+Some times we will have $x_i = (x_{i1},\ldots, x_{id})^T \in \R^d$. In this case we can use the model 
+\[Y_i = \beta_0 + \sum_{j=1}^d\beta_j x_{ij} + \epsilon_i = \beta_0 + x_i^T\beta+\epsilon_i. \]
+We will often simply write $y=x^T\beta + \epsilon$ where $x = (1,x_1,x_2,\ldots,x_d) \in \R^{d+1}$ and $\beta = (\beta_0,\beta_1,\ldots,\beta_d) \in \R^{d+1}$.
+
+When we refer to linear models we are assuming that the model is linear in $\beta$ not necessarily in $x$. For example we have do polynomial regression when we have $x \in \R$ and use
+\[y = \beta_0 +\beta_1x+\beta_2x^2+\ldots +\beta_dx^d.\] 
+In another example we may have $Y = \text{daily rainfall}$ and $X = \text{day of the year} \in \{1,2,\ldots,365\}$. In that case we could use the model
+\[Y = \beta_0 +\beta_1\sin\left(\frac{2\pi x}{365}\right)+\beta_2\cos\left(\frac{2\pi x}{365}\right). \]
+This gives us cyclical data.
+
+\end{document}

@@ -1,0 +1,162 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 6}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/07/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 6}
+\lhead{10/07/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{An IOU}
+All lot of what we have done has been done assuming that length is countably subadditive. That is if $(a,b] \subseteq \bigcup_{i=1}^\infty (a_i,b_i]$, then $b-a \le \sum_{i=1}^\infty b_i-a_i$. Today we prove this fact.
+\begin{proof}
+    First we will show that if $(a,b] \subseteq \bigcup_{i=1}^n (a_i,b_i]$, then $b-a \le \sum_{i=1}^n b_i -a_i$. We will proceed by induction, if $(a,b] \subseteq (a_1,b_1]$, then $b-a\le b_1-a\le b_1-a_1$ and we are done. 
+    
+    Thus suppose the result holds for $n-1$ and that $(a,b] \subseteq \bigcup_{i=1}^n (a_i,b_i]$. Then we must have $b \in (a_i,b_i]$ for some $i$. By relabelling we can assume without loss of generality that $b\in (a_n,b_n]$. If $a_n \le a$, then we are done since then $(a,b] \subseteq (a_n,b_n]$. Now suppose $a_n > a$. We thus have $(a,a_n] \subseteq \bigcup_{i=1}^{n-1}(a_i,b_i]$ and by the inductive hypothesis $a-a_n \le \sum_{i=1}^{n-1} b_i - a_i$. Thus 
+    \[b-a \le b_n -a = b_n-a_n + a_n - a \le \sum_{i=1}^n b_i - a_i, \]
+    as required. Now consider the infinite case when $(a,b] \subseteq \bigcup_{i=1}^\infty (a_i,b_i]$. Let $\varepsilon > 0$ and note that 
+    \[[a+\varepsilon, b] \subseteq \bigcup_{i=1}^\infty (a_i,b_i+2^{-i}\varepsilon). \]
+    Since the set $[a+\varepsilon,b]$ is compact, the open cover $\{(a_i,b_i+2^{-i}\varepsilon)\}_{i=1}^\infty$ must contain a finite subcover. Thus
+    \[(a+\varepsilon,b] \subseteq [a+\varepsilon, b] \subseteq \bigcup_{i=1}^n (a_i, b_i+2^{-i}\varepsilon) \subseteq \bigcup_{i=1}^n (a_i, b_i+2^{-i}\varepsilon].  \]
+    Thus by the finite case we have
+    \[b-a-\varepsilon \le \sum_{i=1}^n b_i-a_i+2^{-i}\varepsilon \le \varepsilon+\sum_{i=1}^\infty b_i-a_i. \]
+    Thus, by letting $\varepsilon$ go to zero we are done and Persi has paid up.
+\end{proof}
+\section{Semi-rings}
+\begin{defn}
+    A class, $\A$, of subsets of a set $\Om$, is a \emph{semi-ring} if
+    \begin{enumerate}
+        \item $\emptyset \in \A$.
+        \item $\A$ is closed under finite intersections.
+        \item If $A,B \in \A$ and $A \subseteq B$, then there exist disjoint sets $C_1,\ldots,C_k \in \A$, such that \[ B\setminus A = \bigcup_{i=1}^k C_i.\]
+    \end{enumerate}
+\end{defn}
+Some examples are
+\begin{itemize}
+    \item Intervals in $\R$.
+    \item Rectangles in $\R^2$.
+    \item Rectangular prisms in $\R^3$.
+    \item Hypercubes in $\R^k$.
+\end{itemize}
+Note that semi-rings are not necessarily closed under complements and need not contain $\Om$. Semi-rings are $\pi$-systems.
+\begin{thrm}
+    Let $\Om$ be a set and $\A$ a semi-ring of subsets of $\A$. Let $\mu : \A \to \R \cup \{\infty\}$ be a function such that 
+    \begin{enumerate}
+        \item $\mu(A) \ge 0$ for all $A \in \A$.
+        \item $\mu$ is finitely additive on $\A$.
+        \item $\mu$ is countably subadditive on $\A$.
+    \end{enumerate}
+    Then $\mu$ has an extension to $\sigma(A)$ and the extension is unique if $\mu$ is $\sigma$-finite with respect to $\A$.
+\end{thrm}
+\begin{proof}
+    If $A \subseteq B$ are both in $\A$, then 
+    \[\mu(B) = \mu(A)+\sum_{i=1}^k \mu(C_i) \ge \mu(A). \]
+    Thus $\mu$ is monotone on $\A$. Define
+    \[\mu^*(B) = \inf\left\{\sum_{i=1}^\infty \mu(A_i) : B \subseteq \bigcup_{i=1}^\infty A_i, A_i \in \A\right\}. \]
+    We know that $\mu^*$ is a measure on the $\sigma$-algebra $\Ma(\mu^*)$. We need to show that
+   \begin{enumerate}
+            \item $\A \subseteq \Ma(\mu^*)$, and
+            \item $\mu^*(A) = \mu(A)$ if $A \in \A$.
+    
+   \end{enumerate}
+   For (a), suppose that $A \in \A$ and $E \subseteq \Om$. If $\mu^*(E) = \infty$, then $\mu^*(E) \ge \mu^*(A \cap E)+\mu^*(A^c \cap E)$ and we are done. 
+
+   Thus suppose $\mu^*(E) < \infty$ and fix $\varepsilon > 0$. There exists $A_n \in \A$ such that $E \subseteq \bigcup_{n=1}^\infty A_n$ and 
+   \[\sum_{n=1}^\infty \mu(A_n) \le \mu^*(E)+\varepsilon. \]
+   Define $B_n = A \cap A_n$. Since $\A$ is closed under intersections we have $B_n \in \A$. For each $n$ we have $B_n \subseteq A_n$ and hence by the third semi-ring property there exist disjoint sets $C_{n,i} \in \A$ for $i=1,\ldots, k_n$  such that 
+   \[A^c \cap A_n = A_n \setminus B_n = \bigcup_{i=1}^{k_n}C_{n,i}. \]
+   We know that $\bigcup_{n=1}^\infty B_n$ covers $A \cap E$ and that $\bigcup_{n=1}^\infty \bigcup_{i=1}^{k_n} C_i$ covers $A^c \cap E$. Thus, since $\mu$ is finitely additive on $\A$ we have
+   \begin{IEEEeqnarray*}{rCl}
+    \mu^*(A \cap E) + \mu^(A^c \cap E) &\le& \sum_{n=1}^\infty \mu(B_n) + \sum_{n=1}^\infty \sum_{i=1}^{k_n}\mu(C_{n,i})\\
+    &=&\sum_{n=1}^\infty \left(\mu(B_n) + \sum_{i=1}^{k_n}\mu(C_{n,i})\right)\\
+    &=&\sum_{n=1}^\infty \mu(A_n)\\
+    &\le &\mu^*(E) + \varepsilon.
+   \end{IEEEeqnarray*}
+   Thus we can conclude that $\mu^*(E) \ge \mu^*(A \cap E) + \mu^*(A^c \cap E)$ and so $A \in \Ma(\mu^*)$.
+
+   Now we will prove $(b)$. Since $A \subseteq A$ for all $A \in \A$, we immediately have $\mu^*(A) \le \mu(A)$. Also if $A \subseteq \bigcup_{i=1}^\infty A_i$, then $\mu(A) \le \sum_{i=1}^\infty \mu(A_i)$ by countable subadditivity so $\mu(A) \le \mu^*(A)$. 
+\end{proof}
+\section{Distribution functions}
+Let $\mu$ be a probability on $\R$ equipped with the Borel $\sigma$-algebra $\B$. Define 
+\[F(x) = \mu((-\infty, x]), \]
+then $F$ satisfies
+\begin{enumerate}
+    \item $\lim\limits_{x \to \infty} F(x) =1$ and $\lim\limits_{x \to - \infty}F(x) = 0$.
+    \item $x \le y$ implies $F(x) \le F(y)$.
+    \item If $x_n \searrow x$, then $F(x_n) \searrow F(x)$. Since $\bigcap_{n=1}^\infty (-\infty,x_n] = (-\infty, x]$.
+\end{enumerate}
+Conversely if $F$ satisfies (a)-(c), then $\mu((a,b]) = F(b)-F(a)$ extends to a measure on $(\R,\B)$ and $\mu((-\infty, x]) = F(x)$ for all $x$. 
+
+For example
+\begin{itemize}
+    \item  The normal distribution: $F(x) = \frac{1}{\sqrt{2 \pi}}\int_0^x \exp\left(-\frac{1}{2}t^2\right)dt.$
+    \item The exponential distribution: \[F(x) = \begin{cases}
+        0 & \text{if } x < 0,\\
+        1-e^{-x} & \text{if } x \ge 0.
+    \end{cases}\] 
+    \item A point mass at $x_0$
+    \[F(x)= \begin{cases}
+        0 & \text{if } x < x_0,\\
+        1 & \text{if } x \ge x_0.
+    \end{cases}\] 
+\end{itemize}
+\subsection{Distribution functions in higher dimensions}
+If $x \in \R^k$, let $A_x = \{ y\in \R^k : y_i \le x_i, 1 \le i \le k \}$. If $\mu$ is a probability on $\R^k$, define 
+\[F(x) := \mu(A_x). \]
+The function $F$ satisfies (a)-(c) from before we also have the following extra condition! Suppose $A$ is a rectangle
+\[A = \{y \in \R^k : a_i < x \le b_i, i=1,\ldots, k\}, \]
+for some $a,b \in \R^k$. Then define
+\[\Delta_F(A) = \sum_{v \text{ a vertex of } A} \text{sgn}(v)F(v). \]
+where 
+\[\text{sgn}(v) = \begin{cases}
+    1 & \text{if } v_i = a_i \text{ for an even number of } i's,\\
+    -1 & \text{if }v_i = a_i \text{ for an odd number of } i's.
+\end{cases} \]
+For example if $k=1$, then $A= (a,b]$ and $\Delta_F(A) = F(b)-F(a)$. If $k=2$, then
+\[\Delta_F(A) = F(b_1,b_2) - F(a_1,b_2) - F(b_1, a_2) + F(a_1,a_2). \]
+Note that by the inclusion exclusion principle 
+\[\Delta_F(A) = \mu(A) \ge 0, \]
+if $F(x) = \mu(A_x)$.
+\begin{thrm}
+    If $F$ satisfies (a)-(c) and $\Delta_F(A) \ge 0$ for all rectangles $A$, then there exists a unique probability $\mu$ on $\R^k$ such that $\mu(A_x) = F(x)$ for all $x \in \R^k$
+\end{thrm}
+\begin{proof}
+    The set of all rectangles is a semi-ring and $\mu(A) := \Delta_F(A)$ is a non-negative, finitely additive, countably subadditive function.
+\end{proof}
+\section{The basic problem in probability}
+We can now restate our ``basic problem in probability''. Let $\Om$ be a set, $\A$ a class of subsets of $\Om$ and $\mu$ a probability measure on $\sigma(\A)$ which we can compute on $\A$. Given $B \in \sigma(\A)$, can we compute/approximate $\mu(B)$?
+\section{Random variables}
+\begin{defn}
+    Let $(\Om, \F)$ and $(\Om',\F')$ be measurable spaces (that is, $\F,\F'$ are $\sigma$-algebras). A function $T: \Om \to \Om'$ is \emph{measurable} if for all $A' \in \F'$, $T^{-1}(A') \in \F$.
+\end{defn}
+For example suppose $\Om=S_n$ the set of all permutations of $\{1,\ldots, n\}$ and $\F$ is the set of all subsets of $\Om$. Suppose also that $\Om'  = \{1,\ldots, n\}$ and again $\F'$ is the collection of all subset of $\Om'$. Define $T(\pi) = \pi(i)$. Then $T^{-1}(\{j\}) = \{\pi \in \Om : \pi(i) = j\}$ and $T^{-1}(A) = \{ \pi \in \Om : \pi(i) \in A\}$. The function $T$ is thus measurable.
+\begin{lemma}
+    Let $T : \Om \to \Om'$ be a function and let $\{A_i\}_{i\in I}$ be a collection of subsets of $\Om'$, then
+    \begin{enumerate}
+        \item $T^{-1}\left(\bigcup_{i \in I} A_i\right) = \bigcup_{i\in I} T^{-1}(A_i)$.
+        \item $T^{-1}\left(\bigcap_{i \in I} A_i\right) = \bigcap_{i\in I} T^{-1}(A_i)$.
+        \item For all $A \subseteq \Om$, $T^{-1}(A^c) = T^{-1}(A)^c$.
+    \end{enumerate}
+\end{lemma}
+\begin{prop}
+    Suppose $\F' = \sigma(\A')$ for some collection of subsets $\A'$. Let $T: (\Om,\F) \to (\Om',\F')$ be a function such that $T^{-1}(A') \in \F$ for all $A' \in \A'$, then $T$ is a measurable function.
+\end{prop}
+\begin{proof}
+    Define $\G' = \{A' \in \F' : T^{-1}(A') \in \F\}$, by assumption $\G'$ contains $\A'$ and by the above lemma $\G'$ is a $\sigma$-algebra. Thus $\F' = \sigma(\A') \subseteq \G'$, as required.
+\end{proof}
+\begin{prop}
+    Suppose that $T:(\Om,\F) \to (\Om',\F')$ and $S:(\Om',\F') \to (\Om'', \F'')$ are both measurable functions, then $S \circ T:(\Om, \F) \to (\Om'',\F'')$ is also a measurable function.
+\end{prop}
+\begin{defn}
+    A \emph{random variable} is a measurable function $X : (\Om, \F) \to (\R, \B)$.
+\end{defn}
+\end{document}

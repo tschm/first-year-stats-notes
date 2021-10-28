@@ -1,0 +1,120 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS 300A - Lecture 3}
+\author{Dominik Rothenhaeusler\\
+Scribed by Michael Howes}
+\date{9/27/2021}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS 300A - Lecture 3}
+\lhead{9/27/2021}
+
+\begin{document}
+\maketitle
+\section{Announcements}
+\begin{itemize}
+    \item HW1 due Wednesday.
+    \item Sign up on gradescope
+    \item Form study groups
+\end{itemize}
+\section{Recap}
+\begin{itemize}
+    \item Decision theoretic framework
+    \item Sufficiency and NFFC
+    \item Exponential families
+    \item Minimal sufficiency and optimal data reduction.
+\end{itemize}
+We will soon see a relationship between optimal data reduction and optimal estimation.
+
+\section{Minimal Sufficiency}
+\begin{defn}
+    A sufficient statistic $T$ is minimal if for every sufficient statistic $T'$, if $T'(x) = T'(y)$, then $T(x) = T(y)$.
+\end{defn}
+That is, $T$ is the coarsest sufficient statistic. Last time we stated the following theorem
+\begin{thrm}
+    Let $p(x;\ta)$ be the density of $X$ (w.r.t. to $\mu$) and let $T$ be a statistic such that for all $x, y \in \X$, 
+    \[\text{ there exists } C_{x,y} \text{ such that } p(x;\theta) = C_{x,y}p(y;\theta) \text{ for all }\theta \Longleftrightarrow T'(x) = T'(y). \]
+    Then $T$ is a minimal sufficient statistic.
+\end{thrm}
+In the case when $p(x;\ta) > 0$ for all $x$ and $\ta$, the condition on the left is equivalent to the ratio $\frac{p(x;\ta)}{p(y;\ta)}$ being constant as a function of $\ta$.
+\begin{proof}
+    \emph{[Discrete case where the densities are strictly positive]} We will first show that $T$ is sufficient. To do this we will use NFFC and show that for some $h$ and $g_\ta$ we have
+    \[p(y;\ta) = h(y)g_\ta(T(y)), \]
+    for all $y \in \X$. For each $t$ in the range of $T$, define $A_t = \{x \in \X : T(x) = t\}$ and choose $x_t \in A_t$. Then for every $y$ we have $T(y) = T(x_{T(y)})$. Thus there exists $C_{y, x_{T(y)}}$ such that $p(y;\ta) = C_{y, x_{T(y)}}p(x_{T(y)}; \ta)$. Hence we can define $h(y) = C_{y, x_{T(y)}}$ and $g_\ta(t) = p(x_t;\ta)$ giving us our factorisation 
+    \[p(y;\ta) = C_{y,x_{T(y)}}p(x_{T(y)};\ta) = h(y)g_\ta(T(y)).\] 
+    Thus $T$ is sufficient.
+
+    Now suppose that $T'$ is another sufficient statistic. Then there exists a factorisation $p(x;\ta) = \wt{h}(x)\wt{g}_\ta(T'(x))$. Now suppose that $T'(x) = T'(y)$ for some $x,y \in \X$. Then 
+    \[\frac{p(x;\ta)}{p(y;\ta)} = \frac{\wt{h}(x)\wt{g}_\ta(T'(x))}{\wt{h}(y)\wt{g}_\ta(T'(y))} =\frac{\wt{h}(x)}{\wt{h}(y)}, \]
+    and thus $T(x) = T(y)$ since the above ratio does not depend on $\ta$.
+\end{proof}
+\begin{ex}
+    A natural question is: what are the minimal sufficient statistics for exponential families? The answer (Keener 3.17) is that for $n$ iid samples from a minimal $s$-dimensional exponential family the statistics
+    \[\left(\sum_{i=1}^n T_1(X_i), \sum_{i=1}^n T_2(X_i),\ldots, \sum_{i=1}^n T_s(X_i)\right), \]
+    are minimal sufficient for $(X_i)_{i=1}^n$.
+\end{ex}   
+\begin{ex}
+        Consider now the case $X_1,\ldots, X_n \iid N(\sigma, \sigma^2)$ where $\ta = \sigma > 0$. This is a curved exponential family and so the above result does not apply. We will show that $T(x) = \left(\sum_{i=1}^n x_i, \sum_{i=1}^n x_i^2\right)$ is minimal sufficient. Note that 
+        \[\frac{p(x;\ta)}{p(x;\ta)} = \exb{\frac{1}{2\sigma^2}\left(\sum_{i=1}^n y_i^2 - \sum_{i=1}^n x_i^2\right)+\frac{1}{\sigma^2}\left(\sum_{i=1}^n x_i - \sum_{i=1}^n y_i\right)}. \]
+        Thus if $T(x) = T(y)$, then the above does not depend on $\ta$. Suppose now that the above ratio is constant. Then 
+        \[ 0=\lim_{\sigma \to 0}\sigma^2 \log\frac{p(x;\ta)}{p(y;\ta)} = \frac{1}{2}\left( \sum_{i=1}^n y_i^2-\sum_{i=1}^n x_i^2\right)+\lim_{\sigma \to 0} \sigma\left(\sum_{i=1}^n x_i -\sum_{i=1}^n y_i\right) = \frac{1}{2}\left( \sum_{i=1}^n y_i^2-\sum_{i=1}^n x_i^2\right). \]
+        Thus $\sum_{i=1}^n x_i^2 = \sum_{i=1}^n y_I^2$. Using this we can see that 
+        \[0 =\lim_{\sigma \to 0} \sigma \log{\frac{p(x;\ta)}p(y;\ta)} =  \sum_{i=1}^n y_i^2-\sum_{i=1}^n x_i^2,\]
+        and thus $T(x) = T(y)$. 
+\end{ex}
+\begin{ex}
+    Suppose $(X_i)_{i=1}^n \iid \text{Unif}([0,\ta])$ this is not an exponential family and the support of $p(x;\ta)$ depend on $\ta$. In tis case $T(x) = \max(X_1,\ldots, X_n)$ is minimal sufficient.
+\end{ex}
+\begin{ex}
+    Sometimes data reduction is not possible. If $(X_i)_{i=1}^n \iid \text{Cauchy}$ with mean $\ta$, then the order statistics $X_{(1)} \le X_{(2)} \le \ldots \le X_{(n)}$ are minimal sufficient.
+\end{ex}
+
+\section{``Useless'' data}
+The next definition captures the idea of useless information
+
+\begin{defn}
+    A statistic $A$ is \emph{ancillary} for $X \sim P_\ta$ if the distribution of $A(X)$ does not depend on $\ta$.
+\end{defn}
+\begin{ex}
+    Continuing the Cauchy example. The order statistics are minimal sufficient but the differences $X_{(i)} - X_{(j)}$ are ancillary for $\ta$. This is because we can write $X_i = Z_i +\ta$ where $Z_i$ is Cauchy with mean 0. This implies that $X_{(i)} = Z_{(i)}+\ta$ and thus $X_{(i)}-X_{(j)} = Z_{(i)}-Z_{(j)}$ which has no $\ta$ dependence. Thus we can see that sometimes minimal sufficient statistics contain ``useless'' information.
+\end{ex}
+
+Later we will see the following general stratergy for finding an optimal estimator and proving optimality. We want to use the following two part stratergy
+\begin{enumerate}
+    \item Show that the optimal unbiased estimator is a function of a minimal statistic.
+    \item Show there exists only one function of a minimal statistic that is unbiased.
+\end{enumerate}
+
+We won't be able to show (b) if our minimal statistics contain an ancillary part and thus the next definitions will give us a new notion of minimal sufficiency. We first need a weaker notion of ancillary.
+
+\begin{defn}
+    A statistic $A$ is \emph{first order ancillary} for $X \sim P_\ta$ if $\E_\ta[A(X)]$ does not depend on $\ta$.
+\end{defn}
+
+\begin{defn}
+    A statistic $T$ is complete if any non-constant function of $T$ is \emph{not} first order ancillary.
+\end{defn}
+
+Equivalenty a statistic $T$ is complete if for all functions $f$ if $\E_\ta[f(T(X))] = c$ for all $\ta$, then $f \equiv c$. Note that since $\E_\ta[c] = c$ and $\E_\ta$ is linear this is equivalent to stating that for all functions $f$, if $\E_\ta[f(T(X))]=0$ for all $\ta$, then $f \equiv 0$. Complete statistics contain no useless info.
+
+Bahadur's theorem states that every complete sufficient statistic is minimal sufficient.
+
+\begin{ex}
+    Suppose $X_1,\ldots, X_n \iid \text{Bern}(\ta)$. We have seen that
+    \[T(X) = \sum_{i=1}^n X_i\]
+    is sufficient for $(X_i)_{i=1}^n$. We know that $T \sim \text{Binom}(n,\ta)$. Suppose $f$ is a function of $T$ satisfying $\E_\ta[f(T)] = 0$. Then, since $T$ is discrete
+    \begin{IEEEeqnarray*}{rCl}
+        0&=&\E_\ta[f(T)]\\
+        &=&\sum_{k=0}^n \binom{n}{k}\ta^k(1-\ta)^{n-k} f(k)\\
+        &=&(1-\ta)^n \sum_{k=0}^n \binom{n}{k} \left(\frac{\ta}{1-\ta}\right)^k f(k)\\
+        \therefore 0 &=& \sum_{k=0}^n \binom{n}{k}f(k)\beta^k.
+    \end{IEEEeqnarray*}
+    Where $\beta = \frac{\ta}{1-\ta} \in [0,\infty)$. Thus the above polynoimal is $\beta$ is zero on an uncountable set and hence $\binom{n}{k} f(k) = 0$ for all $k$ and so $f \equiv 0$. Thus $T$ is complete.
+\end{ex}
+Another example when $X_1,X_2,\ldots, X_n \iid N(\ta,\sigma^2)$ with $\sigma^2$ known. Then $\bar{x} = \frac{1}{n}\sum_{i=1}^nx_i$ is a complete statistic (proof in scribed notes).
+
+\end{document}

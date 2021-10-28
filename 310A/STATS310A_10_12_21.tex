@@ -1,0 +1,156 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 7}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/12/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 7}
+\lhead{10/12/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Measurable functions and random variables}
+Recall that a function $T:(\Om, \F) \to (\Om', \F')$ is \emph{measurable} if $T^{-1}(A') \in \F$ for all $A' \in \F'$ where $T^{-1}(A') = \{\w \in \Om : T(\w) \in \A\}$.
+
+A \emph{random variable} is a measurable function from $(\Om,\F)$ to $(\R, \B)$ where $\B$ is the set of Borel sets.
+
+A \emph{random vector} is a measurable function from $(\Om, \F)$ to $(\R^k, \B_k)$ where $\B_k$ is the set of Borel subsets of $\R^k$.
+
+\begin{lemma}
+    If $Y:(\Om,\F) \to \R^k$ is a function with coordinates $Y_i:(\Om,\F) \to \R$, for $i=1,\ldots, k$, then $Y$ is a random vector if and only if $Y_i$ is a random variable for each $i$.
+\end{lemma}
+\begin{proof}
+    Suppose each $Y_i$ is measurable then 
+    \[\{\w \in \Om : Y(\w) \le (x_1,\ldots,x_k)\} = \bigcap_{i=1}^k \{\w \in \Om : Y_i(\w) \le x_i\} \in \F, \]
+    since each set $\{\w \in \Om : Y_i(\w) \le x_i \}$ is in $\F$ and $\F$ is closed under finite intersections. Since sets of the form $\{y \in \R^k : y \le x\}$ generate $\B_k$, we have that $Y$ is measurable.
+    
+    If $Y$ is measurable, then 
+    \[\{\w : Y(\w) \le x \} = \bigcup_{n=1}^\infty \{\w : Y \le (n,\ldots, x, \ldots, n)\} \in \F, \]
+    since $Y$ is a random vector and $\F$ is closed under countable unions. The intervals $(-\infty, x]$ generate $\B$ and so $Y_i$ is measurable.
+\end{proof}
+\begin{lemma}
+    If $T: \R^k \to \R^j$ is continuous, then $T$ is Borel-measurable.
+\end{lemma}
+\begin{proof}
+    Since $T$ is continuous, $T^{-1}(U)$ is open for all open sets $U \subseteq \R^j$ and thus $T^{-1}(U)$ is Borel for all open sets $U \subseteq \R^j$. Since the open sets generate the Borel $\sigma$-algebra, $T$ is measurable.
+\end{proof}
+
+\begin{cor}
+    If $X$,$Y$, $(X_n)_{n=1}^\infty$ are random varaibles, then $X+Y$, $XY$, $\max\{X,Y\}$, $\sup\{X_n\}$, $\inf \{X_n\}$, $\limsup \{X_n\}$, $\liminf \{X_n\}$ are all random variables. And the set $\{\w: \lim X_n(\w) \text{ exists }\}$ is measurable.
+\end{cor}
+\begin{proof}
+    We can write $X+Y$ as a composition 
+    \begin{IEEEeqnarray*}{RCL}
+        \Om \to & \R \times \R & \to \R\\
+        \w \mapsto &(X(\w), Y(\w))& \mapsto X(\w)+Y(\w).
+    \end{IEEEeqnarray*}
+    From the above lemma, $X+Y$ is measurable. The others are similar.
+\end{proof}
+
+\section{Push forwards}
+\begin{defn}
+    Suppose that $(\Om,\F,\mu)$ is a measure space and $T : (\Om,\F,\mu) \to (\Om',\F')$ is measurable. We define the \emph{push forward} of $\mu$ along $T$, to be the measure $\mu^{T^{-1}}$ on $(\Om',\F')$ defined by 
+    \[\mu^{T^{-1}}(A) := \mu(T^{-1}(A)) =\mu(\{\w : T(\w) \in A \}). \]
+\end{defn}
+Note $\mu^{T^{-1}}$ is a measure. It is well defined because $T$ is measurable. And 
+\[\mu^{T^{-1}}(\emptyset) = \mu(\emptyset) = 0. \]
+If $A \subseteq B$, then $T^{-1}(A) \subseteq T^{-1}(B)$ and so 
+\[\mu^{T^{-1}}(A) = \mu(T^{-1}(A))\le \mu(T^{-1}(B)) = \mu^{T^{-1}}(B). \]
+If $\{A_i\}_{i=1}^\infty$ are disjoint, then $\{T^{-1}(A_i)\}_{i=1}^\infty$ are disjoint and so
+\begin{IEEEeqnarray*}{rCl}
+    \mu^{T^{-1}}\left(\bigcup_{i=1}^\infty A_i\right)&=&\mu\left(T^{-1}\left(\bigcup_{i=1}^\infty A_i\right)\right)\\
+    &=& \mu\left(\bigcup_{i=1}^\infty T^{-1}(A_i)\right)\\
+    &=& \sum_{i=1}^\infty \mu(T^{-1}(A_i))\\
+    &=& \sum_{i=1}^\infty \mu^{T^{-1}}(A_i).
+\end{IEEEeqnarray*}
+Lebesgue's mistake/a warning: If $U \subseteq \R^2$ is a Borel set, then the projections of $U$ are not necessarily Borel sets.
+
+\section{Haar measure}
+Let $O_n = \{M \in \R^{n^2} : M^TM = I_n\}$ be the orthogonal group. The group $O_n$ has an invariant probability $\nu$ which we call Haar measure. That is for all measurable $A \subseteq O_n$ and $m \in O_n$, $\nu(m\cdot A) = \nu(A)$. What is this measure?
+
+\subsection{One answer}
+We will give a recipe for drawing $M \in O_n$ from $\nu$. To start let $Z_{i,j} \sim N(0,1)$ be independent for $1\le i,j \le n$. Let $Z= (Z_{i,j})_{i,j=1}^n$ and apply Gram-Schmidt to $Z$ to get a matrix $M \in O_n$. 
+
+\subsection{A more mathematical answer}
+We know that $\Phi(x) = \int_{-\infty}^x \exp(-t^2/2)dt$ is a distribution. Define on $\R^{n^2}$ 
+\[F(x_{1,1}, x_{1,2},\ldots, x_{n,n}) = \prod_{i,j=1}^n \Phi(x_{i,j}). \]
+One can check that this defines a probabilities distribution $\mu$ on $\R^{n^2}$. Define a function $T : \R^{n^2} \to O_n$ given by given a matriz $Z$, apply Gram-Schmidt to $Z$ to get $M \in O_n$. Finally define $\nu := \mu^{T^{-1}}$ to be the push forward of $\mu$ along $T$.
+
+\section{Independence}
+\begin{defn}
+    If $\{X_i\}_{i \in I}$ is a collection of random varaibles, then we define the \emph{$\sigma$-algebra generated by $\{X_i\}_{i \in I}$} to be 
+    \[\sigma(X_i, i \in I) := \sigma\left(\{X_i^{-1}((a,b]): i\in I, a,b \in \R\right). \]
+\end{defn}
+\begin{defn}
+    Two random variables $X,Y$ are \emph{independent} if $\sigma(X)$ and $\sigma(Y)$ are independent. That is equivalently, 
+    \[\Pa(X \le x, Y \le y) = \Pa(X \le x)\Pa(Y \le y), \]
+    for all $x,y \in \R$. Yet another equivalent statement  is that for all $A,B \subseteq \R$ Borel
+    \[\Pa(X \in A, Y \in B) = \Pa(X \in A) \Pa(Y \in B). \]
+\end{defn}
+
+\section{Constructing random variables}
+How do we pick from $F$ where $F$ is a univariate probability distribution? We first pick $U$ which is uniformly distributed on $[0,1]$ and then we define $T:[0,1] \to \R$ by 
+\[T(u) = \inf\{x \in \R : T(x) \ge u\}. \]
+Then $\Pa(T(U) \le x) = F(x)$. 
+\begin{ex}
+    Consider the case when 
+    \[F(x) = \begin{cases}
+        0 & \text{if } x \le 0,\\
+        1-e^{-x} & \text{if } x>0.
+    \end{cases} \]
+    Let $u = 1-e^{-x}$, then $x = - \log(1-u)$. Define $T:(0,1)\to \R$ by $T(u) = -\log(1-u)$ and $X = T(U)$ where $U$ is uniform on $(0,1)$. Then if $x >0$,
+    \begin{IEEEeqnarray*}{rCl}
+        \Pa(X \le x) &=& \Pa(-\log(1-U) \le x)\\
+        &=& \Pa(-x \le \log(1-U))\\
+        &=& \Pa(e^{-1} \le 1 - U)\\
+        &=& \Pa(U \le 1-e^{-x})\\
+        &=& 1-e^{-x}.
+    \end{IEEEeqnarray*}
+    Another good example if when $X$ is discrete. Say $X=a_i$ with probability $p_i$. Then the above construction divides $[0,1]$ into intervals $A_i$ of length $p_i$. Then if $U$ lies in $A_i$, then we set $T(U)$ to be $a_i$. Thus $T(U)$ and $X$ have the same distribution.  
+\end{ex}
+\section{Maxima}
+Let $X_1,\ldots, X_n$ be independent random variables with distribution
+\[\Pa(X_i \le x) = F(x). \]
+Define $M_n = \max \{X_i : i =1,\ldots, n\}$. Then 
+\[\Pa(M_n \le x) = \Pa\left(\bigcap_{i=1}^n \{X_i\le x\}\right) = \prod_{i=1}^n \Pa(X_i \le x) = F(x)^n. \]
+What happens as $n \to \infty$? Suppose that $F(x) = 1-e^{-x}$. Then $\Pa(M_n < x) = (1-e^{-x})^n$. We are interested in what happens when $n \to \infty$. Let $x =\log(n)+y$, then 
+\[\Pa(M_n \le x) = \left(1-\frac{e^{-y}}{n}\right)^n \sim e^{-e^{-y}}. \]
+Then function $F(y) = e^{-e^{-y}}$, $y \in \R$ is a distribution function and is called the standard Gumble distribution. 
+
+\begin{defn}
+    We say that a sequence of distributions $F_n$ \emph{converges in distribution} to a distribution $F$ if 
+    \[F_n(x) \to F(x), \]
+    for all $x$ such that $F$ is continuous at $x$.
+\end{defn}
+Why do we only restrict to $x$ at which $F$ is continuous? Consider the following example: $X_n$ is a point mass at $1+\frac{1}{n}$ and $X$ is a point mass at $1$. Then 
+\[F_n(x) = \begin{cases}
+    0 & \text{if } x < 1 + 1/n,\\
+    1 & \text{if } x \ge 1 + 1/n,
+\end{cases}\]
+and 
+\[F(x) = \begin{cases}
+    0 & \text{if } x < 1,\\
+    1 & \text{if } x \ge 1.
+\end{cases}\]
+Thus $F_n(x) \to F(x)$ if and only if $x \neq 1$. Thus in the definition of convergence in distribution we do not worry about the points at which $F$ is not continuous.
+
+We can now say that $M_n - \log(n)$ converges in distribution to a Gumble distribution.
+
+Now lets consider the maximum of Gaussians. Let $X_1,\ldots, X_n \sim N(0,1)$. We know that 
+\[\Pa(M_n \le x) = (\Phi(x))^n = e^{n\log(\Phi(x))} = e^{n\log(1-(1-\Phi(x)))}. \]
+We will use the approximation $\log(1-y) \sim -y$ is $y \to 0$. We also have (homework problem)
+
+\[\frac{x}{1+x^2}\exp^{-x^2/2} \le \int_x^\infty \exp(-t^2/2) \le \frac{1}{x}\exp^{-x^2/2}. \]
+Thus we can say $1-\Phi(x) \sim \frac{1}{\sqrt{2\pi}}\frac{e^{-x^2/2}}{x}$. Thus for $n$ large
+\[\Pa(M_n \le x) \sim e^{-n \frac{e^{-x^2}}{\sqrt{2\pi}x}}. \]
+Let $x = \sqrt{2\log(n)-\log(\log(n))+y}$, so $x \sim \sqrt{2\log(n)+y}$, then 
+\[\Pa(M_n \le \sqrt{2\log(n)-\log(\log(n))+y}) \sim e^{-\frac{e^{-y/2}}{\sqrt{2\pi}}}, \]
+another Gumble distribution. We can not always perform these sorts of calculations. There are distributions such that $\lim \Pa\left(\frac{M_n-a_n}{b_n} \le x \right)$ does not exist for any choice of $a_n$, $b_n$. Discrete distributions such as the geometric or Poission ditributions tend to show this behaviour. Be careful when looking at the limiting behaviour of the maxima of discrete random variables.
+\end{document}

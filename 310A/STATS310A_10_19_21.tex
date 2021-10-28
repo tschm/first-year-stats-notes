@@ -1,0 +1,143 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 9}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/19/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 6}
+\lhead{10/19/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+\begin{itemize}
+    \item Homework
+    \begin{itemize}
+        \item Read sections 16 and 18.
+        \item Do problems 16.4, 16.7, 18.1, 18.2, 18.4, 18.10.
+    \end{itemize}
+    \item Exam on Thursday 5-7 Oct 28th.
+\end{itemize}
+\section{Convergence theorems}
+Last time we saw the following. If $(\Om,\F,\mu)$ is a measure space and $f: \Om \to \R$ is measurable, then define 
+\[\int fd\mu = \int f_+ d\mu - \int f_-d\mu, \]
+where if $g \ge 0$, we define
+\[\int g d\mu = \sup \sum_{i=1}^n \nu_i \mu(A_i), \]
+where $\nu_i = \inf\limits_{\w \in A_i} g(\w)$ and the supremum is over all partitions of $\Om$ by elements of $\F$.
+
+
+Recall that if $\{x_i\}_{i=1}^\infty$ are real, then 
+\[\liminf_{n \to \infty} x_n = \lim_n \inf_{k \ge n}x_k, \]
+and 
+\[\limsup_{n \to \infty} x_n = -\liminf_{n \to \infty} (-x_n). \]
+
+\begin{lemma}
+    \emph{[Fatou's Lemma]} Let $\{f_n\}$ be any sequence of measurable non-negative functions, then 
+    \[\int \liminf_n f d\mu \le \liminf_n \int f_nd\mu.  \]
+\end{lemma}
+\begin{proof}
+    Define $g_n = \inf_{k \ge n} f_k$. Then $g_n \le f_n$ for all $n$ and $g_n \nearrow \liminf_n f_n$ by definition. By the monotone convergence theorem and monotonicity:
+    \begin{align*}
+        \int \liminf_n g_n d\mu &= \int \lim_n g_n d\mu\\
+        &=\lim_n\int g_n d\mu\\
+        &=\liminf_n \int g_n d\mu \\
+        &\le \liminf_n \int f_n d\mu. \qedhere
+    \end{align*} 
+\end{proof}
+\begin{ex}
+If $(\Om,\F,\mu) = ([0,1], \B,\la)$ (Lebesgue measure on the Borel subsets of $[0,1]$). Define 
+\[f_n = \begin{cases}
+    \delta_{[0,1/2)} &\text{if $n$ is even},\\
+    \delta_{[1/2,1]} &\text{else}.
+\end{cases} \]
+Then $\liminf_n f_n =0$ and $\int f_n d\mu = 1/2$. Thus $\int \liminf f_n d\mu \le \liminf_n \int f_nd\mu$ as promised. Note that the sequence $f_n$ is not convergent. In Fatou's lemma the sequence is not required to be convergent. The $\liminf$ of a sequence always exists.
+\end{ex}
+\begin{ex}
+    Note that we need $f_n \ge 0$. If $f_n = -\frac{1}{n}\delta_{[n,2n]}$, then $f_n \to 0$ uniformly but $\int f_nd\mu = -1$ for all $n$ and $0 \le -1$ is not true.
+\end{ex}
+\begin{ex}
+    Let $(r_i)_{i=1}^\infty$  be a the usual enumeration of $\Q \cap [0,1]$,
+    \[(r_i) = (0,1,1/2,1/3,2/3,1/4,3/4,1/5,2/5,3/5,4/5,1/6,5/6,\ldots). \]
+    Define 
+    \[f(\w) = \sum_{i=1}^\infty \frac{1}{i^2\abs{r_i-\w}^{1/2}}. \]
+    Note that $f(\w) = \infty$ if $\w$ is rational. Is $f(\w)$ finite for any values of $\w$? Define $f_n(\w) = \sum_{i=1}^n \frac{1}{i^2\abs{r_i-\w}^{1/2}}$, we have $f_n \to f$ pointwise. We also have 
+    \[\int_0^1 f_n(\w)d\w = \sum_{i=1}^n \frac{1}{i^2} \int_0^1\frac{1}{\abs{r_i-\w}^2}d\w \le \sum_{i=1}^n \frac{c}{i^2} \le C. \]
+    Thus, by Fatou's, $\int f d\w \le C$ and thus $f(\w)$ is finite for almost every $\w \in [0,1]$. Exercise: find a single $\w$ such that $f(\w) < \infty$ [hint: take $\w = 1/\sqrt{2}$].
+\end{ex}
+\begin{thrm}
+    \emph{[Dominated Convergence Theorem (DCT)]} Let $(\Om,\F,\mu)$ be a measure space and let $f,f_n:\Om \to \R$ be measurable and suppose that $f_n(\w) \to f(\w)$ a.e.. Suppose also that there exists a measurable function $g$ such that $\abs{f_n(\w)} \le g(\w)$ for a.e $\w$ and $\int g d\mu < \infty$. Then $f$ is integrable and 
+    \[\int f d\mu = \lim_n \int f_n d\mu. \] 
+\end{thrm}
+\begin{proof}
+    Note that $g+f_n, g-f_n \ge 0$. Define $f_* = \liminf_n f_n$ and $f^* = \limsup_n f_n$. We know that $\abs{f_*}, \abs{f^*} \le g$ and so $f_*$ and $f^*$ are integrable. Futhermore
+    \begin{align*}
+        \int gd\mu + \int f_* d\mu &= \int (g+f_*)d\mu\\
+        &= \int \liminf_n (g+f_n)d\mu \\
+        &\le \liminf_n \int g+f_nd\mu \\
+        &= \int gd\mu + \liminf_n \int f_n d\mu.
+    \end{align*}
+    Thus $\int f_*d\mu \le \liminf_n \int f_n d\mu$. Likewise we have
+    \begin{align*}
+        \int g d\mu - \int f^* d\mu &= \int g-f^* d\mu \\
+        &= \int g - \limsup_n f_n d\mu \\
+        &= \int g + \liminf_n (-f_n)d\mu \\
+        &= \int \liminf_n(g-f_n) d\mu\\
+        & \le \liminf_n \int g-f_n d\mu \\
+        & = \int gd\mu +\liminf_n\left(-\int f_n d\mu\right)\\
+        &= \int g d\mu - \limsup_n \int f_n d\mu.
+    \end{align*}
+    And thus $\int f^* d \mu \ge \limsup_n \int f_n d\mu$. But we know that $f_*=f^*=f$. Thus we have 
+    \[\limsup_n \int f_n d\mu \le \int f^*d\mu \le \liminf_n \int f_n d\mu. \]
+    Thus $\int f_n d\mu \to \int f d\mu$.
+\end{proof}
+Note that we couldn't use Fatou's lemma directly since $f_n$ need not be non-negative. We had to apply Fatou's lemma seperately to $g+f_n$ and $g-f_n$.
+\section{New measures from old}
+\begin{defn}
+    Let $(\Om,\F,\mu)$ be a measure space. A \emph{probability density} is a function $f: \Om \to \R$ s.t $f$ is measure, $f(\w) \ge 0$ for all $\w$ and $\int fd\mu = 1$. 
+\end{defn}
+\begin{prop}
+    Suppose that $(\Om,\F,\mu)$ is a measure space and $f$ is a probability density, then the function $\nu : \F \to \R$ given by
+    \[\nu(A) = \int_A f d\mu = \int_\Om f\delta_A d\mu, \]
+    is a probability measure.
+\end{prop}
+\begin{proof}
+    Note that $\nu(\emptyset) = \int_\Om 0 d\mu = 1$ and $\nu(\Om) = \int_\Om f d\mu = 1$. Furthermore if $\{A_i\}_{i=1}^\infty$ are disjoint and $A = \bigcup_{i=1}^\infty A_i$, then 
+    \[f\delta_A =\sum_{i=1}^\infty f\delta_{A_i}.  \]
+    Thus the functions $g_n = \sum_{i=1}^n f\delta_{A_i}$ are non-negative and $g_n \nearrow f\delta_A$. Thus by the monotone convergence theorem:
+    \[\nu(A) = \int f \delta_A d\mu = \lim_{n} \int \sum_{i=1}^n f\delta_{A_i}d\mu =\lim_n \sum_{i=1}^n \int f\delta_{A_i}d\mu = \lim_n \sum_{i=1}^n \nu(A_i) =\sum_{i=1}^\infty \nu(A_i). \]
+    Thus $\nu$ is countably additive. Furthermore $\nu$ is non-negative since $f$ is non-negative.
+\end{proof}
+\section{Change of measure}
+Suppose $(\Om,\F,\mu)$ is a measure space and $(\Om',\F')$ is a measurable space and $T:\Om \to \Om'$ is measurable. We have previously seen that $\mu^{T^{-1}}$ given by
+\[\mu^{T^{-1}}(B) = \mu(T^{-1}(B)), \]
+is a measure on $(\Om',\F')$. Can we relate integrals on $(\Om',\F', \mu^{T^{-1}})$ to integrals on $(\Om,\F,\mu)$? Yes!
+\begin{thrm}
+    Suppose that $f: \Om'\to \R$ is measurable and integrable with respect to $\mu^{T^{-1}}$, then $f \circ T:\Om \to \R$ is integrable and 
+    \[\int_\Om f\circ T d\mu = \int_{\Om'} f d\mu^{T^{-1}}. \]
+\end{thrm}
+\begin{proof}
+    This is the classic (1), (2), (3) argument.
+    \begin{enumerate}
+        \item[(0)] First we write $f = f_+-f_-$ and then note that $(f\circ T)_+ = f_+\circ T$ and $(f\circ T)_- = f_- \circ T$. Thus we may assume $f \ge 0$.
+        \item[(1)] Suppose $f = \delta_B$, $B \in \F'$.
+        \item[(2)] Prove it for finite linear combinations.
+        \item[(3)] Monotone convergence + approximation by simple functions.   
+    \end{enumerate}
+    For (1) note that $\delta_A \circ T = \delta_{T^{-1}(A)}$. Thus 
+    \[\int_{\Om'} \delta_A d\mu^{T^{-1}} = \mu^{T^{-1}}(A) = \mu(T^{-1}(A)) =\int_{\Om} \delta_{T^{-1}(A)}d\mu = \int_{\Om} \delta_A \circ Td\mu.  \]
+    For (2) note that both sides are linear in $f$. Finally for (3) note that if $f_n \nearrow f$, then $f_n\circ T \nearrow f\circ T $.
+\end{proof}
+I reckon we will see (1), (2), (3) again when we prove Fubinni's theorem.
+\begin{ex}
+    Suppose $\Om = \{0,1\}^n$, $\F=$ all subsets of $\Om$, $\mu(A) = \frac{\abs{A}}{2^n}$. Suppose also that $\Om' = \{0,1,\ldots, \}$ and $\F'$ is again the discrete $\sigma$-algebra. Define $T(\w) = \sum_{i=1}^n \w_i$ and thus $\mu^{T^{-1}}(\{j\})=\frac{1}{2^n}\binom{n}{j}$. If $f':\Om' \to \R$, then the change of measure formula states that 
+    \[\sum_{\w \in \{0,1\}^n} \frac{1}{2^n} f\left(\sum_{i=1}^n \w_i\right) = \sum_{j=1}^n \frac{1}{2^n}\binom{n}{j}f(j).\]
+
+\end{ex}
+\end{document}

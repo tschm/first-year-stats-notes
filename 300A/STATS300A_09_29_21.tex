@@ -1,0 +1,167 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 4}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{09/29/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 4}
+\lhead{09/29/21}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+\begin{itemize}
+    \item HW1 due today.
+    \item HW2 will be posted today.
+\end{itemize}
+\section{Recap}
+We have seen
+\begin{itemize}
+    \item Exponential families.
+    \item Data reduction:
+    \begin{itemize}
+        \item Sufficiency (all necessary information),
+        \item Minimal sufficiency (coarest sufficient statistic),
+        \item Ancillary (useless data),
+        \item Completeness (contains no useless data).
+    \end{itemize}
+\end{itemize}
+Today we will look at optimal unbiased estimation but first a refresher on conditional expectations.
+\section{Conditional expectation}
+(See Keener Chp 1.1) Let $X$ and $Z$ be random variables with density $p(x,z) = p(z|x)p(x)$. Let $h$ be a function with finite expectation, that is
+\[\int\int \abs{h(x,z)}p(z|x)p(x)dzdx < \infty. \]
+Then we define the conditional expectation of $h$ given $Z$ as
+\[\E[h(X,Z)|X=x] = \int h(x,z)p(z|x)dx. \]
+Note that $\E[h(X,Z)|X]$ is a function of $x$. Some properties of conditional expectation are 
+\begin{itemize}
+    \item (Pull out property) $\E[h_1(X)h_2(X,Y)|X=x] = h_1(x)\E[h_2(X,Y)|X=x]$.
+    \item (Tower property) $\E[\E[h(X,Z)|X]] = \E[h(X,Z)]$.
+    \item (Independence) If $X$ and $Z$ are independent ($p(z|x) = p(z)$ for all $x,z$), then \[\E[h(Z)|X=x] = \E[h(Z)].\] 
+\end{itemize}
+We will use these ideas when studying estimation.
+\section{Estimation}
+\subsection{Complete statistics}
+See TSH Theorem 4.3.1. In a full rank exponential family, the statistic $(T_1,\ldots, T_s)$ is complete. 
+\begin{thrm}
+    \emph{[Basu's Theorem]} If $T$ is complete and sufficient for $\Po = \{P_\ta : \ta \in \Om \}$ and $A$ is ancillary for $\Po$, then $T(X)$ is independent of $A(X)$ which we write as $A(X) \ind T(X)$.
+\end{thrm}
+By independent we mean for all events $C$, $P_\ta(A(X) \in C|T(X)=t) = P_\ta(A(X) \in C)$. We will not prove this here but it can be done using the tower property. Here is an application of this theorem.
+\begin{ex}
+    Let $X_1,\ldots,X_n \iid N(\mu,\sigma^2)$ where both $\mu$ and $\sigma^2$ are unknown. We wish to show that $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$ and $S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2$ are independent.
+    \begin{proof}
+        Fix $\sigma^2$ and consider the model where only $\mu$ is unknown. This is an exponential family and thus the statistic $\bar{X}$ is complete and sufficient. Also since we are working with a location model the statistic 
+        \[ S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X}),\]
+        has the same distribution as 
+        \[ \frac{1}{n-1}\sum_{i=1}^n (Z_i-\bar{Z}),\]
+        where $Z_i \iid N(0,\sigma^2)$. Thus, by Basu's theorem $S^2 \ind \bar{X}$. Although we fixed $\sigma^2$ in the submodel, $\sigma^2$ was arbitrary and thus $S^2 \ind \bar{X}$ regardless of $\mu$ and $\sigma^2$.
+    \end{proof}
+\end{ex}
+\subsection{Risk reduction via conditioning}
+\begin{defn}
+    Let $C$ be a convex subspace of a vector space. A function $f : C \to \R$ is \emph{convex} if 
+    \[f(\gamma x + (1-\gamma)y) \le \gamma f(x) + (1-\gamma)f(y), \]
+    for all $x,y \in C$ and all $\gamma \in [0,1]$. If we have strict inequality for all $x,y \in C$ and $\gamma \in (0,1)$, then we say that $f$ is \emph{strictly convex}.
+\end{defn}
+\begin{thrm}
+    \emph{[Jensen's Inequality]} Let $f :C \to \R$ be convex on an open subset $C$ with $P(X \in C) = 1$. If $\E[X]$ exists, then \[f(\E[X])\le \E[f(X)].\] 
+    If $f$ is strictly convex then 
+    \[f(\E[X]) < \E[f(X)], \]
+    unless $P(X = \E[X]) = 1$.
+\end{thrm}
+Recall that $L(\ta,d)$ is the penalty when $\ta$ is the true parameter and decision $d$ is made. Also recall that $R(\ta, \delta) = \E_\ta[L(\ta,\delta(X))]$ is the risk of the decision procedure $\delta$.
+\begin{thrm}
+    \emph{[Rao-Blackwell]} Suppose that $T$ is sufficient for $\{P_\ta : \ta \in \Om\}$ and that $\delta(X)$ is an estimator with $\E_\ta|\delta(X)| < \infty$ and $R(\theta,\delta)< \infty$. Let $\eta(T) = \E[\delta(X)|T]$ (which is well-defined because $T$ is sufficient). Then
+    \begin{enumerate}
+        \item If $L(\ta,\cdot)$ is convex for a fixed $\ta$, then 
+        \[R(\ta, \eta) \le R(\ta, \delta).\]
+        \item If $L(\ta, \cdot)$ is strictly convex for a fixed $\ta$, then 
+        \[R(\ta,\eta) < R(\ta,\delta), \]
+        unless $\eta(T(X))=\delta(X)$ with probability 1.
+    \end{enumerate}
+\end{thrm}
+\begin{proof}
+    For (a),
+    \begin{IEEEeqnarray*}{rCl}
+        R(\ta,\eta)&=&\E_\ta[L(\ta,\eta(X))]\\
+        &=& \E_\ta[L(\ta, \E[\delta(X)|T])]\\
+        &\le & \E_\ta[\E[L(\ta,\delta(X))|T]]\quad \text{(Jensen's inequality)}\\
+        &=&E_\ta[L(\ta,\delta(X))]\quad \text{(Tower property)}\\
+        &=&R(\ta,\delta).
+    \end{IEEEeqnarray*}
+    For (b) we note that this inequality is strict if $P(\eta(T)\neq \delta(X))>0$.
+\end{proof}
+The take away 
+\begin{itemize}
+    \item Under convex loss, a deterministic estimator based on sufficient statistics is as good or better than any other estimator.
+    \item It our loss is strictly convex, then additional randomness deteriorates performance.
+\end{itemize}
+\begin{ex}
+    $X_1,\ldots, X_n \iid \text{Bern}(\ta)$, $L(\ta,d) = (\ta -d)^2$ and $\delta(X) = X_1$. We know that $T(X) = \sum_{i=1}^n X_i$ is sufficient for this model. Thus Rao-Blackwell states
+    \[\eta(T) = \E[X_1|T(X)], \]
+    is at least as good as $\delta$. Note that $\eta(T) = \E[X_i|T]$ by the iid assumption. Thus 
+    \begin{IEEEeqnarray*}{rCl}
+        \eta(T) &=& \frac{1}{n}(n\eta(T))\\
+        &=& \frac{1}{n}\left(\sum_{i=1}^n \E[X_i|T]\right)\\
+        &=&\frac{1}{n}\E[T|T]\\
+        &=& \frac{1}{n}T\\
+        &=&\frac{1}{n}\sum_{i=1}^n X_i\\
+        &=& \bar{X}.
+    \end{IEEEeqnarray*}
+    Thus Rao-Blackwell recovers the sample average. The risk of $\delta$ was $\ta(1-\ta)$ and the risk of $\eta$ is $\frac{\ta(1-\ta)}{n}$.
+
+    Consider also the example $\delta_{goofy}(X) = 0.5$. Then $\eta(T) = \E[0.5|T] = 0.5 = \delta_{goofy}(X)$ so Rao-Blackwell does not improve our estimator (it also doesn't make it worse). Conditioning reduces variance but it does not reduce bias.
+\end{ex}
+\subsection{Optimal unbiased estimators}
+\underline{Goal}: Find the uniformly minimum risk unbiased estimator (UMRUE). That is we want for a fixed function $g$
+\begin{enumerate}
+    \item $\E_\ta \delta(X) = g(\ta)$, for all $\ta \in \Om$.
+    \item $R(\ta, \delta) \le R(\ta, \delta')$ for all $\ta \in \Om$ and all decision procedures $\delta$ satisfying (a).
+\end{enumerate}
+A special case is when $L(\ta,d) = (g(\ta)-d)^2$, then the UMRUE is also called a UMVUE where the V stands for variance. This is because in this case $R(\ta,\delta) = \text{bias}^2+\text{variance}=\text{variance}$.
+
+\begin{thrm}
+    \emph{[Lehmann-Scheffe]} If $T$ is complete and sufficient and $\E_\ta h(T) = g(\ta)$ for all $\ta$, then 
+    \begin{enumerate}
+        \item $h(T)$ is the only function of $T$ that is unbiased for $g(\ta)$.
+        \item $h(T)$ is the UMRUE if $L(\ta,\cdot)$ is convex for all $\ta\in \Om$.
+        \item $h(T)$ is the unique UMRUE if $L(\ta,\cdot)$ is convex for all $\ta\in \Om$ and $L(\ta_0,\cdot)$ is strictly convex for some $\ta_0 \in \Om$. 
+        \item $h(T)$ is the unique UMVUE.
+    \end{enumerate}
+\end{thrm}
+\begin{proof}
+    Suppose $\E_\ta \wt{h}(T) = g(\ta)$ for all $\ta \in \Om$, then $E_\ta[(h-\wt{h})(T)] = 0$ for all $\ta \in \Om$. Thus $h - \wt{h}$ is first order ancillary for $T$ and since $T$ is complete, this implies $h-\wt{h}=0$. Thus $\wt{h}=h$ and we have proved part (a).
+
+    Suppose $\delta$ is an unbiased estimator for $g(\ta)$. Define $\eta(T) = \E[\delta(X)|T]$, then $\eta(T)$ is unbiased by the tower property and well defined by sufficiency. Since $\eta(T)$ is a function of $T$ we have $\eta(T) = h(T)$ by part (a). Finally by Rao-Blackwell we have for all $\ta \in \Om$.
+    \begin{equation}\label{RB}
+        R(\ta, h(t)) = R(\ta, \eta(T)) \le R(\ta, \delta(X)), 
+    \end{equation}
+    thus $h$ is UMRUE.
+
+    Suppose $L(\ta_0,\cdot)$ is strictly convex, then the inequality \eqref{RB} is strictly convex unless $h(T) = \delta(X)$. This shows that $h(T)$ is the unique UMRUE.
+
+    Finally the case of mean square error is a special case of a strictly convex loss. Thus part (c) implies part (d).
+\end{proof}
+\subsection{Consequences}
+As a consequence of this theorem we can do optimal estimation for full rank exponential families as we know their complete sufficient statistics. This theorem also gives us strategies for finding UMRUEs.
+\begin{enumerate}
+    \item 
+    \begin{enumerate}
+        \item Find a complete sufficient statistic $T$.
+        \item Find an unbiased estimator $\delta$.
+        \item Compute $\E[\delta(X)|T]$.
+    \end{enumerate}
+    Step (iii) may be hard.
+    \item \begin{enumerate}
+        \item Find a complete sufficient statistic $T$.
+        \item Recall that there is at most one unbiased estimator that is a function of $T$ and that this function is the UMRUE.
+        \item Solve for $\delta$ in the equation $\E_\ta[\delta(T)] = g(\ta)$
+    \end{enumerate}
+    \item Guess the UMRUE.
+\end{enumerate}
+\end{document}

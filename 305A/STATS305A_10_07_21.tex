@@ -1,0 +1,237 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305A - Lecture 6}
+\author{John Duchi\\ Scribed by Michael Howes}
+\date{10/07/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305A - Lecture 6}
+\lhead{10/07/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Anouncements}
+\begin{itemize}
+    \item HW1 due tomorrow.
+    \item Etude 1 out tomorrow.
+\end{itemize}
+\section{Setting for today}
+Sometimes it is interesting ot estimate \emph{functions} of $\beta$ in the linear model $Y=X^T\beta + \varepsilon$ i.e estimating the parameter $\theta = c^T\beta$ for some $c \in \R^n$. (Sometimes we will have $\theta \in \R^k$ and $\theta = C^T\beta$, $C \in \R^{d\times k}$).
+\subsection{ANOVA Example}
+The following example is called one way ANOVA (ANalysis Of VAriance). Assume $Y_{ij} = \mu + \al_i + \varepsilon_{ij}$ where $\varepsilon_{ij} \iid (0,\sigma^2)$. Here $i = 1,\ldots, k$ are the treatment classes/treatments/groups, $N_i$ is the number of members in the treatment class $i$ and $Y_{ij}$ are the measurements for $j=1,\ldots N_i$ for the $N_i$ different members of class $i$. $\al_i$ are the treatment effects/group effects/fixed effects and $\mu$ is the full population mean. In the historical setting we would have fields with different treaments and $Y_{ij}$ would be the yield of the $j^{th}$ field in the $i^{th}$ treatment class.
+\[Y_{ij} = \mu + \al_i + \varepsilon_{ij}, \]
+$\mu $ is the mean over all fields, $\al_i$ is the effect of treatment $i$ and $\varepsilon_{ij}$ is the noise for field $i,j$. As a linear model we can represent this as
+\[\beta = \begin{bmatrix}
+    \mu \\ \al_1 \\ \vdots \\ \al_k
+\end{bmatrix} \in \R^{k+1},  \]
+and 
+\[X=\begin{bmatrix}
+    1&1&0&\ldots& 0\\
+    1&1&0&\ldots&0\\
+    \vdots&\vdots &\vdots&\vdots&0\\
+    1&1&0&\ldots&0\\
+    1&0&1&\ldots&0\\
+    1&0&1&\ldots&0\\
+
+    \vdots&\vdots &\vdots&\ddots&0\\
+    1&0&0&\ldots&1\\
+    1&0&0&\ldots&1
+\end{bmatrix}=[\one, x^{(1)},\ldots, x^{(k)}], \]
+where the blocks of 1's in the different columns are disjoint and column $x^{(i)}$ has $N_i$ 1's. We have a problem in that this matrix is low rank since
+\[\one = \sum_{i=1}^k x^{(i)}, \]
+This causes problems with trying to estimate $\beta$ since $X^TX$ is not invertible. What we would like to know is $\al_i - \al_j = (e_i-e_j)^T\beta$ which is a function of $\beta$ and represents the difference between treatments.
+\section{Estimable parameters}
+\begin{defn}
+    A parameter $\theta = c^T\beta$ is (linearly) \emph{estimable} if there exists $a \in \R^n$ such that 
+    \[\E_\beta[a^TY]= \theta = c^T\beta, \]
+    for all possible $\beta$. $\E_\beta$ means expectation with respect to $\beta$.
+\end{defn}
+\begin{prop}
+    $c \in \R^d$ is estimable if and only if $c \in \range(X^T)=$ row space of $X$.
+\end{prop}
+\begin{proof}
+    Suppose $c$ is estimable so for some $a$, $\E_\beta[a^TX] = c^T\beta$ for $\beta$. Thus
+    \[c^T\beta = \E_\beta[a^T(X\beta+\varepsilon)]=a^TX\beta = (X^Ta)^T\beta,\]
+    For all $\beta \in \R^d$. Thus $c = X^Ta$ so $c \in \range(X^T)$.
+
+    Conversely if $c=X^Ta$, then 
+    \[\E_\beta[a^TY]=\E_\beta[a^T(X\beta+\varepsilon)]=(X^Ta)^T\beta = c^T\beta,\]
+    thus $c$ is estimable.
+\end{proof}
+\subsection{ANOVA example}
+Returning to our ANOVA example suppose that $k=2$ and so $\beta = \begin{bmatrix}
+    \mu\\\al_0\\ \al_1
+\end{bmatrix}$ and we are interested in $\ta = c^T\beta = \al_1 - \al_0$ and so $c = \begin{bmatrix}
+    0\\-1\\1
+\end{bmatrix}$. Note that we have
+\[X^T = \begin{bmatrix*}
+    \one_{N_0}^T&\one_{N_1}^T\\
+    \one_{N_0}^T&0\\
+    0&\one_{N_1}^T
+\end{bmatrix*}, \]
+where $\one_N$ is the all 1's vector of length $N$. There are infinitely many ways we can write $c = X^Ta$. Two possibilities are
+\[a=\begin{bmatrix*}
+    -1\\0\\\vdots\\0\\1
+\end{bmatrix*} \quad \text{and} \quad 
+a' = \begin{bmatrix*}
+    -\frac{1}{N_0}\\-\frac{1}{N_0}\\ \vdots \\ -\frac{1}{N_0}\\\frac{1}{N_1} \\ \frac{1}{N_1} \\ \vdots \\ \frac{1}{N_1}
+\end{bmatrix*},\]
+that is $a'$ is $-\frac{1}{N_0}$ for the first $N_0$ entries and then $\frac{1}{N_1}$ for the remaining $N_1$ entries.
+
+This leaves us with two questions:
+\begin{enumerate}
+    \item How do we construct unbiased linear estimators?
+    \item Can we say that an unbiased linear estimator is ``optimal''? How we choose a ``best'' estimator?
+\end{enumerate}
+\subsection{Construction of estimators}
+In the simplest case $X \in \R^{n \times d}$ is rank $d$ (full rank). We can then invert $(X^TX)^{-1}$ and as we have seen 
+\[\wh{\beta} = (X^TX)^{-1}X^TY,\]
+is unbiased for $\beta$ and $\wh{\ta} = c^T\wh{\beta}$ satisfies $\E_\beta[\wh{\ta}] = c^T\beta$. 
+
+More generally, say $c \in \range(X^T)$ then for any choice of $\la \in \R^n$ such that $c = X^T\la$, then we will have 
+\[\E[\la^T Y] = \E[\la^T(X \beta+\varepsilon)] = \la^T X\beta = (X^T \la)^T\beta = c^T\beta. \]
+What do we do if there are multiple choices of $\la$ that satisfy $c = X^T \la$?
+\section{Psuedo-inverses}
+How can we compute things that are close to inverses for non-invertible matrices?
+\begin{defn}
+    Suppose $D = \diag(d_1,\ldots, d_n)$ is diagonal. Define a diagonal matrix $D^\dagger$ by
+    \[(D^\dagger)_{ii} = \begin{cases}
+        \frac{1}{d_i} & \text{if } d_i \neq 0,\\
+        0 & \text{else.}
+    \end{cases} \]
+    The matrix $D^\dagger$ is the \emph{psuedo inverse of } $D$.
+\end{defn}
+Note that $D^\dagger D = DD^\dagger = \diag\left(\begin{cases}
+    1 & \text{if } d_i \neq 0,\\ 0 & \text{if } d_1 = 0,
+\end{cases}\right).$ In general,
+\begin{defn}
+    Let $A = U\Sigma V^T$ be the SVD of $A$ where $\Sigma = \diag(s_1,\ldots, s_r, 0, \ldots, 0)$ $s_r > 0$. Then 
+    \[A^\dagger = V\Sigma^\dagger U^T,  \]
+    is the pseudo inverse of $A$.
+\end{defn}
+\subsection{Consequences}
+\begin{remark}
+    A quick comment on the SVD. 
+    \begin{itemize}
+    
+        \item If $A \in \R^{n \times d}$, then $\Sigma$ is always square. $\Sigma$ is $n \times n$ if $n \le d$ and $\Sigma$ is $d \times d$ if $d \le n$.
+        \item If $A$ is square ($n=d$), then $\Sigma$, $U$ and $V$ are all also square.
+    
+        \item If $A$ is tall ($n > d$), then $U$ is tall $(n \times d)$ and $V$ is square $(d \times d$) and $\Sigma$ is $d \times d$.
+    
+        \item If $A$ is wide ($n < d$), then $U$ is square ($n \times n$), $\Sigma$ is square ($n \times n$) and $V$ is tall ($d \times n$) and so $V^T$ is wide ($d \times n$). 
+    
+    \end{itemize}
+    With this in mind we can investigate the psuedo inverse of $A$.
+
+\end{remark}
+\begin{enumerate}
+    \item If $A$ is square and full rank, then $A^\dagger = A^{-1}$ since $\Sigma^\dagger = \Sigma^{-1}$ and hence 
+    \[A^\dagger A = V\Sigma^{-1}U^TU\Sigma V^T = VV^T = I, \]
+    and similarly $AA^\dagger = I$.
+    
+    \item If $A \in \R^{n \times d}$ with $n \ge d$ ($A$ is tall) is full rank (rank$(A)=d$), then 
+    \[ A^\dagger = V\Sigma^{-1}U^T \in \R^{d\times n},\]
+    and \[A^\dagger A = V\Sigma^{-1}U^TU\Sigma V^T = VV^T = I \]
+    and 
+    \[AA^\dagger = U \Sigma V^T V \Sigma^{-1} U^T = UU^T. \]
+    Thus $A^\dagger$ is a left inverse of $A$ and $AA^\dagger$ is the orthogonal projection onto the range of $A$. Thus one can check that $A^\dagger = (A^TA)^{-1}A^T$ (exercise).
+    
+    \item If $A \in \R^{n \times d}$ with $d \ge n$ ($A$ is wide) and rank$(A)=n$ (full rank), then $U$ is square and $V$ is tall and $A^\dagger = V\Sigma^{-1}U^T = A^T(AA^T)^{-1}$ (another exercise). Further more
+    \[AA^\dagger = U\Sigma V^TV\Sigma^{-1}U^T = UU^T = I, \]
+    and,
+    \[A^\dagger A = V\Sigma^{-1}U^TU\Sigma V^T = VV^T. \]
+    Thus $A^\dagger$ is a right inverse of $A$ and $A^\dagger A$ is the projection onto the range of $A^T$.
+\end{enumerate}
+We have the following intuition, if $A \in \R^{n \times d}$ is tall, then $A^\dagger$ is a left inverse and $AA^\dagger$ gets as close as possible to the identity in the space $\range(A)$. 
+\section{Best linear estimators}
+Let's use psuedo inverses to construct estimators. $X \in \R^{n \times d}$, $X = U\Sigma V^T$, we want $c = X^T \la = V\Sigma U^T \la$. A natural choice is $\la = (X^T)^\dagger c=(X^\dagger)^T = U\Sigma^\dagger V^T c$. If $c$ is estimable, then $c$ is the range of $X^T$ and $(X^T)(X^T)^\dagger$ is the projection onto $\range(X^T)$. Thus 
+\[X^T\la = X^T(X^T)^\dagger c = c, \]
+since $c$ is already in $\range(X^T)$.
+\begin{defn}
+    A linear estimator $\wh{\ta} = A^T Y$ is \emph{best linear unbiased estimator (BLUE)} for $\ta$ if
+    \begin{itemize}
+        \item $\E[\wh{\ta}]=\E[A^TY]=\ta$ and
+        \item If $B$ is such that $\E[B^T Y] = \ta$, then 
+        \[MSE(A) = \E\left[\norm{A^TY-\ta}_2^2\right] \le \E\left[\norm{B^TY - \ta}_2^2\right] =MSE(B). \]
+    \end{itemize}  
+\end{defn}
+A comment: we are making two restrictions. We are requiring that our estimator is linear and unbiased. There may be better unbiased estimator that are not linear or there may be better linear estimators that are not unbiased or the ``best'' estimator may be neither linear nor unbaised. We will talk about biased linear estimators later in the course.
+
+\begin{thrm}
+    Assume that $Y = X \beta + \varepsilon$ where $\varepsilon \sim (0, \sigma^2 I)$ (this is our weakest assumption on $\varepsilon$). If $\ta = C^T\beta \in \R^k$ is estimable, then $A= (X^\dagger)^T C$ is the BLUE. Furthermore for any given $B$ such that $\E[B^TY] = C^T\beta$, then $B_* = \Pi_X B$ is BLUE where $\Pi_X = XX^\dagger=$projection onto $\range(X)$.
+\end{thrm}
+\begin{proof}
+    Let start with a $B$ such that $\E[B^TY] = C^T\beta$. Note that
+    \begin{IEEEeqnarray*}{rCl}
+        \E[B_*^TY] &=&\E[B^T\Pi_XY]\\
+        &=&\E[B^T(\Pi_X(X\beta+\varepsilon))]\\
+        &=&\E[B^T(X\beta)+B^T\Pi_X\varepsilon]\\
+        &=&B^T(X\beta)\\
+        &=&C^T\beta.
+    \end{IEEEeqnarray*}
+    Thus $B_*$ is unbiased. To see that $B_*$ is BLUE, let $A$ be any other unbiased linear estimator. Thus
+    \[\E[A^TY] = C^T\beta. \]
+    Now note
+    \begin{IEEEeqnarray*}{rCl}
+        MSE(A)&=&\E\left[\norm{A^TY-\ta}_2^2\right]\\
+        &=&\E\left[\norm{(A^T-B_*)^TY+B_*^TY-\ta}_2^2\right]\\
+        &=&\E\left[\norm{(A^T-B_*)^TY}_2^2\right] + \E\left[\norm{B_*^TY-\ta}_2^2\right]+2\E\left[\left((A^T-B_*)^TY\right)^T\left(B_*^TY-\ta\right)\right]\\
+        &=&\E\left[\norm{(A^T-B_*)^TY}_2^2\right] + MSE(B)+2\E\left[\left((A^T-B_*)^TY\right)^T\left(B_*^TY-\ta\right)\right]\\
+        &\ge&0+MSE(B_*)+2\E\left[\left((A^T-B_*)^TY\right)^T\left(B_*^TY-\ta\right)\right]\\
+        &=&MSE(B_*)+2\E\left[\left((A^T-B_*)^TY\right)^T\left(B_*^TY-\ta\right)\right]
+    \end{IEEEeqnarray*}
+    Thus to show that $MSE(A) \ge MSE(B_*)$, it suffices to show that $\E\left[\left((A^T-B_*)^TY\right)^T\left(B_*^TY-\ta\right)\right]=0$. Note firstly that 
+    \begin{IEEEeqnarray*}{rCl}
+        B_*^TY-\ta &=&B^T\Pi_X(X\beta + \varepsilon)-\ta\\
+        &=& \ta+B^T\Pi_X\varepsilon-\ta\\
+        &=&B^T\Pi_X\varepsilon,
+    \end{IEEEeqnarray*}
+    because $B$ is unbiased. Also 
+    \[(A-B_*)^TY = (A-B_*)^T(X\beta + \varepsilon) = (A-B_*)^T\varepsilon, \]
+    since $A^TX\beta = B_*^TX\beta = \ta$ by unbiasedness. Thus we have
+    \[\E\left[\left((A^T-B_*)^TY\right)^T\left(B_*^TY-\ta\right)\right] = \E\left[((A-B_*)\varepsilon)^T B_*^T\varepsilon\right].\]
+    We will use the indentity $u^Tv = \text{tr}(uv^T)$ where tr$(D)$ is the trace of a matrix $D$. Thus
+    \begin{IEEEeqnarray*}{rCl}
+        \E\left[((A-B_*)\varepsilon)^T B_*^T\varepsilon\right]&=&\text{tr}\left(\E[(A-B_*)\varepsilon\varepsilon^TB_*]\right)\\
+        &=&\sigma^2\text{tr}\left((A-B_*)^TB_*\right),
+    \end{IEEEeqnarray*} 
+    since $\E[\varepsilon\varepsilon^T] = \sigma^2 I$. Also note that $B_* = \Pi_X B_*$ since $\Pi_X$ is a projection so \[\Pi_X B_* = \Pi_X^2 B = \Pi_X B = B_*.\] 
+    Also recall that $\Pi_X = XX^\dagger$. Thus
+    \begin{IEEEeqnarray*}{rCl}
+        \sigma^2\text{tr}\left((A-B_*)^TB_*\right)&=&\sigma^2\text{tr}\left((A-B_*)^T\Pi_XB_*\right)\\
+        &=&\sigma^2\text{tr}\left((A-B_*)^TXX^\dagger B_*\right)\\
+        &=&\sigma^2\text{tr}\left((X^TA-X^TB_*)^TX^\dagger B_*\right)\\
+        &=&\sigma^2\text{tr}\left((C-C)^TX^\dagger B_*\right)\\
+        &=&0,
+    \end{IEEEeqnarray*}
+    where we have once again used that $A$ and $B_*$ are both unbiased and so $X^TA = X^TB_* = C$. Thus we can conclude that
+    \[MSE(A) \ge MSE(B_*). \]
+    Thus $B_*$ is BLUE. We now have to show that $A= (X^\dagger)^T C$ is BLUE. Note that $A$ is unbiased since $X^TA = X^T(X^\dagger)^T C  = X^T(X^T)^\dagger C$ since $C \in \range(X^T)$. Also 
+    \begin{IEEEeqnarray*}{rCl}
+        \Pi_X A &=&UU^T(X^\dagger)^T C\\
+        &=& UU^T(V \Sigma^\dagger U^T)^TC\\
+        &=&UU^TU\Sigma^\dagger V^TC\\
+        &=&U\Sigma^\dagger V^TC\\
+        &=&(V\Sigma^\dagger U^T)^TC\\
+        &=&(X^\dagger)^TC.
+    \end{IEEEeqnarray*} 
+    Thus $A_* = A$ and $A$ is BLUE.
+\end{proof}
+If $X$ is full rank then we have the following simplification.
+\begin{prop}
+    If $X$ is full rank, then $\wh{\beta} = (X^TX)^{-1}X^TY$ is BLUE and $C^T\wh{\beta}$ is also BLUE.
+\end{prop}
+\begin{proof}
+    Note that $\E[C^T\wh{\beta}]= C^T\beta$ so $C^T\wh{\beta}$ is unbiased. To see that $C^T\wh{\beta}$ is best unbiased. Note that we know $X^\dagger = (X^TX)^{-1}X^T$ by the exercise. Thus $(X^\dagger)^T = X(X^TX)^{-1}$. If we let $A = (X^\dagger)^TC = X(X^TX)^{-1}C$, then 
+    \[A^TY = C^T(X^TX)^{-1}X^TY=C^T\wh{\beta}. \]
+    To see that $\wh{\beta}$ is BLUE, take $C = I$.
+\end{proof}
+
+\end{document}

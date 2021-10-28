@@ -1,0 +1,161 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 6}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/05/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 6}
+\lhead{10/05/21}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Recap}
+\begin{itemize}
+    \item Sums of UMVUEs are UMVUE.
+    \item Cramer-Rao lower bound.
+    \item Equivariance and invariance.
+\end{itemize}
+\section{Equivariance}
+Assume $\X = \R^n$, $d\mu(x) = dx$.
+\begin{defn}
+    A decision problem is \emph{location invariant} if 
+    \begin{itemize}
+        \item The densities satisfy $p_{\ta+c}(x+c)=p_\ta(x)$.
+        \item The loss satisfies $L(\ta+c,d+c) = L(\ta,d)$.
+    \end{itemize}
+\end{defn}
+In a location invariant decision problem we can always write $L(\ta,d) = \rho(\ta -d)$ for some function $\rho$.
+\begin{defn}
+    An estimator $\delta$ is \emph{location equivariant} if 
+    \[\delta(X_1+c,\ldots, X_n + c) = \delta(X)+c. \]
+\end{defn}
+Last time we saw
+\begin{thrm}
+    If $\delta$ is location equivariant for a location invariant decision problem, then the risk of $\delta$ does not depend on $\ta$.
+\end{thrm}
+This gives rise to the following definition.
+\begin{defn}
+    The \emph{minimum risk equivariant estimator (MRE)} is the equivariant estimator with the smallest risk.
+\end{defn}
+\begin{lemma}
+    Let $\delta_0$ be location equivariant, then $\delta$ is location equivariant if and only if $U=\delta-\delta_0$ is location invariant, that is $U(X_1+c,\ldots, X_n+c)=U(X)$.
+\end{lemma}
+\begin{lemma}
+    An estimator $U$ is location invariant if and only if
+    \[U(X)=V(X_1-X_n,\ldots, X_{n-1}-X_n), \]
+    for some function $V : \R^n \to D$.
+\end{lemma}
+\begin{proof}
+    If $U(X) = v(X_1-X_n,\ldots, X_{n-1}-X_n)$ we immediately have that $U$ is location invariant. Conversely if $U$ is location invariant we can define $V(Y_1,\ldots, Y_{n-1})=U(Y_1,\ldots, Y_{n-1},0)$. 
+\end{proof}
+Thus we can decompose any location equivariant estimator $\delta$ as 
+\[\delta(X) = \delta_0(X)-v(Y_1,\ldots, Y_{n-1}),  \]
+where $\delta_0(X)$ is a fixed location equivariant estimator and $Y_i = X_i-X_n$. By varying $v : \R^{n-1} \to D$ we can study all equivariant estimators.
+\begin{thrm}
+    Suppose we have a location invariant decision problem and $\delta_0$ is any equivariant estimator with finite risk. Let $v^*(y)$ be the minimiser of
+    \[\E_0[\rho(\delta_0(X)-v)|Y=y],\]
+    where $Y=(X_1-X_n,\ldots,X_{n-1}-X_n)$, then $\delta^*=\delta_0-v^*(y)$ is the MRE.
+\end{thrm}
+\begin{proof}
+    We can see immediately that $\delta^*$ is equivariant. Let $\delta$ be any other equivariant estimator, then we have
+    \[ \delta(X) = \delta_0(X) - v(Y),\] 
+    for some function $v$. Since $\delta$ and $\delta^*$ are both equivariant, their risk functions are constant. Thus we can simply compare the risk when $\ta =0$. We then have
+    \begin{IEEEeqnarray*}{rCl}
+        R(0,\delta)&=&\E_0[\rho(\delta(X))]\\
+        &=&\E_0[\rho(\delta_0(X)-v(Y))]\\
+        &=&\E_0[\E_0[\rho(\delta_0(X)-v(y))|Y=y]]\\
+        &\ge&\E_0[\E_0[\rho(\delta_0(X)-v^*(y))|Y=y]]\\
+        &=&\E_0[\rho(\delta_0(X)-v^*(Y))]\\
+        &=&R(0,\delta^*).
+    \end{IEEEeqnarray*}
+    Thus $\delta^*$ is the MRE.
+\end{proof}
+For existence/uniqueness of MRE see scribed notes.
+\begin{ex}
+    Suppose $X_1,\ldots, X_n \iid p(x;\ta)$ where
+    \[p(x;\ta) = \exp(-(x-\ta))\mathbb{I}(x>\ta), \]
+    and suppose $L(\ta,d)  =\abs{d-\ta}$. Note that $X_{(1)} = \min\{X_i\}$ is complete and sufficient for this model. Also note that $\delta_0(X)=X_{(1)}$ is location equivariant. Furthermore note that $Y=(X_1-X_n,\ldots, X_{n-1}-X_n)$ is ancillary. Thus, by Basu's theorem
+    \begin{IEEEeqnarray*}{rCl}
+        v^*(y) &=&\arg\min_v \E_0[\abs{\delta_0(X)-v}|Y=y]\\
+        &=&\arg\min_v \E_0[\abs{\delta_0(X)-v}].
+    \end{IEEEeqnarray*}
+    We want $\partial_v \E_0\abs{\delta_0(X)-v} = 0$. One can check that $\partial_v \E_0\abs{\delta_0(X)-v} = \E_0[\mathbb{I}(v \ge\delta_0(X))-\mathbb{I}(v < \delta_0(X))]$. Thus setting the above derivative equal to 0 and evaluting the expectation we see that we must have $\Pa(v > \delta_0(X))=\Pa(v < \delta_0(X))$. That is $v$ is themedian of $\delta_0(X)=X_{(1)}$. One can check that this implies $v^* = \frac{\log(2)}{n}$ and thus the MRE is
+    \[\delta(X)=X_{(1)}-\frac{\log(2)}{n}. \]
+\end{ex}
+Compared to UMRUEs, MREs are more likely to have bias and more likely to depend on the choice of loss function.
+\section{MREs for squared error loss}
+Suppose $\rho(t)=t^2$ (i.e. $L(\ta,d)=(d-\ta)^2$). 
+\begin{thrm}
+    For any location equivariant $\delta_0$, we have
+    \begin{IEEEeqnarray*}{rCl}
+        v^*(y) &=&\arg\min_y \E_0[(\delta_0(X)-v)^2|Y=y]\\
+        &=&\E_0[\delta_0(X)|Y=y].
+    \end{IEEEeqnarray*}
+    Thus the MRE is $\delta(X)=\delta_0(X)-\E_0[\delta_0(X)|Y]$.
+\end{thrm}
+\begin{thrm}
+    Suppose $p(x;\ta) = f(x_1-\ta,\ldots,x_n-\ta)$ where $\ta \in \Om = \R$ is unknown and $f$ is known. Then under mean square error, the MRE of $\ta$ is
+    \[\delta^*(X)= \frac{\int_{-\infty}^\infty uf(x_1-u,\ldots, x_n-u)du}{\int_{-\infty}^\infty f(x_1-u,\ldots, x_n-u)du}.\]
+\end{thrm}
+The estimator $\delta^*(X)$ is called Pitman's estimator of location.
+\begin{proof}
+    Take $\delta_0(X) = X_n$. We can see that $\delta_0(X)$ is equivariant. We wish to compute $\E_0[X_n | Y=y]$. We have the density of $(X_1,\ldots, X_n)$ and we want the density of $Z=(Y_1,\ldots,Y_{n-1},X_n)$. Note that
+    \[\begin{bmatrix*}
+        X_1\\X_2\\ \vdots \\X_{n-1}\\X_n 
+    \end{bmatrix*}=\begin{bmatrix*}
+        Y_1+X_n\\Y_2+X_n\\ \vdots \\Y_{n-1}+X_n\\X_n 
+    \end{bmatrix*}=\begin{bmatrix*}
+        1&0&\ldots&0&1\\
+        0&1&\ldots&0&1\\
+        \vdots&\vdots&\ddots&\vdots \\
+        0&0&\ldots&1&1\\
+        0&0&\ldots&0&1
+    \end{bmatrix*}\begin{bmatrix*}
+        Y_1\\Y_2\\ \vdots \\Y_{n-1}\\X_n 
+    \end{bmatrix*}. \]
+    Thus $\det \frac{\partial X}{\partial Z} =1$. Hence the density of $Z=(Y_1,\ldots, Y_{n-1},X_n)$ is 
+    \[p_Z(z_1,\ldots, z_n) = p_X(z_1+z_n,\ldots,z_{n-1}+z_n,z_n).\]
+    And hence
+    \[p(z_n | z_1,\ldots, z_{n-1})\al f(z_1+z_n,\ldots, z_{n-1}+z_n,z_n). \]
+    Thus we can conclude that
+    \begin{IEEEeqnarray*}{rCl}
+        \E_0[X_n|Y]&=&\E_0[Z_n|Z_1,\ldots,Z_{n-1}]\\
+        &=&\frac{\int_{-\infty}^\infty tf(z_1+t,\ldots, z_{n-1}+t,t)dt}{\int_{-\infty}^\infty f(z_1+t,\ldots, z_{n-1}+t,t)dt}.
+    \end{IEEEeqnarray*}
+    Performing the change of variable $t = x_n - u$ we get
+    \begin{IEEEeqnarray*}{rCl}
+        \E_0[X_n|Y]&=&\frac{\int_{-\infty}^\infty (x_n-u)f(x_1-u,\ldots, x_{n-1}-u,x_n-u)du}{\int_{-\infty}^\infty f(x_1-u,\ldots, x_{n-1}-u,x_n-u)du}\\
+        &=&x_n - \frac{\int_{-\infty}^\infty uf(x_1-u,\ldots, x_{n-1}-u,x_n-u)du}{\int_{-\infty}^\infty f(x_1-u,\ldots, x_{n-1}-u,x_n-u)du}.
+    \end{IEEEeqnarray*}
+    Thus the MRE is
+    \[\delta^*(X) = X_n-\E_0[X_n|Y] = \frac{\int_{-\infty}^\infty uf(x_1-u,\ldots, x_{n-1}-u,x_n-u)du}{\int_{-\infty}^\infty f(x_1-u,\ldots, x_{n-1}-u,x_n-u)du}, \]
+    as claimed.
+\end{proof}
+\begin{ex}
+    Suppose $X_1,\ldots,X_n \sim \text{Unif}[\ta-1/2,\ta+1/2]$. Then
+    \[f(x_1,\ldots,x_n) = \prod_{i=1}^n \mathbb{I}(-1/2\le x_i \le 1/2) = \mathbb{I}(-1/2 \le x_{(1)}; x_{(n)}\le 1/2). \]
+    Thus the Pitman estimator of location is
+    \begin{IEEEeqnarray*}{rCl}
+        \delta^*(X)&=&\frac{\int_{-\infty}^\infty u\mathbb{I}(-1/2 \le x_{(1)}-u; x_{(n)}-u\le 1/2)du}{\int_{-\infty}^\infty \mathbb{I}(-1/2 \le x_{(1)}-u; x_{(n)}-u\le 1/2)du}\\
+        &=&\frac{\int_{-\infty}^\infty u\mathbb{I} (u\le x_{(1)}+1/2; x_{(n)}-1/2\le u)du}{\int_{-\infty}^\infty \mathbb{I} (u\le x_{(1)}+1/2; x_{(n)}-1/2\le u))du}\\
+        &=&\frac{\int_{x_{(n)}-1/2}^{x_{(1)}+1/2}udu}{\int_{x_{(n)}-1/2}^{x_{(1)}+1/2}du}\\
+        &=&\frac{1}{2}\cdot \frac{\left((x_{(1)}-1/2)^2-(x_{(n)}+1/2)\right)}{x_{(1)}-x_{(n)}}\\
+        &=&\frac{1}{2}(x_{(1)}+x_{(n)}).
+    \end{IEEEeqnarray*}
+\end{ex}
+\section{UMVUEs and MREs}
+\begin{lemma}
+    \emph{[TPE 3.1.23]} Under square error loss
+    \begin{enumerate}
+        \item If $\delta(X)$ is location equivariant with bias $b\neq 0$, then $\delta(X)-b$ is an estimator with strictly smaller risk. (we can subtract $b$ because $\delta(X)$ is location equivariant and thus the bias of $\delta(X)$ does not depend on $\ta$).
+        \item The MRE is unbiased.
+        \item If the UMVUE exists and is location equivariant then it is the MRE. This is because MRE implies unbiased and thus the UMVUE and MSE have the same risk. Under strictly convex loss (such as square error) the UMVUE is unique and thus UMVUE = MRE).
+    \end{enumerate}
+\end{lemma}
+\end{document}

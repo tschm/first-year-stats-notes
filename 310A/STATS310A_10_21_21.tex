@@ -1,0 +1,166 @@
+\include{preamble}
+\include{definitions}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\Cyl}{\mathcal{C}}
+\newcommand{\U}{\mathcal{U}}
+
+
+\title{STATS310A - Lecture 10}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/21/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 10}
+\lhead{10/21/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Product $\sigma$-algebras}
+Let $(X,\X)$ and $(Y,\Y)$ be two measurable spaces. Let $X \times Y$ be the product \emph{set} $X \times Y = \{(x,y): x \in X, y \in Y\}$. Define the \emph{projections} $\pi_X : X\times Y \to X$ and $\pi_Y : X \times Y \to Y$ by
+\[\pi_X(x,y) = x ~~\text{and}~~ \pi_Y(x,y) = y. \]
+\begin{defn}
+    The \emph{product $\sigma$-algebra} is the small $\sigma$-algebra on $X \times Y$ making $\pi_X$ and $\pi_Y$ measurable. We denote the product $\sigma$-algebra by $\X \times \Y$.
+\end{defn}
+\begin{defn}
+    The \emph{cyclinder sets} are sets of the form $\pi_X^{-1}(A)$ for $A \in \X$ or $\pi_Y^{-1}(B)$ for $B \in \Y$. We denote the class of cyclinder sets by $\Cyl$.
+\end{defn}
+\begin{defn}
+    Let $\Po = \{A \times B : A \in \X, B \in \Y\}$ be the class of \emph{measurable rectangles}.
+\end{defn}
+Note that $\Po$ is a $\pi$-system and indeed a semi-ring. Define $\U$ to the set of finite disjoint unions of measurable rectangles. The collection $U$ is a field.
+
+\begin{prop}
+    With the notation as above
+    \[\X \times \Y = \sigma(\pi_X,\pi_Y) = \sigma(\Cyl) = \sigma(\Po) = \sigma(U).  \]
+\end{prop}
+
+\begin{defn}
+    If $A \subset X \times Y$ and $x \in X$, define
+    \[A_x = \{y:(x,y) \in A\} \subseteq Y. \]
+    For $y \in Y$, define
+    \[A_y = \{x : (x,y) \in A\} \subseteq X.\]
+    The sets $A_x$ and $A_y$ are called \emph{sections} of $A$. 
+\end{defn}
+\begin{defn}
+    For a function $F:X \times Y \to W$, define $f_x : Y \to W$ and $f_y : X \to W$ by 
+    \[f_x(y) = f(x,y) ~~\text{and}~~f_y(x) = f(x,y). \]
+    The maps $f_x$ and $f_y$ are again called \emph{sections} of $f$.
+\end{defn}
+\begin{prop}
+    Sections commute with set operations. That is
+    \begin{itemize}
+        \item $(A^c)_x = A_x^c$,
+        \item $\left(\bigcap_{i \in I} A^i\right)_x = \bigcap_{i \in I} A^i_x$,
+        \item $\left(\bigcup_{i \in I} A^i\right)_x = \bigcup_{i \in I} A^i_x$,
+    \end{itemize}
+    where $I$ is any index set.
+\end{prop}
+\begin{prop}
+    If $A \in \X \times Y$, then $A_x \in \Y$ for all $x \in X$. If $f:X \times Y \to (W,\F)$ is measurable, then $f_x:Y \to (W,\F)$ and $f_y : X \to (W,\F)$ are also measurable.
+\end{prop}
+\begin{proof}
+    Consider the collection 
+    \[G = \{A \in \X \times \Y : A_x \in \Y\}. \]
+    Note that $G$ contains the measurable rectangles since 
+    \[(R\times S)_x = \begin{cases}
+        \emptyset& \text{if } x \notin R,\\
+        S & \text{if } x \in R.
+    \end{cases}\]
+    Thus in either case $(R \times S)_x \in \Y$. Since sections commute with set operations, $G$ is a $\sigma$-algebra. Thus $\sigma(\Po) = \X \times \Y \subseteq G$, as required.
+
+    Let $A$ be a measurable subset of $W$. Then 
+    \begin{align*}
+        f_x^{-1}(A) &=\{y:f_x(y) \in A\}\\
+        &= \{y:f(x,y) \in A\}\\
+        &=\{y: (x,y) \in f^{-1}(A)\}\\
+        &=(f^{-1}(A))_x.
+    \end{align*}
+    Since $f^{-1}(A) \in \X \times \Y$, we can conclude that $f_x^{-1}(A) = (f^{-1}(A))_x \in \Y$.
+\end{proof}
+\section{Measures on product spaces}
+\begin{defn}
+    Let $(X,\X)$ and $(Y,\Y)$ be measurable spaces. A \emph{Markov Kernel} is a function $K : X \times \Y \to [0,1]$ such that 
+    \begin{enumerate}
+        \item For all $x \in X$, $K(x,\cdot)$ is a probability measure on $(Y,\Y)$.
+        \item For all $B \in \Y$, $K(\cdot, B)$ is measurable.
+    \end{enumerate}
+    We will write $K(x,dy)$ to mean that $K$ is a Markov kernel $K:X\times \Y \to [0,1]$.
+\end{defn}
+\begin{ex}
+    Say $\nu$ is a probability measure on $(Y,\Y)$, then $K(x,B) = \nu(B)$ is a Markov Kernel.
+\end{ex}
+\begin{ex}
+    If $\Theta$ is any set and $\F$ a $\sigma$-algebra on $\Theta$, then a family of probabilities $\{\Pa_\theta(\cdot):\theta \in \Theta\}$  on $(X,\X)$ is a Markov kernel
+    \[K(\theta,B) = \Pa_\theta(B). \]
+\end{ex}
+\begin{ex}
+    If $X=Y$, then $k(x,dy)$ defines a \emph{Markov chain} on $X$.
+\end{ex}
+\begin{defn}
+    Let $(X,\X)$ and $(Y,\Y)$ be measurable spaces and $K(x,dy)$ a kernel and $\mu$ a probability on $X$. The product measure $\mu \times K$  is a set function on $\X \times \Y$ defined by 
+    \[\mu\times K (A) = \int_X K(x,A_x)\mu(dx). \]
+\end{defn}
+\begin{prop}
+    The mapping $x \mapsto K(x,A_x)$ is measurable and integrable. Furthermore $\mu \times K$ is a probability on $X \times Y$.
+\end{prop}
+\begin{proof}
+    Define 
+    \[G = \{A \in \X \times \Y : x \mapsto K(x,A_x) \text{ is measurable}\}. \]
+    Note that $G$ contains the measurable rectangles. This is because 
+    \begin{align*}
+        K(x,(S\times R)_x) &=\begin{cases}
+            0 & \text{if } x \notin S,\\
+            K(x,R) & \text{if } x \in S.   
+        \end{cases}\\
+        &= \delta_S(x)K(x,R).
+    \end{align*}
+    Thus $x \mapsto K(x,(S\times R)_x)$ is the product of two measurable functions and hence measurable. Thus $G$ continas the $\pi$-system $\Po$. We will now show that $G$ is a $\la$-system. Note that $X \times Y \in G$, since $X \times Y \in \Po$. Furthermore if $A \in G$, then 
+    \[K(x,(A^c)_x) = K(x,A_x^c) = 1-K(x,A_x), \]
+    and so $A^c \in G$. Finally if $(A^i)_{i=1}^\infty$ are disjoint, then $(A^i_x)_{i=1}^\infty$ are disjoint and hence
+    \[ K\left(x,\left(\bigcup_{i=1}^\infty A^i\right)_x\right) = K\left(x,\bigcup_{i=1}^\infty A_x^i\right) =\sum_{i=1}^\infty K(x,A_x^i),\]
+    and thus $\bigcup_i A^i \in G$ since the limits of measurable functions are measurable. Thus $G$ is a $\lambda$-system and it must contain $\sigma(\Po) = \X \times \Y$ by the $\pi$-$\lambda$ theorem.
+
+    To see that $\mu \times K$ is a probability measure one can use the monotone convergence theorem.
+\end{proof}
+\begin{ex}
+    If $K(x,B) = \nu(B)$ then we write $\mu \times K$ as $\mu \times \nu$ and call $\mu \times \nu$ the product measure.
+\end{ex}
+\begin{ex}
+    [Decision theory/Bayesian statistics] Given probability distributions $P=\{\Pa_\theta(\cdot)\}_{\theta \in \Theta}$ on $(X,\X)$ and a probability $\pi$ on $\Theta$, $\pi \times P$ defines a probability on $\Theta \times X$. Define 
+    \[m(B) = \int_\Theta \Pa_\theta(B)\pi(d\theta), \]
+    which is a probability distribution on $(X,\X)$ called the \emph{marginal distribution}. A \emph{posterior} is a kernel $K(x,d\theta)$ on $X \times \F_\theta$ such that
+    \[\int_A P_\theta(B)\pi(d\theta) = \int_B K(x,A)\pi(dx), \]
+    for all $A \in \F_\theta$ and $B \in \X$. Unfortunately posteriors don't always exist. \grumpy We need topological conditions on $X$ to be sure that posteriors exist (eg it suffices for $X$ to be a complete seperable metric space). When things work out the objects of study are called regular conditional probabilities.
+\end{ex}
+\section{Fubinni's Theorem}
+\begin{thrm}
+    Let $(X,\X)$ and $(Y,\Y)$ be measurable spaces. Let $\mu(dx)$ be a measure and $K(x,dy)$ be a kernel. The if $f:X\times Y \to [0,\infty]$ is measurable, then 
+    \[x \mapsto \int_Y f(x,y)K(x,dy),\]
+    is measurable on $(X,\X)$ and 
+    \[\int_{X\times Y} f(x,y)(\mu \times K)(dx,dy) = \int_X\left(\int_Y f(x,y)K(x,dy)\right)\mu(dx). \]
+\end{thrm}
+\begin{proof}
+    We will use a (1), (2), (3) argument. Let $G$ be the set of all measurable $f:X \times Y \to \R^+$ such that the above two results hold. Suppose that $A \in \X\times Y$ and $f=\delta_A$. Then note that $\delta_A(x,y) = \delta_{A_x}(y)$ and so
+    \[\int_Y \delta_A(x,y)K(x,dy) = \int_Y \delta_{A_x}(y)K(x,dy) = K(x,A_x), \]
+    which is measurable. And furthermore 
+    \begin{align*}
+        \int_{X\times Y} \delta_{A}(x,y)(\mu \times K)(dx,dy)&=(\mu\times K)(A)\\
+        & = \int_X K(x,A_x)\mu(dx)\\
+        &=\int_X\left(\int_Y \delta_A(x,y)K(x,dy)\right)\mu(dx).
+    \end{align*}
+    Thus $\delta_A \in G$. One can check that $G$ is closed under linear combinations and monotone limits. Thus $G$ contains all non-negative measurable functions. 
+\end{proof}
+\begin{remark}
+    \begin{enumerate}
+        \item We assumed $K(\cdot,B)$ and $\mu(\cdot)$ where probability measures. Everything works under the more general assumption that $K(\cdot,B)$ and $\mu(\cdot)$ are $\sigma$-finite.
+        \item The textbook carefully works through the case when $K(x,dy) = \nu(dy)$.
+        \item When applying Fubinni's theorem look out for functions that are both positive and negative. Everything works if $\int \abs{f}(\mu\times K)(dx,dy) < \infty$.
+        \item These results do not hold for finitely additive measures or non $\sigma$-finite measures.
+        \item Measures on infinite products require care. You again need topology to deal with something like
+         \[\mu(x_1), K(x_1dx_2), L((x_1,x_2), dx_3), \ldots \]
+    \end{enumerate}
+\end{remark}
+\end{document}

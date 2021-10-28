@@ -1,0 +1,166 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 9}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/18/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 9}
+\lhead{10/18/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Overview}
+We have been studying optimal estimation. We have tried multiple things:
+\begin{enumerate}
+    \item Uniform comparisions.
+    \item Restricting the class of estimtors.
+    \item Collapsing the risk.\begin{enumerate}
+        \item Bayesian estimators.
+        \item Minimax estimators.
+    \end{enumerate}
+\end{enumerate}
+Today we will discuss:
+\begin{itemize}
+    \item Some strengths of Bayesian techniques.
+    \item Minimax risk estimation.
+\end{itemize}
+\section{Stengths of the Bayesian approach}
+\begin{lemma}
+    \emph{[TPE 4.14]} Let $Q$ be the marginal distribution of $X$. That is
+    \[Q(A) = \int_\Om \Pa_\ta(X\in A)d\Lambda. \]
+    If the loss is strictly convex in $d$, then the Bayes estimator $\delta_\Lambda$ is unique a.s. $\Pa_\ta$ for all $\ta \in \Om$ if
+    \begin{enumerate}
+        \item $r(\Lambda, d_\Lambda) < \infty$.
+        \item If $A \subseteq \X$ and $Q(A) = 0$, then $\Pa_\ta(A) = 0$ for all $\ta \in \Om$.
+    \end{enumerate}
+\end{lemma}
+See the textbook for a proof. Note that if the following all hold, then we can conclude that (b) holds above.
+\begin{enumerate}
+    \item $\Om$ is an open subset of $\R^k$.
+    \item The map $\ta \to \Pa_\ta(A)$ is continuous for all $A$.
+    \item $\pi(\ta) > 0$ for all $\ta \in \Om$.
+    \item $\ta \to \pi(\ta)$ is continuous.
+\end{enumerate}
+\subsection{Bayesian recursion}
+Suppose $\ta \sim \Lambda$ and $X_i \iid \Pa_\ta$. We can then update the prior sequentially. Note that the posterior for $m <n$ observations is
+\[p(\ta|X_1,\ldots,X_n) \propto \text{likelihood}\times\text{prior} = p(X_1,\ldots, X_m|\ta)\pi(\ta). \]
+The posterior for the full sample of $n$ observations is
+\begin{align*}
+    p(\ta|X_1,\ldots,X_n)&\propto \text{likelihood}\times \text{prior}\\
+    &= p(X_1,\ldots,X_n | \ta) \pi(\ta)\\
+    &= p(X_1,\ldots, X_{m}|\ta) p(X_{m+1},\ldots, X_n | \ta) \pi(\ta)\\
+    &\propto p(X_{m+1},\ldots, X_n | \ta)p(\ta|X_1,\ldots, X_m).
+\end{align*} 
+Thus we can think of $X_{m+1},\ldots,X_n$ as new data and the posterior $p(\ta|X_1,\ldots, X_m)$ as a new prior. It follows that we can compute posteriors recursively by changing the prior. This allows for speedy calculations.
+\begin{ex}
+    Suppose $X_1,\ldots,X_n\iid \Na(\ta,\sigma^2)$ where $\sigma^2$ is known and $\ta \sim \Na(\mu,b^2)$. We saw that 
+    \[\text{posterior} \propto \exb{-\frac{1}{2}\ta^2 w_n+\ta \bar{w}_n}, \]
+    where
+    \begin{align*}
+        w_n &= \frac{n}{\sigma^2}+\frac{1}{b^2},\\
+        \bar{w}_n &= \frac{\sum_{i=1}^n x_i}{\sigma^2}+\frac{\mu}{b^2}.
+    \end{align*}
+    The weights $w_n$ satisfy the recursion
+    \begin{align*}
+        w_n &= \frac{1}{\sigma^2}+w_{n-1},\\
+        \bar{w}_n &= \frac{x_n}{\sigma^2}+\bar{w}_{n-1}.
+    \end{align*}
+    Thus our updates are quick linear calculations. This has many applications.
+\end{ex}
+\subsection{Hierarchical models and empirical Bayes}
+We can use Bayesian ideas to model problems with repeat structure and pool information across observations. Suppose we have $\ta_i \iid \Na(0,\tau^2)$ for $i=1,\ldots,p$ where $\tau^2 > 0$ is known (for now). Suppose that we also have $X_i \stackrel{\text{ind}}{\sim} \Na(\ta_i,1)$. For example $\ta_i$ might be the effect of an experiment and $X_i$ is the measured effect and our measurement errors are i.i.d. $\Na(0,1)$. Consider the loss
+\[L(\ta,\delta) = \sum_{i=1}^p(\ta_i-\delta_i(X))^2. \]
+One can show (see Keener section 11) that the Bayes estimator is given by 
+\[\delta_i(X) = \left(1-\frac{1}{1+\tau^2}\right)X_i = \frac{\tau^2}{1+\tau^2}X_i. \]
+That is we shrink our data towards 0. The amount of shrinkage depends on $\tau^2$. If $\tau^2$ is small we shrink a lot, if it is large we shrink less. We will not prove that $\delta$ is the Bayes estimator but we will show that it has the lowest average risk of estimators of the form $\wh{\ta}_\al = \al X$ when $p=1$. The risk of such an estimator is
+\[\E[(\ta-\al X)^2] = \E[\ta^2]-2\al\E[\ta X]+\al^2\E[X^2] = \tau^2-2\al \tau^2+\al^2(\tau^2+1), \]
+which is minimized when $\al(\tau^2+1)=\tau^2$, that is $\al = \frac{\tau^2}{1+\tau^2}$. The shrinkage term is the ratio of the experiment noise and the measurement noise. 
+
+What if we don't knw $\tau$? We can still estimate it. This is the idea behind empirical Bayes. We can estimate the variance of $X_i$ since 
+\[X_i \iid N(0,1+\tau^2),  \]
+Thus $\frac{1}{p}\sum_{j=1}^p X_j^2$ is unbiased for $1+\tau^2$. This gives us the new estimator
+\[\delta'_i(X) = \left(1-\frac{p}{\sum_{j=1}^n X_j^2}\right)X_i. \]
+This is an example of emprical Bayes when the prior is estimated from the data. We will revisit this estimator in the frequentist setting later in the course.
+\subsection{Why Bayes estimators?}
+\begin{enumerate}
+    \item Every admissible estimator is a Bayes estimator or a limit of Bayes estimators. That is for a sequence of priors $\Lambda_n$, $\delta_{\Lambda_n}(x) \to \delta(x)$ a.e. $\Pa_\ta$.
+    \item Can incorporate prior experience and beliefs.
+    \item Quantification of uncertainty are sometimes easier to interpret.
+    \item Encode complex data structures.
+\end{enumerate}
+How do we choose priors?
+\begin{enumerate}
+    \item Subjective: previous knowlegde.
+    \item Objective: Select an ``uniformative prior'' such as a Jeffery's prior or a uniform prior.
+    \item Empirical: Estimate prior parameters from data.
+    \item Computational: Use conjugate priors.
+\end{enumerate}
+As $n \to \infty$, the posterior is independent of the prior - Bernstein-von-Mises.
+\section{Minimax estimators}
+Given $X \sim \Pa_\ta$, $\ta$ fixed and unknown. Our goal is to find an estimator $\delta$ that minimizes
+\[\sup_{\ta \in \Om} R(\ta,\delta). \]
+Such a $\delta$ is called a minimax estimator. How do we find such estimators? Note that 
+\[\sup_\ta R(\ta,\delta) \ge \int_\Om R(\ta,\delta)d\Lambda, \]
+for all probability distributions $\Lambda$. Thus our goal is to find the ``worst prior.''
+\begin{defn}
+    A prior $\Lambda$ is called \emph{least favourable} if $r_\Lambda \ge r_{\Lambda'}$ for any other prior $\Lambda'$.
+\end{defn}
+Recall that $r_{\Lambda} = r(\Lambda, \delta_\Lambda)$ where $\delta_\Lambda$ is the Bayes estimator for $\Lambda$.
+\begin{thrm}
+    \emph{[TPE 5.1.4]} Suppose $\delta_{\Lambda}$ is a Bayes estimator with $r_\Lambda = \sup_\ta R(\ta, \delta_\Lambda)$, then 
+    \begin{enumerate}
+        \item $\delta_\Lambda$ is minimax.
+        \item $\Lambda$ is least favourable.
+        \item If $\delta_\Lambda$ is a unique Bayes estimator (a.e $\Pa_\ta$ for all $\ta \in \Om$), then $\delta_\Lambda$ is the unique minimax estimator.
+    \end{enumerate}
+\end{thrm}
+\begin{proof}
+    For (a) let $\delta$ be another estimator, then 
+    \begin{align*}
+        \sup_\ta R(\ta,\delta) & \ge \int_\Om R(\ta,\delta)d\Lambda \\
+        &\ge \int_\Om R(\ta, \delta_\Lambda)d\Lambda \\
+        &= r_\Lambda\\
+        &= \sup_\ta R(\ta,\delta_\Lambda)
+    \end{align*}
+    Thus $\delta_\Lambda$ is minimax. For (b), let $\Lambda'$ be another prior, then
+    \begin{align*}
+        r_{\Lambda'} & = \int_\Om R(\ta, \delta_{\Lambda'})d\Lambda'\\
+        &\le \int_\Om R(\ta, \delta_{\Lambda})d\Lambda'\\
+        &\le \sup_{\ta \in \Om} R(\ta, \delta_{\Lambda})\\
+        &= \int_\Om R(\ta, \delta_{\Lambda})d\Lambda\\
+        &= r_\Lambda.
+    \end{align*}
+    Thus $\Lambda$ is least favourable. For (c), suppose that $\delta$ is a minimax estimator, then 
+    \begin{align*}
+        r(\Lambda, \delta) &=\int_{\Om} R(\ta, \delta)d\Lambda \\
+        &\le \sup_{\ta \in \La} R(\ta,\delta)\\
+        &= \sup_{\ta \in \La}R(\ta,\delta_{\Lambda})\\
+        &=r_{\Lambda}.
+    \end{align*}
+    Thus $\delta$ is the Bayes estimator of the prior $\Lambda$. It follows that if $\delta_{\Lambda}$ is the unique Bayes estimator for $\Lambda$, then $\delta_{\Lambda}$ is the unique minimax estimator.
+\end{proof}
+\begin{ex}
+    Suppose $X \sim \text{Bin}(n,\ta)$ and we want to find the minimax estimator of $\ta$ under squared error loss. Our goal is to find a Bayes estimator that has constant risk. This would automatically give
+    \[r_{\Lambda} = \sup_{\ta \in \Om} R(\ta,\delta_{\Lambda}). \]
+    We previously say that if $\Ta$ has a Beta$(a,b)$ prior, then the Bayes estimator has the form 
+    \[\delta_\Lambda(x) = \frac{x+a}{a+b+n}.\]
+    We wish to find $a,b$ such that this estimator has constant risk. Note that
+    \begin{align*}
+        R(\ta,\delta_\Lambda) &= \E_\ta \left[\left(\frac{x+a}{n+a+b}-\ta\right)^2\right]\\
+        &=\frac{1}{(n+a+b)^2}\E_\ta\left[\left(X+a-\ta(n+a+b)\right)^2\right]\\
+        &=\frac{1}{(n+a+b)^2}\E_\ta\left[\left(X-n\ta +a(1-\ta)-b\ta\right)^2\right]\\
+        &=\frac{1}{(n+a+b)^2}\left[\V_\ta(X-n\ta) +(a(1-\ta)-b\ta)^2\right]\\
+        &=\frac{1}{(n+a+b)^2}\left[n\ta(1-\ta) +(a(1-\ta)-b\ta)^2\right].
+    \end{align*} 
+    Thus we wish to find $a,b$ such that $n\ta(1-\ta)+(a(1-\ta)-b\ta)^2$ is constant in $\ta$. The solution is $a=b=\frac{\sqrt{n}}{2}$. Thus
+    \[\delta_\Lambda(x) = \frac{x+\frac{\sqrt{n}}{2}}{n+\sqrt{n}}, \]
+    is a minimax estimator for $\ta$.
+\end{ex}
+\end{document}

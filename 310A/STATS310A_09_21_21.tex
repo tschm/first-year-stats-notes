@@ -1,0 +1,112 @@
+\include{preamble}
+\include{definitions}
+
+\title{STATS 310A - Lecture 1}
+\author{Michael Howes}
+
+\begin{document}
+\maketitle
+\section{A typical problem}
+The basic problem in probability is as follows. We are given a set $\Om$, a subset $A \subseteq \Om$ and a function $\theta : \Om \to [0,1]$ satifsying $\sum_{\omega \in \Om}\theta_\omega = 1$. The goal is to calculate or approximate $\Pa(A) = \sum_{\w \in A} \beta_\w$. 
+
+\begin{ex}
+    \emph{[The birthday paradox]} How many people $k$ do you need in a group to have a 50/50 chance that two or more have the same birthday? Let's answer this when there are $N$ days in the year. We can then set $\Om = [N]^k$ where $[N] = \{1,2,\ldots,N\}$. The set where everyone has a different birthday is $A = \{(x_1,\ldots,x_k) \in \Om \mid x_i \neq x_i \text{ if } i \neq j\}$. Suppose $\theta_\w =  \frac{1}{N^k}$ which means every combination of birthdays is equally likely. Then $\Pa(A) = \frac{\abs{A}}{N^k}$ and $\abs{A} = N(N-1)(N-2)\ldots(N-k+1)$. So we can conclude that
+    \begin{IEEEeqnarray*}{rCl}
+        \Pa(A) &=& \frac{N(N-1)(N-2)\ldots(N-k+1)}{N}\\
+        &=& \prod_{i=0}^{k-1}\frac{N-i}{N}\\
+        &=& \prod_{i=0}^{k-1}\left(1-\frac{i}{N}\right).
+    \end{IEEEeqnarray*}
+    While this is an exact answer for $\Pa(A)$ it is not very interpretable and it isn't clear which $k$ satisfies $\Pa(A) = \frac{1}{2}$. We will thus do an approximation using $\log(1-x) = -x+O(x^2)$. Thus
+    \begin{IEEEeqnarray*}{rCl}
+        \Pa(A) &=& e^{\sum_{i=1}^{k-1}log\left(1-\frac{i}{N}\right)}\\
+        &=&e^{\sum_{i=1}^{k-1}\left(-\frac{i}{N} + O((i/N)^2)\right)}\\
+        &=&e^{-\frac{1}{N}\binom{k}{n}+O(k^3/N^2)}\\
+        &\sim& e^{-\frac{k^2}{2N}} \quad \text{ if } k = o(N^\frac{2}{3}),
+    \end{IEEEeqnarray*}
+    where $a_n \sim b_n$ means $\lim_{n \to \infty} \frac{a_n}{b_n} = 1$. Setting $e^{-\frac{k^2}{2N}}=\frac{1}{2}$ gives $\frac{k^2}{2N} = \log(2)$ and thus $k = \sqrt{2\log(2)N}$, when $N = 365$, we have $k \approx 23$.
+
+    This model has been applied to analysing claims of voting fraud. There were claims that the election was faked because many people had the same name and date of birth. This model can inform us how people we would expect to have the birthday once we have grouped them by name and year. Not that if the probability of each day is not uniform then $\Pa(A)$ increases.
+\end{ex}
+
+\begin{exer}
+    For what value of $k$ are there even odds that 3 or more people have the same bday.
+\end{exer}
+
+\section{Admin and overview}
+In this course, we will be taught three things.
+\begin{enumerate}
+    \item Measure theoretic probability. Many people ask why we should worry about these details of probability/statistics. One answer is
+    \begin{itemize}
+        \item We need it to work with infinite sequence spaces.
+        \item We often work with probabilities on manifolds for example the space \[\left\{x \in \R^n \mid \prod_{i=1}^n x_i = p, \sum_{i=1}^n x_i = s \right\},\]
+        can be used to assess goodness of fit for a Gamma distribution.
+        \item We will work with probabilities on large sets for example $\Po(\Omega)$ [the set of all probability distributions on $\Omega$]. This is one framework for Bayesian analysis.
+    \end{itemize}
+    \item Basic limit theorems: law of large numbers, CLT, Stein's method, Fourrier analysis, Poission convergence, stable laws.
+    \item Probabilistic intuition.
+\end{enumerate}
+
+The book we will use is Pat Billingsley's ``Probability and Measure''. We will study the first two thirds. Many assignment questions will come from Billingsley.  
+
+We will have weekly homework, a midterm and a final. The weighting is 30\% homework, 30 \% midterm and 40 \% final.
+
+\section{Coin flips model}
+Set $\Omega = (0,1]$ and for $a < b$ define $p((a,b]) = b-a$. If $A = \cup_{i=1}^n (a_i,b_i]$ and the intervals $(a_i,b_i]$ are disjoint, then define 
+\[p(A) = \sum_{i=1}^n b_i-a_i. \]
+For each $\w \in \Om$, we can express $\w$ in binary 
+\[\w = \sum_{i=1}^\infty \frac{d_i(\w)}{2^i} = 0.d_1(\w)d_2(\w)\ldots. \]
+If there are two binary expansions for $\w$, pick the non-terminating one. The function $d_i$ selects the $i^{th}$ bit of $\w$. 
+\begin{thrm}
+    \emph{[Weak Law of Large Numbers]} For every $\varepsilon >0 $,
+    \[\lim_{n \to \infty} p\left(\left\{\w \in \Om \mid \abs{\frac{1}{n} \sum_{i=1}^n d_i(\w) - \frac{1}{2}} > \varepsilon\right\}\right)=0. \]
+\end{thrm}
+Note that implied in this theorem is that the set
+\[A_n = \left\{\w \in \Om \mid \abs{\frac{1}{n} \sum_{i=1}^n d_i(\w) - \frac{1}{2}} > \varepsilon\right\},\]
+can be written as a finite union of intervals.
+\begin{proof}
+    Note that each $d_i$ is a step function of intervals and thus so is $\frac{1}{n} \sum_{i=1}^n d_i$ and thus the preimage of $\left(\frac{1}{2}-\varepsilon, \frac{1}{2}+\varepsilon\right)$ under $d_i$ is a finite union of intervals. Thus $p(A_n)$ is well defined.
+
+    Now define $r_i(\w) = 2d_i(\w) -1 \in \{1,-1\}$. Thus $d_i = \frac{r_i+1}{2}$ and so 
+    \begin{IEEEeqnarray*}{rCl}
+        \frac{1}{n}\sum_{i=1}^n d_i(\w) &=& \frac{\sum_{i=1}^n r_i(\w)+1}{2n}\\
+        &=&\frac{1}{2n}\sum_{i=1}^n r_i(\w) + \frac{1}{2}.
+    \end{IEEEeqnarray*}
+    Thus we have 
+    \[A_n = \left\{\abs{\frac{1}{2n}\sum_{i=1}^n r_i} > \varepsilon\right\}. \]
+    Note that $\int_0^1 r_i(\w)d\w = 0$ and 
+    \[\int_0^1 r_i(\w)r_j(\w)d\w = \begin{cases}
+        1 &\text{if } i =j,\\
+        0& \text{else.}
+    \end{cases} \]
+    These two facts give that $\int_0^1 r_i^2(\w)d\w = n$. Thus by Markov's inequality we have
+    \[p(A_n) = p\left(\abs{\sum_{i=1}^nr_i}^2 > n^2\varepsilon^2 \right) \le \frac{n}{n^2\varepsilon} = \frac{1}{n\varepsilon^2}. \]
+    Thus $p(A_n) \to 0$ as $n \to \infty$.
+\end{proof}
+
+\begin{prop}
+    \emph{[Markov's inequality]} Let $f$ be a non-negative step function on $(0,1]$, then \[p(\{\w \mid f(\w) > a\}) \le \frac{1}{a}\int_0^1 f(\w)d\w\] 
+    for all $a > 0$.
+\end{prop}
+\begin{proof}
+    Note that 
+    \begin{IEEEeqnarray*}{rCl}
+        ap({\w \mid f(\w) > a}) &=& \int_{\{\w \mid f(w) > a\}}a d\w \\
+        &\ge& \int_{\{\w \mid f(w) > a\}}f(\w) d\w\\
+        &\ge & \int_0^1 f(\w)d\w.
+    \end{IEEEeqnarray*}
+    Dividing by $a$ gives the result.
+\end{proof}
+The weak law says that $\frac{1}{n}\sum_{i=1}^nd_i(\w)$ is close to $\frac{1}{2}$ for each $n$ large with high probability. The strong law asks for which $\w$ do we have $\frac{1}{n} \sum_{i=1}^n d_i(\w) \to \frac{1}{2}$ as $n \to \infty$. This does not hold for all $\w$ for $\w = 0.01111111\ldots$, the above limit converges to 1. For $\w = 0.0110000111111110000000000000000\ldots$, this limit does not even exist. We wish to say that the limit is equal to $\frac{1}{2}$ for ``most''$\w \in \Om$.
+\begin{defn}
+ A set $A \subseteq \Om$ is \emph{nelligable} if for every $\varepsilon >0$, there exists $\{(a_i,b_i]\}_{i=1}^\infty$ such that 
+ \[A \subseteq \bigcup_{i=1}^\infty (a_i,b_i] \text{ and } \sum_{i=1}^\infty b_i-a_i < \varepsilon.\]
+\end{defn}
+\begin{thrm}
+    Let 
+    \[A = \left\{\w \mid \lim_{n\to \infty}\frac{1}{n}\sum_{i=1}^n d_i(\w)= \frac{1}{2}\right\},\]
+    then $A^c$ is nelligable. 
+\end{thrm}
+This theorem will be proved next lecture. For now note that
+\[A = \bigcap_{k=1}^\infty \bigcup_{N = 1}^\infty \bigcap_{n=N}^\infty \left\{\w \mid \abs{\frac{1}{n}\sum_{i=1}^n d_i(\w)-\frac{1}{2}}<\frac{1}{k}\right\}. \]
+A last remark on the weak law. The estimate $p(A_n) < \frac{1}{n\varepsilon^2}$ is very loose. For instance if $\varepsilon = \frac{1}{100}$, then we need to take $n$ much greater than 10000 to be gauranteed a low error. Better bounds are possible.
+\end{document} 

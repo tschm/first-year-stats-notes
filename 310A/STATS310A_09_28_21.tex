@@ -1,0 +1,144 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 3}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{9/28/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 3}
+\lhead{9/28/21}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Homework}
+Read chapters 3 and 4.
+Do book questions 3.6, 3.7, 3.8, 4.5, 4.15 in the books.
+If $\xi_n > 0$, $\xi_n \to \infty$ and $\frac{\xi_n}{\sqrt{n}} \to 0$, then 
+\[P\{S_n > \sqrt{n}\xi_n\} \ge \exp(-(1+o(1))\xi_n^2/2). \]
+See canvas for more details. There are some hints for textbook questions in the back of the textbook.
+
+\section{Extending measures}
+Recall our set up: $\Om$ is a set, $\F_0$ is an algebra of subsets of $\Om$, $P$ is a probability measure on $\F_0$.
+
+A set $A \subseteq \Om$ is measurable if
+\[P^*(E) = P^*(E \cap A) + P^*(E \cap A^c), \]
+for all $E \subseteq \Om$. Where we defined
+\[P^*(B) = \inf\left\{\sum_{i=1}^\infty P(A_i) : A_i \in \F_0 \text{ and } B \subseteq \bigcup_{i=1}^\infty A_i\right\}. \]
+Let $\Ma$ be the set of measurable subsets of $\Om$. We have been proving the following:
+\begin{thrm}
+    Let $P^*$ and $\Ma$ be as above, then
+    \begin{itemize}
+        \item $\Ma$ is $\sigma$-algebra.
+        \item $P^*$ is a probability on $\Ma$.
+        \item $P^*$ extends $P$ on $\F_0 \subseteq \Ma$.
+        \item $P^*$ is unique
+    \end{itemize}
+\end{thrm}
+Last time we showed that $\Ma$ is an algebra. We used the key trick that $A \in \Ma$ if and only if
+\[P^*(E) \ge P^*(E \cap A) + P^*(E \cap A^c), \]
+since the other inequality always holds by subadditivity.
+
+\underline{Step 1}
+If $A_i \in \Ma$ is a countable collection of disjoint sets, then for every $E \subseteq \Om$,
+\[P^*\left(E \cap \left(\bigcup_{i=1}^\infty A_i\right)\right) =\sum_{i=1}^\infty P^*(E \cap A_i).\]
+\begin{proof}
+    We first prove the above for finite unions $A_1,\ldots, A_n$. If $n=1$, then we simply have 
+    \[P^*(E \cap A_1) = P^*(E \cap A_1). \]
+    Suppose $n=2$. Since $A_1 \in \Ma$ and $A_1 \cap A_2 = \emptyset$, we have
+    \begin{IEEEeqnarray*}{rCl}
+        P^*(E \cap (A_1 \cup A_2))&=& P^*(E \cap (A_1 \cup A_2)\cap A_1) + P^*(E \cap (A_1 \cup A_2) \cap A_1^c)\\
+        &=& P^*(E \cap A_1) + P^*(E \cap A_2).
+    \end{IEEEeqnarray*}
+    Thus the result holds for $n=2$. Since $\Ma$ is a field we can use induction to conclude the result for general $n \in \N$. Now suppose $A = \bigcup_{i=1}^\infty A_i$, where the sets $A_i$ are disjoint and measurable. Let $F_n = \bigcup_{i=1}^n A_i$, then 
+    \begin{IEEEeqnarray*}{rCl}
+        P^*(E \cap A) &\ge & P^*(E \cap F_n)\\
+        &=& \sum_{i=1}^n P^*(E \cap A_i).
+    \end{IEEEeqnarray*}
+    Thus $P^*(E \cap A) \ge \sum_{i=1}^\infty P^*(E \cap A)$. Also $P^*(E \cap A)\le \sum_{i=1}^\infty P^*(E \cap A_i)$ by countable subadditivity.
+\end{proof}
+
+\underline{Step 2} The collection $\Ma$ is a $\sigma$-algebra and $P^*$ is countably additive on $\Ma$. 
+\begin{proof}
+    If $E = \Om$ in step 1, then we can immediately see that $P^*$ is countably additive on $\Ma$. To show $\Ma$ is a $\sigma$-algebra, we need to show that $\Ma$ is closed under countable unions.
+
+    Let $A_i \in \Ma$ for each $i \in \N$. If we define $A_i' = A_i \cap \left(\bigcup_{j=1}^{i-1} A_j^c\right)$, then $A_i' \in \Ma$, the sets $A_i'$ are disjoint and $\bigcup_{i=1}^\infty A_i = \bigcup_{i=1}^\infty A_i'$. Thus we may assume that the sets $A_i$ are disjoint.
+
+    As before, define
+    \[F_n = \bigcup_{i=1}^nA_i \text{ and } A = \bigcup_{i=1}^\infty A_i. \]
+    Note that $A^c \subseteq F_n^c$. We know that $F_n \in \Ma$ and thus for any $E \subseteq \Om$,
+    \begin{IEEEeqnarray*}{rCl}
+        P^*(E) &=& P^*(E \cap F_n) + P^*(E \cap F_n^c)\\
+        &=& \sum_{i=1}^n P^*(E \cap A_i) + P^*(E \cap F_n^c)\\
+        &\ge& \sum_{i=1}^nP^*(E \cap A_i) + P^*(E \cap A^c). 
+    \end{IEEEeqnarray*}
+    Letting $n$ go to infinity we can conclude 
+    \[P^*(E) \ge \sum_{i=1}^\infty P^*(E \cap A_i) + P^*(E \cap A^c) = P^*(E \cap A) + P^*(E \cap A^c), \]
+    thus $A \in \Ma$.
+\end{proof}
+\underline{Step 3} $\F_0 \subseteq \Ma$.
+\begin{proof}
+    Pick $A \in \F_0$, $E \subseteq \Om$ and $\varepsilon > 0$. Find a collection $(A_i)_{i=1}^\infty$ such that $E \subseteq \bigcup_{i=1}^\infty A_i$, $A_i \in \F_0$ and $\sum_{i=1}^\infty P(A_i) \le P^*(A)+\varepsilon$.
+    Let $B_n = A_n\cap A$ and $C_n = A_n \cap A^c$. Then $E \cap A \subseteq \bigcup_{n=1}^\infty B_n$ and $E \cap A^c \subseteq \bigcup_{n=1}^\infty C_n$ and $B_n, C_n \in \F_0$. Thus
+    \[P^*(E \cap A) \le \sum_{n=1}^\infty P(B_n) \text{ and } P^*(E \cap A^c) \le \sum_{n=1}^\infty P(C_n). \]
+    Thus
+    \begin{IEEEeqnarray*}{rCl}
+        P^*(E) &\ge&\sum_{n=1}^\infty P(A_n))-\varepsilon\\
+        &=&\left(\sum_{n=1}^\infty P(B_n)+P(C_n)\right)-\varepsilon\\
+        &=&\left(\sum_{n=1}^\infty P(B_n) +\sum_{n=1}^\infty P(C_n)\right)-\varepsilon\\
+        &\ge & P^*(E \cap A) + P^*(E \cap A^c) -\varepsilon.
+    \end{IEEEeqnarray*} 
+    Letting $\varepsilon$ go to 0, we see that $P^*(E) \ge P^*(E \cap A) + P^*(E \cap A^c)$ so $A \in \Ma$.
+\end{proof}
+\underline{Step 4} If $A \in \F_0$, then $P^*(A) = P(A)$. (see proof in the textbook).
+
+\section{Uniqueness of the extension}
+We will use the $\pi-\lambda$ theorem.
+\begin{defn}
+    A collection of sets $\Po$ is a \emph{$\pi$-system} if $\Po$ is closed under finite intersection.
+\end{defn}
+
+\begin{defn}
+    A collection of sets $L$ is a \emph{$\lambda$-system} if
+    \begin{enumerate}
+        \item $\Om \in L$,
+        \item $A \in L$ implies $A^c \in L$,
+        \item $L$ is closed under countable disjoint unions.
+    \end{enumerate}
+\end{defn}
+\begin{ex}
+    If $\Om = \{1,2,3,4\}$, then 
+    \[S = \{\emptyset, \Om, \{1,2\}, \{1,3\}, \{1,4\}, \{2,3\}, \{2,4\}, \{3,4\} \},\]
+    is a $\la$-system but not a $\pi$-system and not an algebra.
+\end{ex}
+The following is due to Dynkin and is a clean subsititute for monotone class arguments.
+\begin{thrm}
+    If $\Po$ is a $\pi$-system and $L$ is a $\la$-system and $\Po \subseteq L$, then $\sigma(\Po) \subseteq L$.
+\end{thrm}
+As an immediate application we have the following.
+\begin{prop}
+    Suppose $\F_0$ is an algebra of subsets of $\Om$ and $P$ is a probability on $\F_0$. If $P'$ and $P''$ are two probability measures on $\sigma(\F_0)$ that extend $P$, then $P' = P''$.
+\end{prop}
+\begin{proof}
+    Let $L = \{A \in \sigma(\F_0) : P'(A) = P''(A)\}$. Then $L$ is a $\lambda$-system and since $\F_0$ is a $\pi$-system contained in $L$, we have $\sigma(\F_0) \subseteq L$ and thus $P'$ and $P''$ agree on $\sigma(\F_0)$.
+\end{proof}
+Note that in the case of section 2 we know that $\sigma(\F_0) \subseteq \Ma$. 
+
+\begin{cor}
+    Lebesgue measure ($P^*$ on $(0,1]$) is the unique extension of length to the Borel sets.
+\end{cor}
+
+\underline{Important note}: When extending from $\F_0$ to $\Ma$, we started with a probability on $\F_0$. This means that if $A \in \F_0$ and $(A_i)_{i=1}^\infty$ is a countable disjoint collection of sets in $\F_0$ such that $A = \bigcup_{i=1}^\infty A_i$, then $P(A) =\sum_{i=1}^\infty P(A_i)$. Proving this in the Lebesgue measure case requires the Heine-Borel theorem. We need to use compactness of closed, bounded intervals at some point.
+\section{Comments on homework}
+\begin{itemize}
+    \item 3.6-3.8 are similar to what we have done in class but for finitely additive measures.
+    
+    \item 4.5 is about limit superiors and limit inferiors. 
+    
+    \item 4.15 is about showing that the square free numbers have density $6\pi^2$!
+\end{itemize}
+\end{document}

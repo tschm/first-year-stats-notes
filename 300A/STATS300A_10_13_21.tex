@@ -1,0 +1,121 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 8}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/07/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 8}
+\lhead{10/13/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcement}
+\begin{itemize}
+    \item Recommending reading on Bayesian vs Frequentist modeling in the scribed notes. 
+    \item Andrew Gelman's blog is highly recommended.
+    \item ``Why isn't everyone a Bayesian?'' by Brad Efron is also recommended.
+    \item Midterm is in two weeks in class on Oct 27th.
+    \item Last year's midterm will be posted to Canvas.
+    \item There will be a section for midterm revision.
+    \item The exam is open book.
+\end{itemize}
+\section{Recap}
+We have a new optimality goal: minimize the average risk. That is minimize
+\[r(\Lambda, \delta)= \E[r(\Theta, \delta(X))], \]
+where $\Theta \sim \Lambda$ and $X |\Theta = \ta \sim \Pa_\ta$. We saw that it suffices to minimize the posterior risk. That is the Bayes estimator is given by 
+\[\delta_\Lambda(x) = \arg\min_\delta \E[L(\Theta, \delta)|X=x]. \]
+We saw an example yesterday when we had 
+\begin{itemize}
+    \item Prior: Beta distribution.
+    \item Likelihood: Binomial.
+    \item Posterior: Beta distribution.
+\end{itemize}
+This is an example of \emph{conjugate priors}. 
+\begin{defn}
+    Given a family of distribution $\Po = \{\Pa_\ta :\ta \in \Om\}$, a family of priors $\{\Lambda_\xi : \xi \in \Xi\}$ are \emph{conjugate priors to } $\Po$, if for every  $x \in \X$ and $\xi \in \Xi$, there exists $\xi' \in \Xi$, such that $\Lambda_\xi | X=x $ has distribution $\Lambda_{\xi'}$.
+\end{defn}
+Such priors are computational convenient.
+\section{Examples}
+\subsection{Absolute error}
+Suppose that $L(\ta,d) = \abs{\ta - d}$, then $\delta_\Lambda$ is the median of the posterior distribution.
+\subsection{Weighted squared error loss}
+Suppose that $L(\ta,d) = w(\ta)(\ta - d)^2$ for some weight function $w(\ta) \ge 0$. The Bayes estimator for this loss function minimises
+\[\E[w(\ta)(\ta-\delta)^2|X=x]. \]
+Note that
+\begin{align*}
+    \E[w(\ta)(\ta-\delta)^2|X=x]=& \E[w(\ta)\ta^2|X=x]-2\E[\delta w(\ta)\ta|X=x] + \E[w(\ta)\delta^2|X=x]\\
+    =& \E[w(\ta)\ta^2|X=x]-2\delta\E[w(\ta)\ta|X=x]+\delta^2\E[w(\ta)\delta^2|X=x].
+\end{align*}
+Thus the Bayes estimator is the value of $\delta$ that minimizes $-2\delta \E[w(\ta)\ta|X=x]+\delta^2\E[w(\ta)|X=x]$. Differentiating this with respect to $\delta$ we see that $-2[w(\ta)\ta|X=x]+2\delta \E[w(\ta)|X=x]$ and so
+\[\delta_{\Lambda}(x) = \frac{\E[\ta w(\ta)|X=x]}{\E[w(\ta)|X=x]}. \]
+An alternative solution to this problem is the define a new measure
+\[\Theta \sim w(\ta)d\Lambda(\ta). \]
+Then $\delta_\Lambda$ is the conditional expectation under the new measure. Thinking of $w(\ta)d\Lambda(\ta)$ as a new measure is a useful computational trick.
+\subsection{Binary classification}
+Suppose $\Om = \{0,1\}$. For example we may be classifying emails as either spam or not span. $X \sim f_0$ or $X\sim f_1$, $D = \{0,1\}$ and $L(\ta,d) = \one(\ta = d)$, where $\one(A)$ is the indicator function of $A$. Our prior $\Lambda$ is specified by $\pi(1) = p$, $\pi(0) = 1-p$. The average risk of an estimator is $P(\delta(X) \neq \Theta)$. We want to minimise
+\[P(\delta \neq \Theta | X=x) = P(\Theta = 1|X=x)\one(\delta = 0)+P(\Theta = 0|X=x)\one(\delta=1). \]
+Thus we can see that if $P(\Theta = 1|X=x) > P(\Theta = 0|X=x)$, then we will pick $\delta=1$ and otherwise we will pick $\delta = 0$. Note that $P(\Theta = 1|X=x) \propto pf_1(x)$ and $P(\Theta = 0|X=x) \propto (1-p)f_2(x)$. Thus we will set $\delta = 1$ if and only if 
+\[\frac{f_1(x)}{f_0(x)} > \frac{1-p}{p}. \]
+Continuing this example suppose we have $\la_0, \la_1 > 0$ and we know $X_1,\ldots,X_n \iid \text{Exp}(\la_\ta)$ where $\ta \in \{0,1\}$. With the same loss and prior as before we know that we will set $\delta = 1$ if and only if
+\[\frac{1-p}{p} < \frac{f_1(x)}{f_0(x)} = \frac{\la_1}{\la_0}\exb{-(\la_1-\la_0)\sum_{i=1}^n x_i}. \]
+Thus we set $\delta = 1$ if and only if $\sum_{i=1}^n x_i$ exceeds some value which is a function of $p,\la_0$ and $\la_1$. Thus the Bayes estimator depends only on the sufficient statistic $\sum_{i=1}^n X_i$. This is a general result. It holds because
+\[\pi(\ta | x) \propto f(x|\ta)\pi(\ta) \al g_\ta(T(x))h(x)\pi(\ta) \propto g_\ta(T(x))\pi(\ta), \]
+by the NFFC. 
+\subsection{Normal likelihood and normal prior}
+Suppose $X_1,\ldots, X_n \iid N(\ta, \sigma^2)$ where $\sigma^2$ is known and $\Theta \sim N(\mu, b^2)$ where both $\mu$ and $b^2$ are known. We then have
+\begin{align*}
+    \text{posterior }\propto&\text{prior}\times \text{likelihood}\\
+    \propto&e^{-\frac{1}{2b^2}(\ta-\mu)^2}\prod_{i=1}^n e^{-\frac{1}{2\sigma^2}(x_i-\ta)^2}\\
+    \propto&\exb{-\frac{1}{2}\ta^2\left(\frac{1}{b^2}+\frac{n}{\sigma^2}\right)+\ta\left(\frac{\mu}{b^2}+\sum_{i=1}^n \frac{x_i}{\sigma^2}\right)}.
+\end{align*}
+Thus the posterior has a normal distribution with parameters.
+\begin{align*}
+    \text{Variance } =&\frac{1}{\frac{1}{b^2}+\frac{n}{\sigma^2}},\\
+    \text{Mean } = & \left(\frac{\mu}{b^2}+\frac{n\bar{x}}{\sigma^2}\right)\cdot \frac{1}{\frac{1}{b^2}+\frac{n}{\sigma^2}}\\
+    =&\bar{x} \frac{\frac{n}{\sigma^2}}{\frac{1}{b^2}+\frac{n}{\sigma^2}}+\mu \frac{\frac{1}{b^2}}{\frac{1}{b^2}+\frac{n}{\sigma^2}}\\
+    =&\bar{x} w_1 + \mu w_2.
+\end{align*}
+Since $w_1+w_2=1$, we see that the Bayes estimator under squared error loss is again a convex combination of the UMVUE and the prior mean. We see again that the Bayes estimator depends only on the sufficient statistic $\bar{x}$. 
+\section{Evaluating Bayes estimators}
+\subsection{Bias}
+Under squared error loss Bayes estimators are always biased. More precisely:
+\begin{thrm}
+    If $\delta$ is unbiased for $g(\ta)$ with $r(\Lambda, \delta) < \infty$ and $\E[g(\Theta)^2]<\infty$, then $\delta$ is not the Bayes estimator under squared error loss unles $r(\Lambda, \delta) = 0$ (ie $g(\Theta) = \delta(X)$ with probability 1).
+\end{thrm}
+\begin{proof}
+    We will proceed by contradiction. Suppose that $\delta$ is both unbiased and the Bayes estimator. We know that the Bayes estimator under squared error loss is given by 
+    \[\delta(x) = \E[g(\Theta)|X=x].\]
+    It follows that
+    \[\E[g(\Theta)\delta(X)] = \E[\delta(X)\E[g(\Theta)|X=x]] =\E[\delta(X)^2]. \]
+    Also since $\delta(X)$ is unbiased, we have $\E[\delta(X)|\Theta = \ta] = g(\ta)$. This implies
+    \[\E[g(\Theta)\delta(X)] = \E[g(\Theta)\E[\delta(X)\Theta]] =\E[g(\Theta)^2].\]
+    Hence
+    \begin{align*}
+        r(\Lambda, \delta) &= \E[\left(g(\Theta)-\delta(X)\right)^2]\\
+        &=\E[g(\Theta)^2]-2\E[g(\Theta)\delta(X)]-\E[\delta(X)^2]\\
+        &=\E[g(\Theta)\delta(X)]-2\E[g(\Theta)\delta(X)]-\E[g(\Theta)\delta(X)]\\
+        &=0,
+    \end{align*}
+    as required.
+\end{proof}
+Suppose that $X_i \iid N(\ta,\sigma^2)$. The estimator $\delta(X) = \frac{1}{n}\sum_{i=1}^n X_i$ is not the Bayes estimator since it has risk $\frac{\sigma^2}{n} >0$ and $\delta$ is unbiased.
+\begin{thrm}
+A Bayes estimator with finite risk is admissible on the support of $\Lambda$. That is there are no estimators $\delta'$ satifying
+\begin{enumerate}
+    \item $R(\ta, \delta') \le R(\ta, \delta_\Lambda)$ with probability 1 under $\Lambda$.
+    \item $R(\ta,\delta') < R(\ta,\delta_\Lambda)$ for all $\ta \in \Om'$ for some $\Om' \subseteq \Om$ with $\Lambda(\Om') > 0$. 
+\end{enumerate}
+\begin{proof}
+    Suppose that there did exist such a $\delta'$. Then
+    \[r(\Lambda, \delta') = \int R(\ta,\delta')d\Lambda(\ta) < \int R(\ta, \delta_\Lambda)d\Lambda(\ta) =r(\Lambda, \delta_\Lambda),\]
+    a contradiction.
+\end{proof}
+\end{thrm}
+\end{document}

@@ -1,0 +1,158 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 5}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/04/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 5}
+\lhead{10/04/21}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Recap}
+We have the following techniques for finding optimal estimators.
+
+\begin{enumerate}
+    \item Conditioning and using Rao-Blackwellisation.
+    \item Solving $\E_\ta \delta(T) = g(\ta)$ for $\delta$.
+    \item Guessing.
+    \item Orthogonality constraints (to be discussed today).
+\end{enumerate}
+
+\section{An example from semi-parametrisation}
+Semi-parametrisation refers to the set up where $\theta$ is a finite dimensional parameter of interest but our set of measures $\Po$ is infinite dimensional. The following example is semi-parametric.
+
+$X_1, \ldots, X_n \iid F \in \F$ where $\F$ is the collection all cdfs which are symmetric around some $\ta \in \R$ and have finite second moment. The parameter $\ta$ is a function of $F \in \F$ and $\ta = \E_F[X_i]$. We wish to estimate $\ta$ from $X_1,\ldots,X_n$. One can ask, does a UMVUE exist for $\ta$? Suppose one does and call it $T$.
+\begin{enumerate}
+    \item Consider the submodel $\{N(\ta,1):\ta \in \R\}$, then we know that $\bar{X}_n$ is the UMVUE for $\ta$. This estimator is also unbiased on the full model $\F$.
+    \item The risk of $T$ and $\bar{X}_n$ must be equal on the submodel since the are both UMVUE on the submodel. 
+    \item Since $\bar{X}_n$ is the unique UMVUE on the submodel we must have $T = \bar{X}_n$.
+    \item Repeat (a)-(c) for the new submodel $\{\text{Unif}[\ta-1,\ta + 1]:\ta \in \R\}$. The UMVUE for this model is also unique by completeness and it does not equal $\bar{X}_n$ (see homework for a calculation of this estimator). This estimator is again unbiased on the whole model.
+    \item This gives us a contradiction since $T$ cannot be equal to the two different UMVUEs.
+\end{enumerate}
+
+\section{Orthogonality}
+Suppose $\delta_i$ is a UMVUE for $g_i(\ta)$. Can we conclude that $\sum_i \delta_i$ is UMVUE for $\sum_i g_i(\ta)$?
+
+\begin{defn}
+    Define the set $\Delta$ as follows $\Delta = \{\delta(X) : \E_\ta(\delta(X)^2) < \infty, \text{ for all } \ta \}$.
+\end{defn}
+
+\begin{thrm}
+    \emph{[TPE 2.17]}
+    $\delta_0 \in \Delta$ is the UMVUE for $g(\ta) = \E_\ta \delta_0(X)$ if and only if $\E_\ta \delta_0(X)U = 0$ for all $\ta$ and all $U \in \Delta$ such that $\E_\ta U = 0$.
+\end{thrm}
+\begin{proof}
+    See scribed notes.
+\end{proof}
+We can now answer our question with a yes! If each $\delta_i$ is the UMVUE for $g_i(\ta)$, then $\E_\ta[\delta_i(X)U] = 0$ for all first order ancillary $U$. Furthermore $\E_\ta[\sum_i \delta_i(X)] =\sum_i g_i(\ta)$ and \[\E_\ta[\sum_i \delta_i(X)U] = \sum_i \E_\ta [\delta_i(X)U]=0.\] Thus $\sum_i \delta_i(X)$ is the UMVUE for $\sum_i g_i(\ta)$.
+
+\section{Cramer-Rao lower bound (CRLB)}
+\begin{defn}
+    We define the \emph{log likelihood} of a density $p(x;\ta)$ to be 
+    \[l(x;\ta) = \log (x;\ta). \]
+    For this definition we require $p(x;\ta) > 0$ for all $x$ and $\ta$. We also define the \emph{score} or \emph{score function} to be 
+    \[S(x,\ta) = \partial_\ta l(x;\ta). \]
+\end{defn}
+Note that 
+\[p(x;\ta_0 + \varepsilon) = p(x;\ta_0)\exb{\varepsilon S(x,\ta_0)+ o(\varepsilon)}. \]
+Thus $p(x; \ta_0+\varepsilon)$ ``looks like'' an exponential family with parameter $\varepsilon$ and sufficient statistic $S(x,\ta_0)$.
+\begin{thrm}
+    \emph{[CRLB - Keener Thrm 4.9]} Let $p(x;\ta)$ be densities with $p(x;\ta) >0$ for all $x, \ta$ and such that $p(x;\ta)$ is differentiable in $\ta$. Suppose furthermore that for some function $g$
+
+    \begin{enumerate}
+        \item $\E_\ta[S(X,\ta)] = 0$.
+        \item $\E_\ta[S(X,\ta)\delta(X)] = g'(\ta)$.
+    \end{enumerate}
+    Then 
+    \[\V_\ta(\delta) \ge \frac{g'(\ta)^2}{I(\ta)},\]
+    where $I(\ta)$ is equal to 
+    \[I(\ta) = \E_\ta[S(X,\ta)^2], \]
+    and called the \emph{Fisher information}.
+\end{thrm}
+Some remarks on our two conditions. If $\delta(X)$ is unbiased for $g(\ta)$, then under some regularity conditions
+\begin{IEEEeqnarray*}{rCl}
+    g'(\ta)&=&\frac{d}{d\ta}\E_\ta[\delta(X)]\\
+    &=&\frac{d}{d\ta} \int p(x;\ta)\delta(x)d\mu(x)\\
+    &=&\int \frac{d}{d\ta} p(x;ta)\delta(x)d\mu(x)\\
+    &=&\int \frac{\frac{d}{d\ta}p(x;\ta)}{p(x;\ta)} \delta(x)p(x;\ta)d\mu(x)\\
+    &=&\int S(x,\ta)\delta(x)p(x;\ta)d\mu(x)\\
+    &=&\E_\ta[S(X,\ta)\delta(X)].
+\end{IEEEeqnarray*}
+Thus condition (b) is equivalent to regularity plus unbiased. Condition (a) is equivalent to a regularity condition on $p(x;\ta)$ and can be seen by taking $\delta(X) = 1$ and applying what we have done above. 
+
+We will now prove the CRLB.
+
+\begin{proof}
+    By Cauchy-Schwarz
+    \begin{IEEEeqnarray*}{rCl}
+        \abs{g'(\ta)}&=&\abs{\E_\ta[\delta(X)S(X;\ta)]}\\
+        &=&\abs{\text{Cov}_\ta(S(X;\ta),\delta(X))} \quad \text{since}\quad \E_\ta[S(X;\ta)]=0.\\
+        &\le&\sqrt{\text{Var}_\ta(S(X;\ta))\text{Var}_\ta(\delta(X))}.
+    \end{IEEEeqnarray*}
+    Squaring and dividing by $I(\ta) = \text{Var}_\ta(S(X;\ta))$ gives $\text{Var}_{\ta}(\delta(X)) \ge \frac{g'(\ta)^2}{I(\ta)}$.
+\end{proof}
+Another remark, if $\int \partial_\ta^2 p(x;\ta)d\mu(x) = \partial_\ta^2 \int p(x;\ta) d\mu(x) =0$, then
+\[I(\ta) = - \E_\ta[\partial_\ta^2 l(x;\ta)]. \]
+Thus we can think of $I(\ta)$ as a measure of curvature. Consider two cases
+\begin{enumerate}
+    \item Small changes in $\ta$ result in large changes in $l(x;\ta)$ (high Fisher information).
+    \item Small changes in $\ta$ result in small changes in $l(x;\ta)$ (low Fisher information).
+\end{enumerate}
+We want (a) when we are making inferences about $\ta$. Small changes in $\ta$ will result in large changes in the distribution of our data. Thus we can make precise statements about $\ta$ based on our data. 
+
+\begin{ex}
+    Suppose $X_1,\ldots, X_n \iid p(x;\ta)$. Then $p(x;\ta) = \prod_{i=1}^n p(x_i;\ta)$ and so $S(x_1,\ldots,x_n;\ta) = \sum_{i=1}^n S(x_i;\ta)$ and furthermore, by our iid assumption,
+    \[I_n(\ta) = \text{Var}_\ta(S(X_1,\ldots, X_n);\ta) = n\text{Var}_\ta(S(X_1);\ta) = nI(\ta).\]
+    This is one indiciation for why lower bounds scale at a rate of $\frac{1}{n}$ (under our regularity assumptions).
+\end{ex}
+There is another example in the scribed notes that relates to a Gaussian model.
+\section{Equivariance}
+
+We are done with unbiasedness and now we will look at restricting our estimators to respect certain symmetries. Consider the location model $X_1,\ldots,X_n \sim f_\ta(x)$ where $f$ is a known pdf, $\ta \in \R$ is unknown and $f_\ta(x) = f(x_1-\ta,\ldots, x_n - \ta)$. A special case of this is when $X_i$ are iid and thus $f_\ta(x) = \prod_{i=1}^n g(x_i-\ta)$ for some $g$.
+
+\begin{defn}
+    A model is called \emph{location invariant} if 
+    \[f_{\ta+c}(x+c) = f_\ta(x),\]
+    for all $\ta,x$ and $c$. 
+\end{defn}
+\begin{defn}
+    A loss function is called \emph{location invariant} if 
+    \[l(\ta+c,d+c) = l(\ta,d), \]
+    for all $\ta,d$ and $c$. 
+\end{defn}
+Note that squared error loss $l(\ta,d)= (\ta-d)^2$ is location invariant as is any other loss that is a function of $\ta - d$. In fact these are the only location invariant losses. Since if $l$ is location in variant then $l(\ta,d) = l(\ta -d,0) =: \rho(\ta - d)$.\
+\begin{defn}
+    A decision problem is \emph{location invariant} if the model and the loss function are both location invariant.
+\end{defn}
+\begin{defn}
+    An estimator $\delta$ is \emph{location equivariant} if 
+    \[\delta(X_1+c,\ldots,X_n+c) = \delta(X)+c. \]
+\end{defn}
+The sample mean, sample median and sample quartiles are all examples of location equivariant estimators.
+\begin{thrm}
+    \emph{[TPE 3.1.4]} If $\delta$ is a location equivariant estimator for a location invariant decision problem, then the risk, variance and bias of $\delta$ all are constant as functions of $\ta$.
+\end{thrm}
+\begin{proof}
+    We will prove that the risk is constant.
+    \begin{IEEEeqnarray*}{rCl}
+        R(\ta, \delta) &=& \E_\ta[l(\ta,\delta(X))]\\
+        &=&\E_\ta[l(0,\delta(X)-\ta)]\\
+        &=&\E_\ta[\rho(\delta(X)-\ta)]\\
+        &=&\int \rho(\delta(x)-\ta)p(x;\ta)d\mu(x)\\
+        &=&\int \rho(\delta(x_1-\ta,\ldots,x_n-\ta))p(x;\ta)d\mu(x)\\
+        &=&\int \rho(\delta(x_1-\ta,\ldots,x_n-\ta))p(x_1-\ta,\ldots,x_n-\ta;0)d\mu(x)\\
+        &=&\int \rho(\delta(x))p(x;0)d\mu(x)\\
+        &=&\E_0[\rho(\delta(X))]\\
+        &=&R(0,\delta).
+    \end{IEEEeqnarray*}
+    which does not depend on $\ta$. The bias and variance are similiar.
+\end{proof}
+The upshot of this theorem is that we can always compare equivariant estimators. We have restricted our class of estimators in such a way so that the risk is just a number. It is no longer a function of $\ta$.
+\end{document}

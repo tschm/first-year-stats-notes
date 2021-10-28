@@ -1,0 +1,133 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 5}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/05/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 5}
+\lhead{10/05/21}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Applying Borel Cantelli}
+Recall, $l_n(\w)=$ length of the head run starting at $n$. That is $l_n(\w)=k$ if and only if $d_n(\w)=d_{n+1}(\w)=\ldots=d_{n+k-1}(\w)=1$ and $d_{n+k}=0$. Last time we saw
+\[P(\w: l_n(\w) > (1+\varepsilon)\log_2(n)\; i.o) =0.\]
+We will now see
+\[P(w :l_n(w) > \log_2(n) \; i.o.) = 1.\]
+The problem is that the events $\{l_n \ge r_n\}$ are not independent. The trick is to use subsequences.
+
+\begin{prop}
+Let $r_n$ be a weekly increasing subsequence such that $r_n > 0$ and $\sum_{n=1}^\infty \frac{2^{-r_n}}{r_n} = \infty$ (for example $r_n = \log_2(n))$. Then $P(l_n \ge r_n\; i.o.) = 1$.
+\end{prop}
+\begin{proof}
+    Define a sequence $n_k$ by $n_1 = 1$ and $n_{k+1} = n_k + r_{n_k}$ so that $n_{k+1}-n_k = r_{n_k}$. Define $A_k = \{l_{n_k} \ge r_{n_k}\}$. Then $A_k = \{\w : d_i(\w)=1 \text{ for } n_k \le i \le n_{k+1}-1\}$ since $n_k + r_{n_k}=n_{k+1}$. Thus the events $\{A_k\}_{k=1}^\infty$ are independent. Note also that $P(A_k) = \frac{1}{2^{r_{n_k}}}$. The second Borel Cantelli theorem tells us that if
+    \[\sum_{k=1}^\infty P(A_k) = \infty, \]
+    then $P(A_k \; i.o.) = 1$. Note that
+    \begin{IEEEeqnarray*}{rCl+x+}
+        \sum_{k=1}^\infty P(A_k)&=&\sum_{k=1}^\infty 2^{-r_{n_k}} \\
+        &=&\sum_{k=1}^\infty 2^{-r_{n_k}} \frac{n_{k+1}-n_k}{r_{n_k}}\\
+        &=&\sum_{k=1}^\infty \sum_{n=n_k}^{n_{k+1}-1} \frac{2^{-r_{n_k}}}{r_{n_k}}\\
+        &\ge&\sum_{k=1}^\infty \sum_{n=n_k}^{n_{k+1}-1} \frac{2^{-{r_n}}}{r_n}\\
+        &=&\sum_{n=1}^\infty \frac{2^{-{r_n}}}{r_n}\\
+        &=&\infty.&\qedhere
+    \end{IEEEeqnarray*}
+\end{proof}
+\section{Homework}
+Read sections 10, 11 and 12.
+Do problems 10.3, 10.4, 11.2, 14.5 and two more.
+\section{Measure Theory}
+Let $\Om$ be a set and $\F$ an algebra of subsets of $\Om$.
+
+\begin{defn}
+    A \emph{measure} on $(\Om,\F)$ is a function $\mu : \F \to [0,\infty]$ such that 
+    \begin{enumerate}
+        \item (Non-trivial) $\mu(\emptyset)=0$.
+        \item (Monotone) If $A,B \in \F$ and $A\subseteq B$, then $\mu(A) \le \mu(B)$.
+        \item (Countable additivity) If $\{A_i\}_{i=1}^\infty$ is a countable collection of disjoint subsets in $\F$ and $\bigcup_i A_i \in \F$, then
+        \[\mu\left(\bigcup_{i=1}^\infty A_i\right)=\sum_{i=1}^\infty \mu(A_i).\]
+    \end{enumerate}
+\end{defn}
+For example with $\Om =\R$ and $\F$ equal to the collection of all subsets, then $\mu(\emptyset) = 0$ and $\mu(A) = \infty$ otherwise is a measure. Likewise $\mu(A) = $ \# of points in $A$, is also a measure of $(\Om,\F)$. 
+
+One might ask why we are doing this?
+\begin{enumerate}
+    \item We want to define probabilities via densities, that is we want to write
+    \[P(A) = \int_A f(\w)d\mu(\w), \]
+    where $\mu$ is a measure that is not necessarily a probability measure.
+    \item It's free from the hard work we've already done.
+\end{enumerate}
+A word of caution! For probabilities we had if $A \subseteq B$, then $P(B \setminus A) = P(B) - P(A)$. This is not true in general. For measures we hamy have $P(B)=P(A)=\infty$. For example if $\mu$ is Lesbegue measure, $B = (0,\infty)$ and $A = (x,\infty)$ for some $x \ge 0$, then $\mu(B \setminus A) = \mu((0,x]) = x$ but $\mu(B)=\mu(A) = \infty$.
+
+\begin{defn}
+    A measure $\mu$ on $(\Om,\F)$ is \emph{$\sigma$-finite} if there exists a countable collection $B_i \in \F$ s.t. $\bigcup_i B_i = \Om$ and $\mu(B_i) < \infty$ for all $i$.
+\end{defn}
+For example Lesebgue measure is $\sigma$-finite since we can set $B_i = (-i,i)$. The measure $\mu(A) = \# $ of points in  $A$ is not $\sigma$-finite on $\R$.
+\begin{thrm}
+    Suppose that we have two measure $\mu_1,\mu_2$ on $\sigma(\Po)$ where $\Po$ is a $\pi$-system. If $\mu_1$ and $\mu_2$ agree on $\Po$ and there exists a countable collection $B_i \in \Po$ such that $\mu_1(B_i)=\mu_2(B_i) < \infty$ and $\Om = \bigcup_i B_i$, then $\mu_1$ and $\mu_2$ agree on $\sigma(\Po)$.
+\end{thrm}
+\begin{proof}
+    For $B \in \Po$ with $\mu_1(B) < \infty$, define $L_B = \{A \in \sigma(\Po): \mu_1(A \cap B) = \mu_2(A \cap B)\}$. Then $L_B$ is a $\la$-system and it contains $\Po$ and thus by the $\pi$-$\lambda$ theorem $\sigma(\Po) = L_B$.
+
+    By assumption we have $\Om = \bigcup_i B_i$ where $B_i \in \Po$ and $\mu_1(B_i) < \infty$. Fix $A \in \sigma(\Po)$ and for $i=1,2$, note that, by the inclusion exclusion formula
+    \begin{IEEEeqnarray*}{rCl}
+        \mu_i\left(\bigcup_{j=1}^n A \cap B_i\right)&=&\sum_{j=1}^n \mu_i(A \cap B_j)-\sum_{1\le j < k \le n} \mu_i(A \cap B_j \cap B_k)+\ldots.
+    \end{IEEEeqnarray*}
+    Furthore more, finite interesections of $\{B_i\}_{i=1}^\infty$ are in $\Po$ and have finite measure. Thus since $L_B = \sigma(\Po)$ for all $B \in \Po$ with finite measure we have $\mu_1(A \cap B) = \mu_2(A \cap B)$ where $B$ is any finite intersection of $\{B_i\}_{i=1}^\infty$. Thus 
+    \[\mu_1\left(\bigcup_{j=1}^n A \cap B_i\right)=\mu_2\left(\bigcup_{j=1}^n A \cap B_i\right), \]
+    for all $n$. Letting $n \to \infty$ we see that $\mu_1(A)=\mu_2(A)$.
+\end{proof}
+Note that $\sigma$-finiteness is needed. If $\mu_1(A)=\#$ of points in $A$ and $\mu_2(A)=\infty$ if $A \neq \emptyset$, then $\mu_1=\mu_2$ on all intervals but $\mu_1\neq \mu_2$ on the Borel $\sigma$-algebra.
+\begin{defn}
+    Let $\Om$ be a set. An outer measure $\mu^*$ is a function defined on all subsets of $\Om$ such that
+    \begin{enumerate}
+        \item $\mu^*(A) \in [0,\infty]$
+        \item $\mu^*(\emptyset)=0$,
+        \item $\mu^*(A) \le \mu^*(B)$ if $A \subseteq B$, and
+        \item $\mu^*\left(\bigcup_{i=1}^\infty A_i\right)\le \sum_{i=1}^\infty \mu^*(A_i)$.
+    \end{enumerate}
+\end{defn}
+For example let $\Om$ be any set and let $\A$ be any collection of subsets of $\Om$ and let $\rho : \A \to [0,\infty]$ be any function such that $\rho(\emptyset)=0$. Then 
+\[\mu^*(A)= \inf\left\{\sum_{i=1}^\infty \rho(A_i): A \subseteq \bigcup_{i=1}^\infty A_i, A_i \in \A \right\}, \]
+where $\inf \emptyset=\infty$ is an outer measure. This can be seen by using the usual $\varepsilon2^{-i}$ trick to prove countable subadditivity.
+
+A special case of this is Hausdorff measure when $M \subseteq \R^n$ is a crinkly manifold or a fractal or something similar. We define $\A =\{B_\varepsilon(x):x\in \R^n, \varepsilon>0\}$ where $B_\varepsilon(x)$ is a ball of radius $\varepsilon$ centred at $x$. We then define $\rho_{n,\gamma}(B_\varepsilon(x))=(2\varepsilon)^\gamma$ and call the resulting $\mu_{n,\gamma}^*$ the $\gamma-$Hausdorff measure on $\R^n$.
+
+\begin{thrm}
+    Let $\mu^*$ be an outer measure on all subsets of $\Om$ and define
+    \[\Ma = \{A \subseteq \Om : \mu^*(E) =\mu^*(A \cap E) + \mu^*(A^c \cap E) \text{ for all } E \subseteq \Om\}, \]
+    then $\Ma$ is a $\sigma$-algebra and $\mu$ restricted to $\Ma$ is a measure.
+\end{thrm}
+\begin{proof}
+    Symbol for symbol, letter for letter, the same as the proof of the Caratheodory extension theorem.
+\end{proof}
+\section{Distribution functions}
+``People at microsoft research'' were putting probabilities on $\R^n$ using distribution functions in a funny way. 
+
+If $\Pa$ is a probability measure on $\R^n$ we can define a function $F : \R^n \to [0,1]$ by $F(x) = \Pa(A_x)$ where $A_x=\{y : y_i \le x_i, \text{ for } i =1,\ldots, n\}$. We call $F(x)$ the distribution function (DF) generated by $\Pa$. A distribution function satisfies the following
+\begin{itemize}
+    \item $\lim\limits_{x \to +\infty} F(x)=1$.
+    \item $\lim\limits_{x \to -\infty} F(x)=0$.
+    \item $F$ is monotone in each coordinate.
+    \item $F$ is right continuous. If $x_n \searrow x$, then $F(x_n) \searrow F(x)$.
+\end{itemize}
+But not every $F$ that satisfies the above is a DF. At microsoft they had the idea to take define on $\R^3$
+\[MS(x,y,z) = F(x,y,z)G(x,y)H(x), \]
+where $F,G$ and $H$ were all distribution functions. One can ask is $MS$ a distribution function? A function $F: \R^2 \to [0,1]$ is a distribution function if and only if
+\begin{enumerate}
+    \item $\lim\limits_{x \to +\infty} F(x)=1$.
+    \item $\lim\limits_{x \to -\infty} F(x)=0$.
+    \item $F$ is monotone in each coordinate.
+    \item $F$ is right continuous. If $x_n \searrow x$, then $F(x_n) \searrow F(x)$. 
+    \item For all $(x_1,y_1),(x_2,y_2)$ such that $x_1 \le x_2$ and $y_1 \le y_2$, we have
+    \[F(x_2,y_2)-F(x_2,y_1)-F(x_1,y_2)+F(x_1,y_1)\ge0. \]
+    This property requires that the probability of every rectangle is non-negative.
+\end{enumerate}
+Furthermore, if $F$ satisfies (a)-(e), then there is a unique probability measure $\Pa$ on $\R^2$ such that $\Pa(A_{(x,y)}) =F(x,y)$.
+
+\end{document}

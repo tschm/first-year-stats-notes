@@ -1,0 +1,166 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 7}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{10/11/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 7}
+\lhead{10/11/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Overview of optimal estimation}
+\begin{itemize}
+    \item We have seen that uniformly best estimators do not exist.
+    \item We can constrain our class of estimators eg unbiased, equivariant.
+    \item We can also collapse the risk via Bayesian estimation or minimax estimation.
+\end{itemize}
+Today we will finish up on equivariance and discuss Bayesian estimation.
+\section{Equivariance}
+Recall that if $\delta_0$ is any equivariant estimator, and $v^*(y)$ is defined to be the value $v$ that minimises
+\[\E_0[\rho(\delta_0(X)-v)|Y=y], \]
+where $Y=(X_1-X_n,\ldots,X_{n-1}-X_n)$, then $\delta^*(X) = \delta_0(X) - v^*(Y)$ is MRE.
+\subsection{MREs vs UMRUES}
+\begin{itemize}
+    \item MREs depend on the loss function.
+    \item UMRUES do not depend on the loss function provided the loss function is strictly convex. This is because the UMRUE is often the unique unbiased estimator that is a function of a complete sufficient statistic.
+    \item UMRUES do not always exist.
+    \item MREs usually do exist and we can find them via an optimisation procedure.
+    \item UMRUES are often \emph{inadmissible}.
+    \item Pitman's estimator is admissible under weak regularity conditions (Stien 1959).
+    \item MREs are often biased if something other squared error loss if being used.
+\end{itemize}
+\subsection{Risk unbiasedness}
+\begin{defn}
+    An estimator $\delta$ for $g(\ta)$ is risk unbiased for the loss $L(\ta,d) = f(g(\ta)-d)$ if all $\ta,\ta'$
+    \[\E_\ta[L(\ta,\delta(X))] \le \E_{\ta'}[L(\ta',\delta(X))]. \]
+\end{defn}
+
+Intuitively this says the true parameter $\ta$ penalises less than the false parameter $\ta'$. If $L$ is squared error loss, then this is the same as regular unbiasedness.
+\begin{thrm}
+    \emph{[TPE 3.127]} If $\delta$ if MRE for a location invariant decision problem, then $\delta$ is risk unbiased.
+\end{thrm}
+\begin{proof}
+    [Sketch] Prove the contrapositive. Show that if $\delta$ is not risk unbiased, then a shifted version of $\delta$ has strictly lower risk.
+\end{proof}
+\section{Location-Scale Models}
+Suppose that $X=(X_1,\ldots, X_n)$ has the joint density
+\[f_{\ta,\tau}(x_1,\ldots, x_n) = \frac{1}{\tau^n}f\left(\frac{x_1-\ta}{\tau},\ldots, \frac{x_n-\ta}{\tau}\right). \]
+Our parameters are the \emph{location} $\ta \in \R$ and \emph{scale} $\tau > 0$. 
+\begin{ex}
+    Suppose $X_1,\ldots, X_n \iid \Na(\ta, \tau^2)$, then 
+    \begin{IEEEeqnarray*}{rCl}
+        f(x_1,\ldots, x_n) &=& \frac{1}{(\sqrt{2 \pi} \tau)^n} \exb{-\frac{1}{2\tau^2}\sum_{i=1}^n (x_i-\ta)^2}\\
+        &=&\frac{1}{\tau^n}\frac{1}{\sqrt{2 \pi}^n} \exb{-\frac{1}{2}\sum_{i=1}^n \left(\frac{x_i-\ta}{\tau}\right)^2}\\
+        &=&\frac{1}{\tau^n}g\left(\frac{x_1-\ta}{\tau},\ldots,\frac{x_n-\ta}{\tau}\right),
+    \end{IEEEeqnarray*}
+    where $g \sim \Na(0,I_n)$.
+\end{ex}
+Note that if $X_i$ has a location-scale distribution $(\ta,\tau)$, then $X'_i = aX_i+b$ has a loc-scale distribution $(a\ta+b, a\tau)$ if $a>0$ and $b \in \R$. Our goal is to estimate $\ta$, we are not interested in estimating $\tau$ and we call $\tau$ a \emph{nuissance parameter}.
+
+\begin{defn}
+    A loss function is \emph{loc-scale invariant} if 
+    \[L((a\ta+b,a\tau), ad+b) = L((\ta,\tau),d), \]
+    for all $a >0$ and $b \in \R$. This is equivalent to requiring that $L((\ta,\tau),d)$ is a function of $\frac{\ta-d}{\tau}$.
+\end{defn}
+
+\begin{defn}
+    A model $\Po = \{P_(\ta,\tau) : (\ta,\tau) \in \Om \}$ is \emph{loc-scale invariant} if 
+    \[f_{(a\ta+b,a\tau)}(ax+b) = f_{(\ta,\tau)}(x), \]
+    for all $a >0$ and $b \in \R$.
+\end{defn}
+\begin{defn}
+    An estimator $\delta$, is \emph{loc-scale equivariant} if 
+    \[\delta(aX+b) = a\delta(X)+b, \]
+    for all $a > 0$ and $b \in \R$.
+\end{defn}
+
+\begin{thrm}
+    Suppose we have a loc-scale invariant loss and model. Let $\delta_\tau^*$ be the MRE in the submodel where $\tau$ is fixed.
+
+    If $\delta_\tau^*$ does not depend on the scale $\tau$, then $\delta^* = \delta_\tau^*$ is the MRE for the full mode. That is for any loc-scale equivariant estimator $\delta'$,
+    \[R((\ta,\tau), \delta^*) \le R((\ta,\tau), \delta'). \]
+\end{thrm}
+This is another example of the technique of restricting attention to a submodel and then concluding something about the full model (recall our semi-parametric example from earlier).
+\begin{proof}
+    Assume $\delta'$ is strictly better at $(\ta_0,\tau_0)$ and that $\delta'$ is loc-scale equivariant. Then $\delta'$ has strictly better risk on the submodel $\{(\ta,\tau): \tau= \tau_0\}$ and $\delta'$ is loc equivaraint on the submodel. This is contradiction to $\delta^*$ being the MRE on the submodel.
+\end{proof}
+
+\begin{ex}
+    In the model $\Na(\ta,\tau^2)$, $\bar{X}$ is the MRE under squared error loss for fixed $\tau$. It does not depend on $\tau$ and thus $\bar{X}$ is the MRE in the full model.
+\end{ex}
+
+\begin{ex}
+    If $f_{\ta,\tau} \sim \frac{1}{\tau} \exb{-\frac{1}{\tau}(x-\ta)}\mathbb{I}(x\ge \ta)$, then the loc MRE under squared error loss if $X_{(1)}-\frac{\tau}{n}$ depends on $\tau$. We will study this example more on the next assignment.
+\end{ex}
+
+\section{Bayes Estimators}
+As before we have our data $X \in \X$ and model $\Po = \{P_\ta : \ta \in \Om\}$. Let $\Lambda$ be a measure on $\Om$. We wish to find an estimator $\delta$ that minimizes the \emph{average risk}
+\[r(\Lambda, \delta) = \int_{\Om} R(\ta, \delta)d\Lambda(\ta). \]
+If $\Lambda$ is a probability distribution, then $\Lambda$ is called a prior distribution. Is $\delta_\Lambda$ minimises $r(\Lambda, \delta)$, then $\delta_\Lambda$ is called a \emph{Bayes estimator} and we call $r(\Lambda, \delta_\Lambda)$ the \emph{Bayes risk}. 
+
+\begin{prop}
+    If $\Lambda$ is a probability distribution, then we have
+    \[r(\Lambda, \delta) = \E L(\Theta, \delta(X)), \]
+    where $\Theta \sim \Lambda$ and $X | \Theta = \ta \sim P_\ta$. 
+\end{prop}
+Note that the above expectation is with respect to both $\Theta$ and $X$. This is different to the regular risk which is only an expectation with respect to $X$.
+\begin{proof}
+    Note that
+    \begin{IEEEeqnarray*}{rCl}
+    \E(L(\Theta, \delta(X))) &=& \E[\E[L(\Theta, \delta(X))|\Theta]]\\
+    &=& \E[R(\Theta, \delta)]\\
+    &=&\int_\Om R(\ta, \delta) d\Lambda(\ta)\\
+    &=&r(\Lambda, \delta).       
+    \end{IEEEeqnarray*}
+\end{proof}
+The usual interpretation is that $\Lambda$ encodes prior beliefs about $\ta$ that we have before seeing the data $X$. Our main result is the following:
+
+\begin{thrm}
+    Suppose $X \sim \Lambda$ and $X|\Theta = \ta \sim P_\ta$. If there exists an estimator $\delta_0$ with finite risk and if for almost every $x$, there exists a value $\delta(x)$ that minimises 
+    \[\E[L(\Theta,d)|X=x], \]
+    over $d$, then $\delta(X)$ is the Bayes estimator.
+\end{thrm}
+\begin{proof}
+    For a.e. $x$ and every estimator $\delta'$ we have 
+    \[\E[L(\Theta, \delta'(X))|X=x] \ge \E[L(\Theta, \delta(X))|X=x]. \]
+    Thus,
+    \begin{IEEEeqnarray*}{rCl}
+        r(\Lambda, \delta')&=& \E\left[\E\left[L(\ta, \delta'(X))|X=x\right]\right]\\
+        &\ge& \E\left[\E\left[L(\ta, \delta(X))|X=x\right]\right]\\
+        &=&r(\Lambda, \delta).
+    \end{IEEEeqnarray*}
+    Thus $\delta$ is the Bayes estimator.
+\end{proof}
+Note that under squared error loss the minimizer of $\E[(g(\Theta)-\delta(x)^2)|X=x]$ is the conditional expectation $\E[g(\Theta)|X=x]$ which we call the posterior mean.
+\subsection{A binomial example}
+Suppose that $X \sim \text{Bin}(n, \ta)$ where $\ta \sim \Lambda =  \text{Beta}(a,b)$. That is the prior for $\ta$ has density
+\[\pi(\ta) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}\ta^{a-1}(1-\ta)^{b-1}. \]
+The likelihood of $\ta$ is
+\[f(x|\ta) = \binom{n}{x}\ta^x(1-\ta)^{n-x}. \]
+Recall Bayes rule
+\begin{IEEEeqnarray*}{rCl}
+    \text{posterior}&=&\frac{\text{joint density}}{\text{marginal of } x}\\
+    &=&\frac{\text{prior} \times \text{likelihood}}{\text{marginal of } x}\\
+    \therefore p(\ta|x) &=& \frac{p(x,\ta)}{p(x)}\\
+    &=&\frac{\pi(\ta)f(x|\ta)}{p(x)}\\
+    &=& \frac{\pi(\ta)f(x|\ta)}{\int \pi(\ta')f(x|\ta')d\ta'}
+\end{IEEEeqnarray*}
+Thus 
+\begin{IEEEeqnarray*}{rCl}
+    \pi(\ta | x)&\propto& \text{likelihood} \times \text{prior}\\
+    &\propto& \ta^{x+a-1}(1-\ta)^{n-x+b}\\
+    &\propto& \text{Beta}(x+a, n-x+b).
+\end{IEEEeqnarray*}
+Thus the Bayes estimator under squared error loss is the mean of $\text{Beta}(x+a, n-x+b)$ which is $\frac{x+a}{n+a+b}$ (exercise). Note that
+\[\frac{x+a}{n+a+b} = \frac{n}{n+a+b}\frac{x}{n}+ \frac{a+b}{n+a+b}\frac{a}{a+b} =  \la_n \cdot \text{UMVUE}+ (1-\la_n)\cdot \text{prior mean}. \]
+Thus the Bayes estimator is a convex combination of the UMVUE and the prior. Also $\la_n \to 1$ and $n \to \infty$ and so with enough data we approach the UMVUE. If $n$ is small compared to $a+b$, then the Bayes estimator is closer to the mean of the Bayes's prior.
+  
+\end{document}
