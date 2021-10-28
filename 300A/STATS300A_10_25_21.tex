@@ -94,7 +94,7 @@ We call $\delta^0$ a \emph{James-Stein estimator}.
         \item Why only $p > 2$? The random variable $\frac{1}{\norm{X}_2^2}$ is not integrable when $p=2$. Thus the regularity conditions of Stein's identity are not met.
         \item The above theorem is surprising! We can improve the risk by sharing information across different dimensions. The components $X_{\setminus j}$ are used to estimate $\ta_j$ even though $X_j$ are independent and $\ta_j$ do not have any restrictions.
         \item Define $\delta^v_j = \left(1 - \frac{p-2}{\norm{X_v}_2^2}\right)(X_j-v_j)$ for $v\in \R^p$. Then the above proof shows that $\delta^v$ also out performs $\delta$.
-        \item If $\sigma \neq 1$, then we can use $\wh{\ta}_{JS} = \left(1-\frac{\sigma^2(p-2)}{\norm{X}_2^2}X$.
+        \item If $\sigma \neq 1$, then we can use $\wh{\ta}_{JS} = \left(1-\frac{\sigma^2(p-2)}{\norm{X}_2^2}\right)X$.
         \item $\wh{\ta}_{JS}$ is inadmissible, we can improve by using
         \[\delta_j'(X) = \left(1- \frac{p-2}{\norm{X}_2^2}\right)_+X_j. \]
         \item A warning: For some $j$, $\E[(\delta_j^0(X)-\ta_j)^2]$ may be larger than $\E[(X_j-\ta_j)^2]$. An example is ``Baseball batting averages - James-Stein estimator''
