@@ -1,6 +1,6 @@
 \include{preamble}
 \include{definitions}
-
+\DeclareMathOperator*{\bias}{Bias}
 
 
 \title{STATS305A - Lecture 12}
@@ -29,7 +29,7 @@ Up to this point we've treated the model $Y=X\beta + \eps$ as ``god-give''. This
     \item Pure predictive accuracy: how well can we predict $y$ from $x$?
 \end{itemize}
 These two are intertwinned. We don't always have to choose one over the other.
-\subsection{Bias/Variance Decomposition}
+\subsection{In sample and out of sample risk}
 Suppose we are in a setting where $y = f(x)+\eps$ and $\E[\eps|x]=0$. This is equivalent to having $f(x) = \E[Y|X=x]$ since if $\eps = y-f(x)$, then \[\E[\eps|x] = \E[y|x] - f(x).\]
 Thus $\E[\eps|x]=0$ if and only if $f(x) = \E[y|x]$. Define $\sigma^2(x) = \E[\eps^2|x]$ which is the conditional variance of $\eps$. 
 
@@ -75,7 +75,60 @@ We again call $\E[\sigma^2(X)]$ the irreducible error and we could call $\E[(f(X
 In the out of sample risk we average over all the $X$'s we could possible draw. In the in sample we fix the value $x_i$ and average over all possible $y_i$. Note that if our data if i.i.d., then 
 \[R_{out}(g) = \E[(g(X_{n+1})-Y_{n+1})^2]. \]
 
+ The quantity $R_{out}(\wh{f})$ is a number but it is random since it depends on the sample $(x_i,y_i)_{i=1}^n$ used to fit $\wh{f}$ and the sample $(x_i,y_i)_{i=1}^n$ is random (it may be that both $X$ and $Y$ are random or just $Y$ is random). Thus $\E[R_{out}(\wh{f})]$ is our expected out of sample risk over all sampls used to fit $\wh{f}$.
  
+ \subsection{Bias/variance decomposition}
+ Let $\wh{f}$ be any estimator of $f$. For any $x \in \X$ we can write
+ \begin{align*}
+     \E[(\wh{f}(x)-f(x))^2] &= \E\left[\left(\wh{f}(x)-\E[\wh{f}(x)]+\E[\wh{f}(x)]-f(x)\right)^2\right]\\
+     &= \E[\left(\wh{f}(x)-\E[\wh{f}(x)]\right)^2]+\left(\E[\wh{f}(x)]-f(x)\right)^2\\
+     &= \V(\wh{f}(x))+\bias(\wh{f}(x))^2,
+ \end{align*}
+where as is usually the case with expressions involving $\wh{f}$, the above expectation is taken with respect to the samples used to fit $\wh{f}$. Thus we have
+\[R_{in}(\wh{f})= \frac{1}{n}\sum_{i=1}^n \left(\bias(\wh{f}(x_i))^2+\V(\wh{f}(x_i))\right),\]
+and 
+\begin{align*}
+    \E[R_{out}(\wh{f})]&= \E[\sigma^2(X)]+\E[\bias(\wh{f}(X))^2]+\E[\V(\wh{f}(X))]\\
+    &= \text{irreducible error }+\text{ expected bias squared }+\text{ expected variance}. 
+\end{align*}
+This decomposition means that in practice we often see the following curve when we compare our error to our model complexity.
 
+\begin{center}
+    
+\end{center}
+Although one word of warning: We sometimes don't know how to properly measure model complexity. This means that when we use a proxy for model complexity we might not see the above picture. This is sometimes the case with machine learning algorithms where the error continues to go down even as the number of parameters is getting very very high.
 
+\subsection{Comparing models}
+The above analysis gives us the idea that we should choose a model that trades optimally between bias and variance. Unfortunately we can't do this exactly since we can only approximate the bias and variance of a model. 
+
+We will estimate our prediction error and then use that to choose a model but there is a challenge. The natural quantity
+\[\frac{1}{n}RSS = \frac{1}{n}\sum_{i=1}^n \left(Y_i  \wh{Y}_i\right)^2 = \frac{1}{n}\sum_{i=1}^n \left(Y_i-\wh{f}(x_i)\right)^2, \]
+is biased downwards since we chose $\wh{f}$ to minimize RSS. Thus $\frac{1}{n}RSS$ will always be smaller than $R_{in}^*$ since in $R_{in}^*$ we have a new independent smaller of $Y$'s.
+
+\begin{ex}
+    Consider for completeness the linear model $Y=X\beta + \eps$ where $\eps \sim (0, \sigma^2I_n)$ and $X$ is full rank with $\text{rank}(X) = d$. Let $H=X(X^TX)^{-1}X^T$, we know that $RSS = \norm{(I-H)Y}_2^2 = \norm{(I-H)\eps}_2^2$. Thus we have 
+    \begin{align*}
+        \E[RSS] &= \E[\tr((I-H)\eps\eps^T)]\\
+        &=\sigma^2\tr(I-H)\\
+        &=\sigma^2(n-d)\\
+        &< \sigma^2 n.
+    \end{align*}
+    Thus $\E\left[\frac{1}{n}RSS\right] = \frac{n-d}{n}\sigma^2 < \sigma^2$ which is a problem since the irreducible error is $\sigma^2$ so we will always have $R_{in}^* \ge \sigma^2$.
+\end{ex}
+There are two approaches to overcome this issue:
+\begin{enumerate}
+    \item Penalized risk estimates.
+    \item Validation.
+\end{enumerate}
+We will only discuss the first approach today.
+
+\subsection{Estimating risk}
+How do we estimate the risk of a model? Let's think about the sum of square errors. Note that
+\begin{align*}
+    \E[\left(Y_i-\wh{Y}_i\right)^2]&=\E\left[\left(Y_i-f(x_i)+f(x_i)-\wh{Y}_i\right)^2\right]\\
+    &=\sigma_i^2+2\E\left[(Y_i-f(x_i))(f(x_i)-\wh{Y}_i)\right]+\E\left[\left(f(x_i)-\wh{f}(x_i)\right)^2\right]\\
+    &=\sigma_i^2+\E\left[(f(x_i)-\wh{f}(x_i))^2\right]-2\cov(Y_i,\wh{Y}_i)
+\end{align*}
+The last equality holds because $f(x_i) = \E[Y_i]$ and so for any constant $c$
+\[\E\left[(Y_i-f(x_i))(\wh{Y}_i-c_i)\right] = \E\left[(Y_i-f(x_i))(\wh{Y}_i-\E[\wh{Y}_i])\right] =\cov(Y_i,\wh{Y}_i).\]
 \end{document}
