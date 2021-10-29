@@ -1,0 +1,95 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 11}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{10/26/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 11}
+\lhead{10/26/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Expectation}
+\begin{defn}
+    Let $(\Om,\F,\Pa)$ be a probability space and suppose $X: \Om \to \R$ is measurable. We define \emph{the expectation of $X$} to be 
+    \[ \E[X] = \int X(\w)\Pa(d\w),\]
+    whenever the above intergal exists.
+\end{defn}
+Note that if $X=\delta_A$, then $\E[X] = \Pa(A)$. Thus we can once again reframe our fundamental question of probability:
+\begin{center}
+    Given a random variable $X$, compute or approximate $\E[X]$.
+\end{center}
+which generalizes our previous versions of this question.
+\subsection{Sums of random variables}
+Let $(\Om,\F,\Pa)$ be a probability space and suppose $X,Y$ are independent random variables on $\Om$. Define the following probabilities on $\R$,
+\[\mu(A) = \Pa(X \in A) \text{ and } \nu(A) = \Pa(Y\in A). \]
+Since $X,Y$ are independent, we know that for all measurable $C \subseteq \R^2$,
+\[\Pa((X,Y) \in C) = (\mu \times \nu)(C), \]
+where $\mu \times \nu$ is the product measure given by
+\[(\mu \times \nu)(C) = \int_\R \mu(C_y)\nu(dy) = \int_\R \nu(C_x)\mu(dx). \]
+Given $D \subseteq \R$ measurable, define $C = \{(x,y) : x+y \in D\} \subseteq \R^2$. Note that $C_y = D-y$ and $C_x = D-x$. Thus
+\begin{align*}
+    \Pa(X+Y \in D) &= \Pa((X,Y) \in C)\\
+    &= \int_\R \nu(C_x)\mu(dx)\\
+    &= \int_\R \nu(D-x)\mu(dx).
+\end{align*}
+And likewise
+\[\Pa(X+Y \in D) = \int_\R \mu(D-y)\nu(dy). \]
+The above defines a measure on $\R$ and is called the convolution of $\mu$ and $\nu$. It is denoted $\mu * \nu$.
+\begin{ex}
+    Suppose $\mu = \text{Poission}(\ta)$ and $\nu = \text{Possion}(\eta)$ for some $\ta,\eta \ge 0$. That is\
+    \[\mu(A) = \sum_{j \in A}\frac{e^{-\ta}\ta^j}{j!} \text{ and } \nu(B) = \sum_{j \in B} \frac{e^{-\eta}\eta^j}{j!},\]
+    where $A,B \subseteq \{0,1,2,\ldots\}$. Note that for $l = 0,1,2,\ldots$,
+    \begin{align*}
+        (\mu *\nu)(\{l\}) &= \sum_{a=0}^l \frac{e^{-\ta}\ta^a}{a!}\frac{e^{-\eta}\eta^{l-a}}{(l-a)!}\\
+        &= \frac{e^{-(\ta+\eta)}\eta^l}{l!} \sum_{a=0}^l \binom{l}{a} \left(\frac{\ta}{\eta}\right)^a\\
+        &=\frac{e^{-(\ta+\eta)}\eta^l}{l!}\left(1+\frac{\ta}{\eta}\right)^l\\
+        &=\frac{e^{-(\ta+\eta)}(\ta+\eta)^l}{l!}.
+    \end{align*}
+    Thus $\mu *\nu = \text{Poission}(\ta+\eta)$.
+\end{ex}
+\begin{ex}
+    Similarly if $X \sim \Na(\ta_1,\sigma^2_1)$ and $Y \sim \Na(\ta_2,\sigma^2_2)$ and $X,Y$ are independent, then $X+Y \sim \Na(\ta_1+\ta_2,\sigma_1^2+\sigma_2^2)$.
+\end{ex}
+\section{Homework}
+Read chapters 21-22 and do problem 20.8, 20.9, 21.3 and 21.6. There are two other problems which we describe now.
+\subsection{Problem (A)}
+This problem is about the $\beta-\Gamma$ calculus. For $\al >0$, we say $X \sim \text{Gamma}(\al)$ on $[0,\infty)$ if $X$ has density 
+\[\frac{e^{-x}x^{\al-1}}{\Gamma(\al)}, \text{ for } x \ge 0. \]
+For $\al,\beta > 0$, we say that $W \sim \text{Beta}(\al,\beta)$ on $[0,1]$ is $W$ has density 
+\[\frac{\Gamma(\al+\beta)}{\Gamma(\al)\Gamma(\beta)} x^{\al-1}(1-x)^{\beta-1}, \text{ for } 0\le x \le 1. \]
+On the homework we will show:
+\begin{enumerate}
+    \item If $X \sim \text{Gamma}(\al)$ and $Y \sim \text{Gamma}(\beta)$ and $X$ is independent of $Y$, then $\frac{X}{X+Y}$ and $X+Y$ are independent, $\frac{X}{X+Y} \sim \text{Beta}(\al,\beta)$ and $X+Y \sim \text{Gamma}(\al+\beta)$.
+    \item If $X,Y,Z \sim \text{Gamma}(\al),\text{Gamma}(\beta), \text{Gamma}(\gamma)$ are independent, then 
+    \[\frac{X}{X+Y}, \frac{X+Y}{X+Y+Z} \text{ and } X+Y+Z,\]
+    are independent and they have distributions $\text{Beta}(\al,\beta)$, $\text{Beta}(\al+\beta,\gamma)$ and $\text{Gamma}(\al+\beta+\gamma)$ respectively.
+\end{enumerate}
+\subsection{Problem (B)}
+Before discussing problem (B) on the homework. We will state, prove and apply a theorem.
+\begin{thrm}
+    Suppose $X \ge 0$, then 
+    \[\E[X] = \int_0^\infty \Pa(X \ge t)dt = \int_0^\infty \Pa(X >t)dt. \]
+\end{thrm}
+Note that the two integrals are indeed equal since $\Pa(X=t) >0$ for at most countably many $t$. Thus the functions $\Pa(X\ge t)$ and $\Pa(X>t)$ agree almost everywhere with respect to Lesbegue measure. 
+\begin{proof}
+    Suppose that $X = \sum_{j=1}^k x_j \delta_{A_j}$ with $0 \le x_1\le x_2\le \ldots\le x_k$. Then 
+    \begin{align*}
+        \E[X] &=\sum_{j=1}^k x_j \Pa(X=x_j)\\
+        &=\sum_{j=1}^{k-1}x_j\left(\Pa(X\ge x_j)-\Pa(X>x_{j+1})\right)+x_k\Pa(X\ge x_k)\\
+        &=x_1\Pa(X \ge x_1)+\sum_{j=1}^k(x_j-x_{j-1})\Pa(X \ge x_j).
+    \end{align*}
+    Observe $\Pa(X \ge t) = \Pa(X \ge x_1) = 1$ for $t \in [0,x_1]$ and $\Pa(X \ge t) = 0$ for $t > x_k$. Also note that ff $x_{j-1} < t < x_j$, then 
+    \[\Pa(X \ge t) = \Pa(X \ge x_j). \]
+    Thus the function $t \mapsto \Pa(X \ge t)$ is a step function and we have 
+    \[\int_0^\infty \Pa(X \ge t)dt = x_1+\Pa(X\ge x_i)+\sum_{j=1}^k x_j-x_{j-1})\Pa(X \ge x_j) = \E[X]. \]
+    A limiting argument via the monotone convergence theorem allows us to conclude that the result holds for all $X \ge 0$. 
+\end{proof}
+\end{document}
