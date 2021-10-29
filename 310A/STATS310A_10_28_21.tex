@@ -16,4 +16,114 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\section{Kolmogorov's strong law of large numbers}
+Today we'll do some serious probability using many of our tools from measure theory.
+\begin{thrm}
+    \emph{[Kolmogorov]} Let $X_1,X_2,\ldots$ be independent and identically distributed (i.i.d.) with finite mean $\mu = \E[X_1]$. Define 
+    \[S_n = \sum_{i=1}^n X_i, \]
+    then $\frac{1}{n}S_n \to \mu$ almost surely.
+\end{thrm}
+\subsection{Proof}
+\begin{proof}
+    Write $X_i = X_i^+-X_i^-$ and define $\mu^{\pm} = \E[X_1^\pm]$. Then $\mu = \mu^+ - \mu^-$ and so we can assume without loss of generality that $X_i \ge 0$.
+
+    Our next idea is to use \underline{truncation}. Define
+    \[Y_i = X_i \delta_{\{X_i \le i\}}, \]
+    and let $T_n = \sum_{i=1}^n Y_i$. Our next idea is to look at \underline{subsequences}. Fix $\al >0$ and define $\lfloor \al^n \rfloor$. We now show that for all $\eps > 0$,
+    \[\sum_{n=1}^\infty \Pa\left(\abs{\frac{T_{u_n}-\E[T_{u_n}]}{u_n}}>\eps \right)< \infty. \] 
+    Note that by the i.i.d. assumption,
+    \begin{align*}
+        \V(T_{u_n})&=\sum_{i=1}^{u_n}\V(Y_i)\\
+        &\le \sum_{i=1}^{u_n}\E[Y_i^2]\\
+        &\le \sum_{i=1}^{u_n}\E[X_i^2\delta_{\{X_i \le i\}}]\\
+        &=\sum_{i=1}^{u_n}\E[X_1^2\delta_{\{X_1 \le i\}}]\\
+        &\le u_n \E[X_1^2 \delta_{\{X_1\le u_n\}}].
+    \end{align*}
+    By \underline{Chebyshev's inequality} 
+    \[\Pa\left(\abs{\frac{T_{u_n}-\E[T_{u_n}]}{u_n}}>\eps \right) \le \frac{\V(T_{u_n})}{u_n^2\eps^2}. \]
+    Thus 
+    \begin{align*}
+        \sum_{n=1}^\infty \Pa\left(\abs{\frac{T_{u_n}-\E[T_{u_n}]}{u_n}}>\eps \right)&\le \sum_{n=1}^\infty  \frac{\V(T_{u_n})}{u_n^2\eps^2}\\
+        &\le \frac{1}{\eps^2}\sum_{n=1}^\infty \frac{\E[X_1^2\delta_{\{X_1\le u_n\}}]u_n}{u_n^2}\\
+        & =  \frac{1}{\eps^2}\sum_{n=1}^\infty \frac{\E[X_1^2\delta_{\{X_1\le u_n\}}]}{u_n}\\
+        &=\frac{1}{\eps^2}\E\left[X_1^2 \sum_{n=1}^\infty \frac{1}{u_n}\delta_{\{X_1\le u_n\}}\right].
+    \end{align*}
+    We will now show that there exists $k$ such that if $x > 0$, then 
+    \[\sum_{u_n \ge x}\frac{1}{u_n} \le \frac{k}{x}. \]
+    Let $n_x$ be the smallest integer such that $u_{n_x} \ge x$. One can then show that $\al^{n_x} \ge x$. It follows that
+    \begin{align*}
+        \sum_{u_n \ge x} \frac{1}{u_n} &\le 2 \sum_{n \ge n_x} \al^{-n}\\
+        &= \frac{2\al^{-n_x}}{1-\al}\\
+        &= \frac{2}{1-\al} \times \frac{1}{\al^{n_x}}\\
+        &\le \frac{2}{1-\al}\times \frac{1}{x}. 
+    \end{align*}
+    Note that if $X_1 > 0$, then 
+    \[\sum_{n=1}^\infty \frac{1}{u_n} \delta_{\{X_1 \le u_n\}} = \sum_{u_n \ge X_1} \frac{1}{u_n} \le \frac{k}{X_1}. \]
+    Since we have the convention $0 \cdot \infty = 0$, we can conclude that 
+    \[\frac{1}{\eps^2} \E\left[X_1^2 \sum_{n=1}^\infty \frac{1}{u_n}\delta_{\{X_1\le u_n \}}\right] \le \frac{k}{\eps^2}\E[X_1]. \]
+    Thus Borel-Cantelli gives 
+    \[\Pa\left(\abs{\frac{T_{u_n} -\E[T_{u_n}]}{u_n}} > \eps,~ i.o.\right) =0. \]
+    If $(x_i)$ is any sequence of real numbers such that $x_i \to x$, then $\frac{1}{n}\sum_{i=1}^n x_i \to x$. By the monotone convergence theorem: 
+    \[\E[Y_n] = \E[X_1\delta_{\{X_1 \ge n\}}] \nearrow \E[X_1] =\mu. \]
+    Thus 
+    \[\E\left[\frac{T_{u_n}}{u_n}\right] =\frac{1}{u_n}\sum_{i=1}^{u_n}\E[Y_i] \nearrow \mu. \]
+    Thus $\frac{T_{u_n}}{u_n} \to \mu$ with probability 1.
+
+    Thus we have proved our result on subsequences of the form $u_n = \lfloor \al^n \rfloor$ for truncated versions of $X_i$. We will first remove the truncation. Note that
+    \begin{align*}
+        \sum_{i=1}^\infty \Pa(X_i \neq Y_i) &= \sum_{i=1}^\infty \Pa(X_i \ge i)\\
+        &= \sum_{i=1}^\infty \Pa(X_1 \ge i)\\
+        &\le \int_0^\infty \Pa(X_1 \ge t)dt\\
+        &=\E[X_1]\\
+        &< \infty.
+    \end{align*}
+    Thus Borel-Cantelli implies that $X_i = Y_i$ almost surely for sufficiently large $i$. Thus we can conclude $\frac{S_{u_n}}{u_n} \to \mu$ almost surely.
+
+    We will now use \underline{interpolation}. We have $\frac{S_{u_n}}{u_n} \to \mu$ and we wish to conclude $\frac{S_k}{k} \to \mu$. For fixed $k$, let $n$ be such that $u_n \le k \le u_{n+1}$. Then 
+    \[\frac{S_{u_n}}{u_n}\cdot \frac{u_n}{u_{n+1}} \le \frac{S_k}{k} \le \frac{S_{u_{n+1}}}{u_{n+1}}\cdot \frac{u_{n+1}}{u_n}. \]
+    We also have $\frac{u_n}{u_{n+1}} \to \frac{1}{\al}$ and $\frac{u_{n+1}}{u_n} \to \al$. Thus we have 
+    \[\liminf_k \frac{S_k}{k} \ge \frac{1}{\al} \mu ~\text{ almost surely}, \]
+    and 
+    \[\limsup_k \frac{S_k}{k} \le \al \mu ~\text{ almost surely,} \]
+    for all $\al > 1$. Let $(\al_j)$ be a sequence such tht $\al_j \to 1$ and $\al_j > 1$. We then have 
+    \[\frac{1}{\al_j}\limsup_k \frac{S_k}{k} \le \mu \le \al_j \liminf_k \frac{S_k}{k} ~\text{ almost surely}. \]
+    Thus $\liminf_k \frac{S_k}{k} = \limsup_k \frac{S_k}{k} = \mu$, almost surely.
+\end{proof}
+\subsection{The four T's}
+This was an example of using the four T's:
+\begin{itemize}
+    \item Truncation,
+    \item Tschebyscheff,
+    \item Tsubsequences and
+    \item InTerpolation.
+\end{itemize}
+All four of these are very useful ideas.
+\section{Remarks and stories}
+\subsection{Remarks}
+\begin{enumerate}
+    \item We showed that if $X_i$ are i.i.d., then 
+    \[ \frac{S_n}{n} \to \mu = \E[X_1] < \infty.\]
+    If $X_i \sim \text{Cauchy}$ i.e. $\Pa(X_n \le x) = \int_{-\infty}^x \frac{1}{\pi(1+x^2)}dx$, then 
+    \[ \frac{X_1+\ldots+X_n}{n} \sim \text{Cauchy}.\]
+    Thus we need $\E[X_1]<\infty$ for the strong law of large numbers.
+    \item Independence:
+    \begin{enumerate}
+        \item Our proof works if we weaken the hypothesis from $(X_i)$ independent ot $(X_i)$ pairwise independent.
+        \item We really only need that they are not too dependent. For example suppose $Y_i$ are i.i.d. with $\E[\abs{Y_i}]<\infty$. If we define $X_1 = Y_1+Y_2$, $X_2 = Y_2+Y_3, \ldots$, then $(X_i)$ are not independent but they still satisfy a strong law of large numbers because a sum of $X_i$'s is essentially a sum of $Y_i$'s.
+        \item Markov chains, martingales, stationary processes are all dependent and all have strong laws.
+    \end{enumerate}
+    \item Identically distributied? If none of the random variables are too wild, then the strong law is okay. For example we're safe if 
+    \[\sum_{i=1}^\infty \frac{\V(X_i)}{i^2} < \infty.\]
+    We are not safe if $\V(S_n)$ is dominated by $\V(X_n)$. This might be the case if we are averaging stock prices or some other type of random variables which are sometimes very volatile.  
+\end{enumerate}
+\subsection{Chebyshev's master thesis}
+In Chebyshev's master's thesis he proved that if $X_i \in \{0,1\}$ are independent and $\Pa(X_i = 1)=p_i$, then $\Pa\left(\abs{\frac{S_n}{n}-\frac{\sum_{i=1}^n p_i}{n}}>\eps\right)\to 0$ and he had to prove this without Chebyshev's inequality (that came later).
+\subsection{Where's the beef?}
+We proved:
+\begin{center}
+    \fbox{$\frac{S_n}{n}\to \mu ~a.s.$}
+\end{center}
+which is a very nice statement but it doesn't tell us anything about finite $n$. What we really want is
+\[\Pa\left(\abs{\frac{S_n}{n}-\mu}> \eps \text{ for some } n \ge N\right) \le f(N,\eps), \]
+for some function $f$. Such results are complicated and rare.
 \end{document}
