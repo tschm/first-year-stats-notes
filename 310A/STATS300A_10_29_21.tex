@@ -44,7 +44,7 @@ And likewise
 \[\Pa(X+Y \in D) = \int_\R \mu(D-y)\nu(dy). \]
 The above defines a measure on $\R$ and is called the convolution of $\mu$ and $\nu$. It is denoted $\mu * \nu$.
 \begin{ex}
-    Suppose $\mu = \text{Poission}(\ta)$ and $\nu = \text{Possion}(\eta)$ for some $\ta,\eta \ge 0$. That is\
+    Suppose $\mu = \text{Poisson}(\ta)$ and $\nu = \text{Posson}(\eta)$ for some $\ta,\eta \ge 0$. That is\
     \[\mu(A) = \sum_{j \in A}\frac{e^{-\ta}\ta^j}{j!} \text{ and } \nu(B) = \sum_{j \in B} \frac{e^{-\eta}\eta^j}{j!},\]
     where $A,B \subseteq \{0,1,2,\ldots\}$. Note that for $l = 0,1,2,\ldots$,
     \begin{align*}
@@ -53,7 +53,7 @@ The above defines a measure on $\R$ and is called the convolution of $\mu$ and $
         &=\frac{e^{-(\ta+\eta)}\eta^l}{l!}\left(1+\frac{\ta}{\eta}\right)^l\\
         &=\frac{e^{-(\ta+\eta)}(\ta+\eta)^l}{l!}.
     \end{align*}
-    Thus $\mu *\nu = \text{Poission}(\ta+\eta)$.
+    Thus $\mu *\nu = \text{Poisson}(\ta+\eta)$.
 \end{ex}
 \begin{ex}
     Similarly if $X \sim \Na(\ta_1,\sigma^2_1)$ and $Y \sim \Na(\ta_2,\sigma^2_2)$ and $X,Y$ are independent, then $X+Y \sim \Na(\ta_1+\ta_2,\sigma_1^2+\sigma_2^2)$.
@@ -67,7 +67,7 @@ For $\al,\beta > 0$, we say that $W \sim \text{Beta}(\al,\beta)$ on $[0,1]$ is $
 \[\frac{\Gamma(\al+\beta)}{\Gamma(\al)\Gamma(\beta)} x^{\al-1}(1-x)^{\beta-1}, \text{ for } 0\le x \le 1. \]
 On the homework we will show:
 \begin{enumerate}
-    \item If $X \sim \text{Gamma}(\al)$ and $Y \sim \text{Gamma}(\beta)$ and $X$ is independent of $Y$, then $\frac{X}{X+Y}$ and $X+Y$ are independent, $\frac{X}{X+Y} \sim \text{Beta}(\al,\beta)$ and $X+Y \sim \text{Gamma}(\al+\beta)$.
+    \item If $X \sim \text{Gamma}(\al)$ and $Y \sim \text{Gamma}(\beta)$ and $X$ is independent of $Y$, then $\frac{X}{X+Y}$ and $X+Y$ are independent and $\frac{X}{X+Y} \sim \text{Beta}(\al,\beta)$, $X+Y \sim \text{Gamma}(\al+\beta)$.
     \item If $X,Y,Z \sim \text{Gamma}(\al),\text{Gamma}(\beta), \text{Gamma}(\gamma)$ are independent, then 
     \[\frac{X}{X+Y}, \frac{X+Y}{X+Y+Z} \text{ and } X+Y+Z,\]
     are independent and they have distributions $\text{Beta}(\al,\beta)$, $\text{Beta}(\al+\beta,\gamma)$ and $\text{Gamma}(\al+\beta+\gamma)$ respectively.
@@ -78,7 +78,7 @@ Before discussing problem (B) on the homework. We will state, prove and apply a 
     Suppose $X \ge 0$, then 
     \[\E[X] = \int_0^\infty \Pa(X \ge t)dt = \int_0^\infty \Pa(X >t)dt. \]
 \end{thrm}
-Note that the two integrals are indeed equal since $\Pa(X=t) >0$ for at most countably many $t$. Thus the functions $\Pa(X\ge t)$ and $\Pa(X>t)$ agree almost everywhere with respect to Lesbegue measure. 
+Note that the two integrals are indeed equal since $\Pa(X=t) >0$ for at most countably many $t$. Thus the functions $\Pa(X\ge t)$ and $\Pa(X>t)$ agree almost everywhere with respect to Lebesgue measure. 
 \begin{proof}
     Suppose that $X = \sum_{j=1}^k x_j \delta_{A_j}$ with $0 \le x_1\le x_2\le \ldots\le x_k$. Then 
     \begin{align*}
@@ -86,10 +86,130 @@ Note that the two integrals are indeed equal since $\Pa(X=t) >0$ for at most cou
         &=\sum_{j=1}^{k-1}x_j\left(\Pa(X\ge x_j)-\Pa(X>x_{j+1})\right)+x_k\Pa(X\ge x_k)\\
         &=x_1\Pa(X \ge x_1)+\sum_{j=1}^k(x_j-x_{j-1})\Pa(X \ge x_j).
     \end{align*}
-    Observe $\Pa(X \ge t) = \Pa(X \ge x_1) = 1$ for $t \in [0,x_1]$ and $\Pa(X \ge t) = 0$ for $t > x_k$. Also note that ff $x_{j-1} < t < x_j$, then 
+    Observe $\Pa(X \ge t) = \Pa(X \ge x_1) = 1$ for $t \in [0,x_1]$ and $\Pa(X \ge t) = 0$ for $t > x_k$. Also note that if $x_{j-1} < t \le x_j$, then 
     \[\Pa(X \ge t) = \Pa(X \ge x_j). \]
     Thus the function $t \mapsto \Pa(X \ge t)$ is a step function and we have 
-    \[\int_0^\infty \Pa(X \ge t)dt = x_1+\Pa(X\ge x_i)+\sum_{j=1}^k x_j-x_{j-1})\Pa(X \ge x_j) = \E[X]. \]
+    \[\int_0^\infty \Pa(X \ge t)dt = x_1+\Pa(X\ge x_i)+\sum_{j=1}^k (x_j-x_{j-1})\Pa(X \ge x_j) = \E[X]. \]
     A limiting argument via the monotone convergence theorem allows us to conclude that the result holds for all $X \ge 0$. 
 \end{proof}
+\subsubsection{ESP}
+We can apply this theorem in an interesting setting. Suppose that someone claims to have ESP (extrasensory preception). We could test their claim by asking them what is on a card without letting them see the card. They may get some cards right just by chance. How many cards they get right by chance will depend on how much feedback they are given. Suppose that there are $n$ cards and they are all distinct. Suppose that the deck is well shuffled and we ask them to guess each card. The three types of feedback we can give are
+\begin{itemize}
+    \item No feedback.
+    \item Complete feedback. After they guess we tell them if they were right or wrong and which card was drawn.
+    \item Yes/No feedback. We tell them if their guess is correct or incorrect but we do not reveal cards if they are incorrect.
+\end{itemize} 
+We can ask what is the expected number of correct guesses for each type of feedback assuming that the person does not have ESP. Let $X_i = 1$ if the person correctly guesses card $i$ and let  $X_i = 0$ otherwise. Define 
+\[S_n = \sum_{i=1}^n X_i.\]
+We wish to calculate $\E[S_n]$. For no feedback they have a $\frac{1}{n}$ chance of correctly guessing the $i^{th}$ card. Thus the expected number of correct guesses is
+\[\E[S_n]=\sum_{i=1}^n \frac{1}{n} = \frac{n}{n} =1.\]
+For complete feedback, the person has a $\frac{1}{n}$ chance of guessing the first card, a $\frac{1}{n-1}$ chance of guessing the second, a $\frac{1}{n-2}$ chance of guessing the third and so on. Thus
+\begin{align*}
+    \E[S_n]&=\frac{1}{n}+\frac{1}{n-1}+\ldots+\frac{1}{2}+1\\
+    &=H(n)\\
+    &=\log(n) + \gamma + O(1/n).
+\end{align*} 
+In particular when $n=52$, $\E[S_n] \approx  4$. In the case of yes/no feedback one can show that the optimal (ESP-free) stratergy is
+\begin{itemize}
+    \item Guess card 1 until correct.
+    \item Guess card 2 until correct.
+    \item Guess card 3 \ldots.
+\end{itemize}
+This claim requires proof and we won't prove it here but it is definitely believable. Under this stratergy we can use the previous theorem to calculate $\E[S_n]$. Note that $\Pa(S_n \ge 1) = 1$, since we will always get the first card right. Also $S_n \ge 2$ if and only if card 1 is above card 2 and so $\Pa(S_n \ge 2) = \frac{1}{2}$. In general $S_n \ge k$ if and only if cards $1,2,\ldots, k$ are in increasing order. This occurs with probability $\frac{1}{k!}$. Thus, by the theorem
+\begin{align*}
+    \E[S_n] &= \sum_{k=1}^n \Pa(S_n \ge k)\\
+    &= \sum_{k=1}^n \frac{1}{k!}\\
+    &= e-1+O(1/n!)\\
+    &\approx 1.7.
+\end{align*}
+\subsubsection{The homework problem}
+Let $H(x,y)$ be the bivariate distribution function for a random vector $(X,Y)$. Suppose $H$ has marginals
+\[H(x,\infty) = F(x) \text{ and } H(\infty, y) = G(y). \]
+Suppose also that $X,Y \ge 0$. On the homework we must prove
+\[\text{cov}(X,Y) = \E[XY] - \E[X]\E[Y] = \int_0^\infty \int_0^\infty \Pa(X \ge s, Y \ge t)-\Pa(X \ge s)\Pa(Y \ge t) dsdt.\]
+Recall the bivariate distributions 
+\[L(x,y) = \left(F(x)+G(y)-1\right)_+ \]
+and 
+\[U(x,y) = F(x)\land G(y). \]
+On the homework we must also show that $L$ is the bivariate distribution that minimizes the covariance between $X$ and $Y$ and $U$ is the bivariate distribution that maximizes the covariance between $X$ and $Y$. The distribution $L$ and $U$ are called the Frechet's extremal distributions of $F$ and $G$.
+\section{Independence}
+\begin{thrm}
+    If $X$ and $Y$ are independent and integrable random varaibles, then 
+    \[\E[XY] = \E[X]\E[Y]. \]
+\end{thrm}
+\begin{proof}
+    We will proceed in stages (0), (1), (2), (3) (and break slightly from our usual order). 
+
+    Step (0): We will prove the result if $X=\delta_A$ and $Y=\delta_B$. Note that in this case $XY = \delta_{A\cap B}$ and thus 
+    \[\E[XY] = \Pa(A\cap B) = \Pa(A)\Pa(B) = \E[X]\E[Y], \]
+    by independence. 
+
+    Step (1): Suppose $Y=\sum_{i=1}^m a_i \delta_{A_i}$ and $X = \sum_{j=1}^n b_j \delta_{B_j}$. Then 
+    \[XY = \sum_{i=1}^m\sum_{j=1}^n \delta_{A_i}\delta_{B_j}.\]
+    By linearity and step 0 we have
+    \begin{align*}
+        \E[XY]&=\sum_{i=1}^m \sum_{j=1}^n a_ib_j \E[\delta_{A_i}\delta_{B_j}]\\
+        &=\sum_{i=1}^m \sum_{j=1}^n a_ib_j \E[\delta_{A_i}]\E[\delta_{B_j}]\\
+        &=\left(\sum_{i=1}^m a_i\E[\delta_{A_i}]\right)\left(\sum_{j=1}^m b_j\E[\delta_{B_j}]\right)\\
+        &=\E[X]\E[Y].
+    \end{align*}
+    Step (2): suppose that $X,Y \ge 0$, then there exist $X_n,Y_n \ge 0$ which are independent and of the form of step (1) and $X_n \nearrow X$, $Y_n \nearrow Y$. Thus $X_nY_n \nearrow XY$ and by the monotone convegence theorem
+    \begin{align*}
+        \E[XY] &= \lim_n \E[X_nY_n]\\
+        &=\lim_n \E[X_n]\E[Y_n]\\
+        &=\E[X]\E[Y].
+    \end{align*}
+    Step (3): consider general $X$ and $Y$ and write $X=X+-X_-$ and $Y=Y_+-Y_-$. Then 
+    \begin{align*}
+        \E[XY] &= \E[X_+Y_+-X_+Y_--X_-Y_++X_-Y_-]\\
+        &= \E[X_+]\E[Y_+]-\E[X_+]\E[Y_-]-\E[X_-]\E[Y_+]+\E[X_-]\E[Y_-]\\
+        &= \E[X_+-X_-]\E[Y_+]-\E[X_+-X_-]\E[Y_-]\\
+        &=\E[XY].\qedhere
+    \end{align*}
+\end{proof}
+\section{Moments}
+\begin{defn}
+    A random variable $X$ has an \emph{$i^{th}$ moment} $\mu_i$ if $\E[\abs{X}^i]<\infty$ and $\E[X^i]=\mu_i$.
+\end{defn}
+\begin{ex}
+    If $X \sim \Na(0,1)$, then 
+    \[\E[X^i] = \int_{-\infty}^\infty \frac{x^i}{\sqrt{2\pi}} e^{-\frac{1}{2}x^i}dx = \begin{cases}
+        0&\text{if } i \text{ is odd},\\
+        (i-1)!! & \text{if } i \text{ is even}.
+    \end{cases}\]
+    The notation $(i-1)!!$ is the \emph{skip factorial}. It is recursively defined $n!! = n(n-2)!!$ for $n \ge 2$ and $0!!=1!! = 1$. 
+\end{ex}
+\begin{defn}
+    Given a random variable $X$ with distribution $\mu$, the \emph{moment generating function} of $X$ is defined to be
+    \[M_X(s) = \E[e^{sX}] = \int e^{sX}\mu(dx),\]
+    provided the above integral exists.
+\end{defn}
+Note $M_X(0) =\E[1]=1$ for all $X$ and that if $X \ge 0$, the $M_X(s) \le M_X(r)$ for all $s \le r$. 
+\begin{ex}
+    Suppose $X \sim \text{Poisson}(\la)$, then
+    \begin{align*}
+        M_X(s)& = \sum_{j=0}^\infty \frac{e^{sj}e^{-\la}\la^j}{j!}\\
+        &=e^{-\la}\sum_{j=0}^\infty \frac{\left(\la e^s\right)^j}{j!}\\
+        &=e^{-\la}e^{e^s \la}\\
+        &=e^{\la\left(e^s-1\right)}.
+    \end{align*}
+    In particular $M_X(s)$ exists for every $s$.
+\end{ex}
+Suppose that $M(s) < \infty$ for on $[-s_0,s_0]$ for some $s_0 > 0$. Since $e^{\abs{x}}\le e^{-x}+e^{x}$ for all $x \in \R$ we thus have so $s \in [-s_0,s_0]$,
+\[\E[e^{s\abs{X}}] \le M_X(-s_0)+M_X(s_0). \]
+Thus by the monotone convergence theorem 
+\[\E\left[\sum_{j=0}^\infty \frac{\abs{sX}^j}{j!}\right]=\sum_{j=0}^\infty \frac{\abs{s}^j\E[\abs{X}^j]}{j!}. \]
+And so for $s \in [s_0,s_0]$
+\[M_X(s) = \sum_{j=0}^\infty \frac{s^j \E[X^j]}{j!}. \]
+Thus $\E[X^j] = M^{(j)}_X(0)$. 
+\begin{remark}
+    Even though we know the moment generating function for a Poisson random variable, it is still hard to calculate the moments since the derivatives get complicated. We do have that if $X \sim \text{Poisson}(\la)$, then 
+    \[\E[X(X-1)\ldots (X-j+1)] = \la^j. \]
+\end{remark}
+\section{A non-Borel set}
+The following is an example of a subset of $[0,1]$ that is not Borel but is measurable. We will use the following fact. If $x \in [0,1]$ is irrational, then $x$ can be uniquely represented as
+\[x = \frac{1}{a_1+\frac{1}{a_2+\ddots}}, \]
+where $a_i \in \N$. We write this as $x = [a_1,a_2,\ldots]$. Define 
+\[A = \{[a_1,a_2,a_3,\ldots]: a_1\mid a_2 \mid a_3 \mid \ldots \}. \]
+So $[j,j,j,j,\ldots] \in A$ and $[1,2,4,8,16,\ldots]\in A$ but $[1,2,1,2,\ldots] \notin A$ and no rational numbers are in $A$. The set $A$ is not Borel but it is Lebesgue measurable. If you are interested in this sort of stuff you should look up the book/topic Descriptive Set Theory. 
 \end{document}
