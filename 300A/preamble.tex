@@ -4,6 +4,7 @@
 \usepackage{chngcntr}
 \usepackage{tikz-cd}
 \usepackage{graphicx}
+\graphicspath{ {./images/}}
 \usepackage[all,cmtip]{xy}
 \usepackage{amsmath, amscd}
 \usepackage{amsthm}
@@ -33,6 +34,7 @@
 \renewcommand{\labelenumi}{(\alph{enumi})}
 \renewcommand{\labelenumii}{\roman{enumii}.}
 
+\DeclareMathOperator*{\ac}{accept}
 \DeclareMathOperator*{\amax}{argmax}
 \DeclareMathOperator*{\amin}{argmin}
 \DeclareMathOperator*{\Aut}{Aut}
@@ -114,6 +116,7 @@
 \newcommand {\Q}{{\mathbb{Q}}}
 \newcommand {\R}{{\mathbb R}}
 \newcommand {\Rd}{{\mathbb{R}^{d}}}
+\DeclareMathOperator{\rej}{reject }
 \newcommand {\Rn}{{\mathbb{R}^{n}}}
 \newcommand {\cR}{{\mathcal{R}}}
 \newcommand {\Rad}{{\mathrm{Rad}}}
