@@ -19,31 +19,31 @@
 \section{Setting}
 Recall that we are now doing hypothesis testing. Thus we have data $X \sim \Pa_\ta$, where $\ta \in \Om = \Om_0 \cup \Om_1$ and $\Om_0 \cap \Om_1 = \emptyset$. We wish to test the null hypothesis $H_0 : \ta \in \Om_0$ against the alternative $H_1 : \ta \in \Om_1$. Our goal is to maximize power
 \[\E_{\ta_1}\phi(X)~~\text{ for } \ta_1 \in \Om_1, \]
-subject to the constraint
+subject to the level constraint
 \[\E_{\ta_0}\phi(X) \le \al ~~\text{ for all }\ta_0\in\Om_0. \]
 Recall that the test function $\phi(x)$ is equal to the probability that we reject $H_0$ given data $X=x$.
 \section{Proof of NPL}
-We ended last lecture with the start of the proof of the Neyman Pearson Lemma (TSH 3.2.1). We will finish the proof today. We will tackel the three parts of the proof individually. The first part was \underline{Existence}: for testing $H_0 :p_0$ vs $H_1:p_1$, there exists a test function $\phi$ and a constant $k \in [0,\infty]$ such that 
+We ended last lecture with the start of the proof of the Neyman Pearson Lemma (TSH 3.2.1). We will finish the proof today. We will tackle the three parts of the proof individually. The first part was \underline{Existence}: for testing $H_0 :p_0$ vs $H_1:p_1$, there exists a test function $\phi$ and a constant $k \in [0,\infty]$ such that 
 \begin{enumerate}
     \item $\E_0\phi = \al$, and
     \item $\phi(x) = \begin{cases} 1 & \text{if } \frac{p_1(x)}{p_0(x)} > k,\\
      0 & \text{if } \frac{p_1(x)}{p_0(x)} < k.\end{cases}$
 \end{enumerate}
 \begin{proof}
-    Define $r(x) = \frac{p_1(x)}{p_0(x)}$ and $\al(c) = \Pa_0(r(X)>c)$. If there exists $c_0$ such that $\al = \Pa_0(r(X) > c_0)$, then define 
+    Define $r(x) = \frac{p_1(x)}{p_0(x)}$ and $\al(c) = \Pa_0(r(X)>c)$. If there exists $c_0$ such that $\al = \al(c_0)$, then define 
     \[\phi(x) = \begin{cases}
         1 &\text{if } r(x) > c_0,\\
         0 & \text{else}.
     \end{cases} \]
     The test function clearly satisfies (b) and furthermore 
-    \[\E_0 \phi = \Pa_0(r(x)>c_0)=\al. \]
+    \[\E_0 \phi = \Pa_0(r(x)>c_0)=\al(c_0)=\al. \]
     In general $\al(c)$ may not be continuous and such a $c_0$ might not exist. The function $\al$ is non-increasing and $\al$ is right continuous in that for all $c$ 
     \[\al(c) = \lim_{\substack{\eps \to 0\\ \eps > 0}}f(c+\eps).\]
     Since $\al$ is non-increasing, the left limit of $\al$ always exists. Thus for all $c$ we can define 
     \[\al(c^-) = \lim_{\substack{\eps \to 0\\ \eps > 0}}f(c-\eps). \]
     By monotonicity we have for all $c$,
     \[\al(c^-) \ge \al(c). \]
-    Even if there does not exist $c$ such that $\al(c)=c$, we can still find $c \in [0,\infty]$ such that 
+    Even if there does not exist $c$ such that $\al(c)=c$, we can still find $c_0 \in [0,\infty]$ such that 
     \[\al(c_0) \le \al \le \al(c_0^-). \]
     We can now define the randomized test 
     \begin{align*}
@@ -79,7 +79,7 @@ The next part of NPL was \underline{sufficiency}. Specifically if $\phi$ satisfi
     \[(\phi(x)-\phi'(x))(p_1(x)-kp_0(x)) \ge 0. \]
     Lastly if $\frac{p_1(x)}{p_0(x)} = k$, then 
     \[(\phi(x)-\phi'(x))(p_1(x)-kp_0(x))=0. \]
-    Thus the integrand in equation \eqref{int} is non-negative. Thus 
+    Thus the integrand in equation \eqref{int} is non-negative and hence  
     \[\int_\X (\phi-\phi')(p_1-kp_0)d\mu \ge 0. \]
     This implies that 
     \begin{align*}
@@ -94,7 +94,7 @@ The next part of NPL was \underline{sufficiency}. Specifically if $\phi$ satisfi
 \end{proof}
 The key part of this proof was considering the function $(\phi-\phi')(p_1-kp_0)$ which allowed us to simulatenously compare the power and level of $\phi$ and $\phi'$. We will now prove \underline{necessity}. If $\phi^*$ is MP at level $\al$, then (b) holds almost everywhere with respect to $\mu$. Also (a) holds unless there exists a test with level strictly less than $\al$ and power equal to 1. We will not prove the second statement (it can be found in the scribed notes).
 \begin{proof}
-    Let $\phi^*$ be MP at least $\al$ and let $\phi$ and $k$ be the likelihood ratio test from the proof of existence. Define
+    Let $\phi^*$ be MP at level $\al$ and let $\phi$ and $k$ be the likelihood ratio test from the proof of existence. Define
     \[S^+ = \{x : \phi(x)> \phi^*(x)\}, \]
     and
     \[S^- = \{x : \phi(x) < \phi^*(x)\}.\]
@@ -108,7 +108,7 @@ The key part of this proof was considering the function $(\phi-\phi')(p_1-kp_0)$
     \[\int_\X(\phi-\phi^*)(p_1-kp_0)d\mu > 0. \]
     However this implies 
     \begin{align*}
-        \int_\X \phi p_1d\mu -\int_\X \phi^* p_1d\mu&\ge k \left(\int_X \phi p_0d\mu - \int_X \phi^* p_0d\mu\right) \\
+        \int_\X \phi p_1d\mu -\int_\X \phi^* p_1d\mu&> k \left(\int_\X \phi p_0d\mu - \int_\X \phi^* p_0d\mu\right) \\
         &\ge k(\al-\al)\\
         &=0,
     \end{align*}
@@ -120,14 +120,14 @@ Notice that there are potentially many MP tests since the case $r(x)=k$ is not s
 \end{cor}
 Thus the level is always less than the power for MP tests.
 \begin{proof}
-    Consider the test function $\phi_0(X) = \al$. The test $\phi_0$ has level and power $\al$ since for all data $\phi_0$ rejects $H_0$ with probability $\al$. Thus the MP test has power $\beta \ge \al$. If $\beta = \al$, then $\phi_0$ is MP. Thus by the sufficiency part of NPL, $\phi_0$ is a likelihood ratio test. Since $\phi_0(x) = \al \in (0,1)$ we can conclude that $r(x) = k$ almost everywhere. Thus $p_1(x) = kp_0(x)$ almost everywhere. Since $p_1$ and $p_0$ are both densities, this implies that $k=1$ and thus $p_1=p_0$ almost everywhere.
+    Consider the test function $\phi_0(x) = \al$. The test $\phi_0$ has level and power $\al$ since for all data $\phi_0$ rejects $H_0$ with probability $\al$. Thus the MP test has power $\beta \ge \al$. If $\beta = \al$, then $\phi_0$ is MP. Thus by the sufficiency part of NPL, $\phi_0$ is a likelihood ratio test. Since $\phi_0(x) = \al \in (0,1)$ we can conclude that $r(x) = k$ almost everywhere. Thus $p_1(x) = kp_0(x)$ almost everywhere. Since $p_1$ and $p_0$ are both densities, this implies that $k=1$ and thus $p_1=p_0$ almost everywhere.
 \end{proof}
 \section{Uniformly most powerful tests}
 \subsection{Exponential familes}
 Let $X_1,\ldots, X_n \sim \Pa_\ta$ where $\Pa_\ta$ is a one dimensional exponential family with natural parameter $\ta$. That is, $\Pa_\ta$ has density
 \[p_\ta(x) \propto h(x)\exb{\ta T(x)}. \]
 Consider testing the hypothesis $H_0:\ta=\ta_0$ against $H_1 : \ta = \ta_1$ where $\ta_1 > \ta_0$. By looking at the likelihood ratio for $X$ we can construct an MP test of the form 
-\[phi(x) = \begin{cases}
+\[\phi(x) = \begin{cases}
     1 & \text{if } \sum_{i=1}^n T(x_i) > k,\\
     \gamma & \text{if } \sum_{i=1}^n T(x_i) = k,\\
     0 & \text{if } \sum_{i=1}^n T(x_i) < k.
@@ -136,5 +136,23 @@ where $k$ and $\gamma$ are chosen such that
 \[\E_{\ta_0}\phi = \Pa_{\ta_0}\left(\sum_{i=1}^n T(X_i)> k\right) +\gamma \Pa_{\ta_0}\left(\sum_{i=1}^n T(X_i) = k\right)=\al.\]
 Note that the test function $\phi$ does not depend on $\ta_1$. Thus the MP test is in fact the UMP for the test $H_0 : \ta = \ta_0$ vs $H_1 : \ta > \ta_0$. Thus we have a UMP for a one-sided alternative test.
 \subsection{Monotone likelihood ratio}
-
+\begin{defn}
+    A family of densities $\{p_\ta: \ta \in \R\}$ has a \emph{monotone likelihood ratio (MLR)} in $T(x)$ if 
+    \begin{enumerate}
+        \item If $\ta \neq \ta'$, then $\Pa_\ta \neq \Pa_{\ta'}$.
+        \item If $\ta < \ta'$, then $\frac{p_{\ta'}(x)}{p_{\ta}(x)}$ is a non-decreasing function of $T(x)$.
+    \end{enumerate}
+\end{defn}
+The idea behind this definition is to generalize what we did for one-dimensional exponential families to a more general class of models.
+\begin{thrm}
+    Let $X \sim \Pa_\ta$ have a MLR in $T(x)$. Consider the test $H_0 : \ta \le \ta_0$ vs $H_1 : \ta >\ta_0$. For all levels $\al$, there exists a level $\al$ UMP test $\phi$ such that 
+    \[\phi(x) = \begin{cases}
+        1 &\text{if } T(x) > k,\\
+        \gamma &\text{if } T(x) = k,\\
+        0 & \text{if }T(x) < k.
+    \end{cases} \]
+    where $k$ and $\gamma$ are determined by 
+    \[\E_{\ta_0}\phi=\al. \]
+    Furthermore the power function of $\phi$ given by $\beta(\ta) = \E_\ta \phi$ is strictly increasing in $\ta$ provided $0 < \beta(\ta) < 1$.
+\end{thrm}
 \end{document}
