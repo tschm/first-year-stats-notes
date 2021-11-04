@@ -1,0 +1,140 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 13}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{11/03/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 13}
+\lhead{11/03/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Setting}
+Recall that we are now doing hypothesis testing. Thus we have data $X \sim \Pa_\ta$, where $\ta \in \Om = \Om_0 \cup \Om_1$ and $\Om_0 \cap \Om_1 = \emptyset$. We wish to test the null hypothesis $H_0 : \ta \in \Om_0$ against the alternative $H_1 : \ta \in \Om_1$. Our goal is to maximize power
+\[\E_{\ta_1}\phi(X)~~\text{ for } \ta_1 \in \Om_1, \]
+subject to the constraint
+\[\E_{\ta_0}\phi(X) \le \al ~~\text{ for all }\ta_0\in\Om_0. \]
+Recall that the test function $\phi(x)$ is equal to the probability that we reject $H_0$ given data $X=x$.
+\section{Proof of NPL}
+We ended last lecture with the start of the proof of the Neyman Pearson Lemma (TSH 3.2.1). We will finish the proof today. We will tackel the three parts of the proof individually. The first part was \underline{Existence}: for testing $H_0 :p_0$ vs $H_1:p_1$, there exists a test function $\phi$ and a constant $k \in [0,\infty]$ such that 
+\begin{enumerate}
+    \item $\E_0\phi = \al$, and
+    \item $\phi(x) = \begin{cases} 1 & \text{if } \frac{p_1(x)}{p_0(x)} > k,\\
+     0 & \text{if } \frac{p_1(x)}{p_0(x)} < k.\end{cases}$
+\end{enumerate}
+\begin{proof}
+    Define $r(x) = \frac{p_1(x)}{p_0(x)}$ and $\al(c) = \Pa_0(r(X)>c)$. If there exists $c_0$ such that $\al = \Pa_0(r(X) > c_0)$, then define 
+    \[\phi(x) = \begin{cases}
+        1 &\text{if } r(x) > c_0,\\
+        0 & \text{else}.
+    \end{cases} \]
+    The test function clearly satisfies (b) and furthermore 
+    \[\E_0 \phi = \Pa_0(r(x)>c_0)=\al. \]
+    In general $\al(c)$ may not be continuous and such a $c_0$ might not exist. The function $\al$ is non-increasing and $\al$ is right continuous in that for all $c$ 
+    \[\al(c) = \lim_{\substack{\eps \to 0\\ \eps > 0}}f(c+\eps).\]
+    Since $\al$ is non-increasing, the left limit of $\al$ always exists. Thus for all $c$ we can define 
+    \[\al(c^-) = \lim_{\substack{\eps \to 0\\ \eps > 0}}f(c-\eps). \]
+    By monotonicity we have for all $c$,
+    \[\al(c^-) \ge \al(c). \]
+    Even if there does not exist $c$ such that $\al(c)=c$, we can still find $c \in [0,\infty]$ such that 
+    \[\al(c_0) \le \al \le \al(c_0^-). \]
+    We can now define the randomized test 
+    \begin{align*}
+        \phi(x) = \begin{cases}
+            1 & \text{if } r(x) > c_0,\\
+            \gamma & \text{if } r(x)=c_0,\\
+            0 & \text{if } r(x) < c_0.
+        \end{cases}
+    \end{align*}
+    where $\gamma \in [0,1]$ is a constant that we will determine shortly. Note that $\phi$ satisfies (b). In order for $\phi$ to satisfy (a) we need:
+    \begin{align*}
+        \al &= \E_0 \phi \\
+        &= \Pa_0(r(X) > c_0)+\gamma \Pa_0(r(X) = c_0)\\
+        &= \al(c_0) +\gamma\left(\al(c_0^-)-\al(c_0)\right).
+    \end{align*}
+    Thus if set 
+    \[\gamma = \frac{\al-\al(c_0)}{\al(c_0^-)-\al(c_0)}, \]
+    then $\gamma \in [0,1]$ since $\al(c_0) \le \al \le \al(c_0^-)$ and $\phi$ satisfies (a).
+\end{proof}
+The next part of NPL was \underline{sufficiency}. Specifically if $\phi$ satisfies (a) and (b) for some $k$, then $\phi$ is most powerful.
+\begin{proof}
+    Let $k$ be such that $\phi$ satisfies (a) and (b). Let $\phi'$ be another level $\al$ test. Consider the integral
+    \begin{equation}\label{int}
+        \int_\X (\phi(x)-\phi'(x))(p_1(x)-kp_0(x))d\mu.
+    \end{equation}
+    Note that if $\frac{p_1(x)}{p_2(x)} > k$, then $p_1(x)-kp_0(x) > 0$ and also 
+    \[\phi(x) = 1 \ge \phi'(x). \]
+    Thus we have 
+    \[ (\phi(x)-\phi'(x))(p_1(x)-kp_0(x)) \ge 0.\]
+    Similarly if $\frac{p_1(x)}{p_0(x)} < k$, then $p_1(x)-kp_0(x) < 0$ and 
+    \[\phi(x) = 0 \le \phi'(x). \]
+    Thus we have
+    \[(\phi(x)-\phi'(x))(p_1(x)-kp_0(x)) \ge 0. \]
+    Lastly if $\frac{p_1(x)}{p_0(x)} = k$, then 
+    \[(\phi(x)-\phi'(x))(p_1(x)-kp_0(x))=0. \]
+    Thus the integrand in equation \eqref{int} is non-negative. Thus 
+    \[\int_\X (\phi-\phi')(p_1-kp_0)d\mu \ge 0. \]
+    This implies that 
+    \begin{align*}
+        \int_\X \phi p_1d\mu - \int_\X \phi' d\mu & \ge k\left(\int_\X \phi p_0d\mu - \int_\X \phi p_0d\mu \right)\\
+        &= k\left(\E_0 \phi - \E_0 \phi'\right)\\
+        &\ge k(\al-\al)\\
+        &=0.
+    \end{align*}
+    Thus we have 
+    \[\E_1 \phi = \int_\X \phi p_1d\mu \ge \int_\X \phi' p_1d\mu = \E_1 \phi', \]
+    and so the power of $\phi$ is greater than the power of $\phi'$. Thus $\phi$ is MP.
+\end{proof}
+The key part of this proof was considering the function $(\phi-\phi')(p_1-kp_0)$ which allowed us to simulatenously compare the power and level of $\phi$ and $\phi'$. We will now prove \underline{necessity}. If $\phi^*$ is MP at level $\al$, then (b) holds almost everywhere with respect to $\mu$. Also (a) holds unless there exists a test with level strictly less than $\al$ and power equal to 1. We will not prove the second statement (it can be found in the scribed notes).
+\begin{proof}
+    Let $\phi^*$ be MP at least $\al$ and let $\phi$ and $k$ be the likelihood ratio test from the proof of existence. Define
+    \[S^+ = \{x : \phi(x)> \phi^*(x)\}, \]
+    and
+    \[S^- = \{x : \phi(x) < \phi^*(x)\}.\]
+    Also define 
+    \[S = (S^+\cup S^-) \cap \{r(x)\neq k\}. \]
+    We wish to show that $\mu(S) =0$. This implies that for almost every $x$ if $r(x) > k$, then $\phi^*(x)=\phi(x)=1$ and if $r(x)<k$, then $\phi^*(x)=\phi(x)=0$. We will again consider the function 
+    \[(\phi-\phi^*)(p_1-kp_0). \]
+    As before one can show that $(\phi-\phi^*)(p_1-kp_0) \ge 0$ on all of $\X$. We also have that on $S$, 
+    \[(\phi-\phi^*)(p_0-kp_1)>0, \]
+    since neither term is 0. Thus if $\mu(S) > 0$, then 
+    \[\int_\X(\phi-\phi^*)(p_1-kp_0)d\mu > 0. \]
+    However this implies 
+    \begin{align*}
+        \int_\X \phi p_1d\mu -\int_\X \phi^* p_1d\mu&\ge k \left(\int_X \phi p_0d\mu - \int_X \phi^* p_0d\mu\right) \\
+        &\ge k(\al-\al)\\
+        &=0,
+    \end{align*}
+    which implies $\E_1 \phi > \E_1 \phi^*$ showing that $\phi^*$ is not MP, a contradiction.
+\end{proof}
+Notice that there are potentially many MP tests since the case $r(x)=k$ is not specified. 
+\begin{cor}
+    \emph{[TSH 3.2.1]} Consider testing the hypothesis $H_0 : X\sim \Pa_0$ against $H_1 : X\sim \Pa_1$. Let $\beta = \E_1 \phi$ where $\phi$ is MP with level $\al \in (0,1)$, then $\beta > \al$ unless $\Pa_0 =\Pa_1$.
+\end{cor}
+Thus the level is always less than the power for MP tests.
+\begin{proof}
+    Consider the test function $\phi_0(X) = \al$. The test $\phi_0$ has level and power $\al$ since for all data $\phi_0$ rejects $H_0$ with probability $\al$. Thus the MP test has power $\beta \ge \al$. If $\beta = \al$, then $\phi_0$ is MP. Thus by the sufficiency part of NPL, $\phi_0$ is a likelihood ratio test. Since $\phi_0(x) = \al \in (0,1)$ we can conclude that $r(x) = k$ almost everywhere. Thus $p_1(x) = kp_0(x)$ almost everywhere. Since $p_1$ and $p_0$ are both densities, this implies that $k=1$ and thus $p_1=p_0$ almost everywhere.
+\end{proof}
+\section{Uniformly most powerful tests}
+\subsection{Exponential familes}
+Let $X_1,\ldots, X_n \sim \Pa_\ta$ where $\Pa_\ta$ is a one dimensional exponential family with natural parameter $\ta$. That is, $\Pa_\ta$ has density
+\[p_\ta(x) \propto h(x)\exb{\ta T(x)}. \]
+Consider testing the hypothesis $H_0:\ta=\ta_0$ against $H_1 : \ta = \ta_1$ where $\ta_1 > \ta_0$. By looking at the likelihood ratio for $X$ we can construct an MP test of the form 
+\[phi(x) = \begin{cases}
+    1 & \text{if } \sum_{i=1}^n T(x_i) > k,\\
+    \gamma & \text{if } \sum_{i=1}^n T(x_i) = k,\\
+    0 & \text{if } \sum_{i=1}^n T(x_i) < k.
+\end{cases}\]
+where $k$ and $\gamma$ are chosen such that
+\[\E_{\ta_0}\phi = \Pa_{\ta_0}\left(\sum_{i=1}^n T(X_i)> k\right) +\gamma \Pa_{\ta_0}\left(\sum_{i=1}^n T(X_i) = k\right)=\al.\]
+Note that the test function $\phi$ does not depend on $\ta_1$. Thus the MP test is in fact the UMP for the test $H_0 : \ta = \ta_0$ vs $H_1 : \ta > \ta_0$. Thus we have a UMP for a one-sided alternative test.
+\subsection{Monotone likelihood ratio}
+
+\end{document}
