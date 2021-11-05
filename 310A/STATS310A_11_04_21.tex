@@ -21,7 +21,7 @@ Today we will study Poisson approximation and Stein's method. This is not in the
     \item ``\href{https://projecteuclid.org/journals/statistical-science/volume-5/issue-4/Poisson-Approximation-and-the-Chen-Stein-Method/10.1214/ss/1177012015.full}{Poisson Approximation and the Chen-Stein Method}'' by Arratia, Goldstein and Gord.
     \item ``\href{https://arxiv.org/abs/math/0411525}{Exchangeable pairs and Poisson approximation}'' by Chatterjee, Diaconis and Meckes.
 \end{itemize}
-Through out this lecture we will us $\Po_\la$ to denote the Poisson distribution with parameter $\la \ge 0$. That is $\Po_\la$ is a probability measure on $\N = \{0,1,2,\ldots\}$ and 
+Through out this lecture we will use $\Po_\la$ to denote the Poisson distribution with parameter $\la \ge 0$. That is $\Po_\la$ is a probability measure on $\N = \{0,1,2,\ldots\}$ and 
 \[\Po_\la(\{j\}) = \frac{e^{-\la}\la^j}{j!}.\]
 If $Z$ is a random variable with distribution $\Po_\la$, we will say that $Z$ is Poisson$(\la)$. If $Z$ is Poisson$(\la)$, then 
 \begin{align*}
@@ -29,9 +29,9 @@ If $Z$ is a random variable with distribution $\Po_\la$, we will say that $Z$ is
     \V(Z)&=\la \text{ and},\\
     \E[Z(Z-1)\ldots(Z-k+1)]&=\la^k.
 \end{align*}
-Also if $Z_1 \sim \Po(\la_1)$ and $Z_2 \sim \Po(\la_2)$ are independent, then $Z_1+Z_2 \sim \Po(\la_1+\la_2)$.
+Also if $Z_1 \sim \Po_{\la_1}$ and $Z_2 \sim \Po_{\la_2}$ are independent, then $Z_1+Z_2 \sim \Po_{\la_1+\la_2}$.
 \section{Law of small numbers}
-Let $I$ be a finite set and let $\{X_i\}_{i \in I}$ be a collection of 0-1 random variables with expected value $\E[X_i]=\Pa(X_i=1)=p_i$. Define
+Let $I$ be a finite set and let $\{X_i\}_{i \in I}$ be a collection of 0 - 1 random variables with expected value $\E[X_i]=\Pa(X_i=1)=p_i$. Define
 \[\la = \sum_{i\in I} p_i, \]
 and 
 \[W =\sum_{i \in I}X_i. \]
@@ -42,12 +42,12 @@ To define ``approximately'' we need to put a topology on the space of probabilit
     If $(\Om, \F)$ is a measurable space and $P,Q$ are probabilities on $\Om$, then we define the \emph{total variation distance} between $P$ and $Q$ to be 
     \[\norm{P-Q}_{TV} = \sup_{A \in \F}\abs{P(A)-G(A)}. \]
 \end{defn}
-We occassionally drop the subscript and simply write $\norm{P-Q}$ for $\norm{P-Q}_{TV}$.
+We will occassionally drop the subscript and simply write $\norm{P-Q}$ for $\norm{P-Q}_{TV}$.
 \begin{exer}
     This is will be on the upcoming homework. 
     \begin{enumerate}
         \item[(1)] For a function $f : \Om \to \R$, let $\norm{f}_\infty = \sup_{\w \in \Om} \abs{f(x)}$. Then show \[\norm{P-Q} = \sup \left\{\frac{1}{2}\abs{\int f dP - \int f dQ}: \norm{f}_\infty \le 1\right\}.\]
-        \item[(2)] If $\mu$ is a $\sigma$-finite measure on $(\Om,\F)$ such that 
+        \item[(2)] Let $\mu$ be a $\sigma$-finite measure on $(\Om,\F)$ such that $P$ and $Q$ have densities with respect to $\mu$. That is there exist measurable functions $f,g: \Om \to [0,\infty]$ such that  
         \[P(A) = \int_A fd\mu ~~~\text{and}~~~ Q(A) = \int_A g d\mu, \]
         then 
         \[\norm{P-Q}_{TV} = \frac{1}{2}\int\abs{f(\w)-g(\w)}d\mu. \] 
@@ -81,12 +81,13 @@ Suppose $I = \{1,\ldots,n\}$ and $X_i$ are i.i.d. with $\Pa(X_i=1)=p$. Then $W =
 If we take $p = \frac{1}{n}$, then $\frac{1}{\la}=1<3$ and so 
 \[\norm{\Pa_W - \Po_\la} \le n\frac{1}{n^2}=\frac{1}{n}. \]
 \subsection{Magic factor}
-We call the $1/\la$ term ``the magic factor.'' Suppose again that $X_i$ are independent and $\Gamma$ is the empty graph but now $\Pa(X_i=1)=\frac{1}{i}$. This is equivalent to the ESP problem of guessing cards from a deck of $n$ cards with complete feedback. We can take $X_i = 1$ if and only if the $(n-i+1)^{th}$ guess is correct. In this example
+We call the $1/\la$ term ``the magic factor.'' Suppose again that $\{X_i\}_{i=1}^n$ are independent and $\Gamma$ is the empty graph but now $\Pa(X_i=1)=\frac{1}{i}$. In this example
 \[\la = \sum_{i=1}^n \frac{1}{i} = \log(n)-\gamma + O(1/n). \]
 Since the dependency graph is again empty, the first double sum is zero and the second is
 \[\sum_{i\in I}\sum_{i \in N_i} p_ip_j = \sum_{i=1}^n \frac{1}{i^2} = \log(n)-\gamma + O(1/n). \]
 For large $n$, $\frac{1}{\log(n)} \le 3$ and we have the bound 
 \[\norm{\Pa_W - \Po_\la} \le \frac{1}{\log n}\frac{\pi^2}{6}. \]
+Note that this example is equivalent to the ESP problem of guessing cards from a deck of $n$ cards with complete feedback. We can take $X_i = 1$ if and only if the $(n-i+1)^{th}$ guess is correct.
 \subsection{Birthday problem}
 Suppose we have $n \in \N$ people, $C \in \N$ colors and we are interested in matches of size $k \in \N$. Define 
 \[I = \{\al : \al \subseteq \{1,\ldots, n\}, \abs{\al}=k\}. \] 
@@ -102,9 +103,9 @@ Thus $\la = \binom{n}{k} C^{1-k}$. The Poisson approximation suggests that for f
 Thus we can set the above equal to 1/2 and answer the question of how many people do we need for there to be even odds that at least one group of size $k$ has all the same color.
 \begin{itemize}
     \item If $k=2$ and $C=365$, then we have the usual birthday problem and $\binom{23}{2}\frac{1}{365} = \log(2)$ to 4 d.p. so $e^{-\binom{23}{2}\frac{1}{365}} \approx 1/2$ and we recover our previous answer of 23.
-    \item If $k=3$ and $C=365$, then $n=84$ given $\la = \approx 0.7152$ and $e^{-\la} = 0.489$. Thus in a group of 84 there are roughly equal odd that a group of 3 have the same birthday.
+    \item If $k=3$ and $C=365$, then $n=84$ given $\la \approx 0.7152$ and $e^{-\la} = 0.489$. Thus in a group of 84 there are roughly equal odds that a group of 3 have the same birthday.
     \item Taking $C=60$ you can ask questions about the odds that a group of $k$ people have the seconds-hands on their watch in the same position.
-    \item We can also ask other questions. The Poisson approximation tells us how many matches of size $k$ we should expect.
+    \item We can also ask other questions. As well as telling us the probability of at least one match, the Poisson approximation also tells us how many matches of size $k$ we should expect.
 \end{itemize}
 Let's calculate the error bound in this example. If $I$ and $X_\al$ are as above, then $X_\al$ and $X_\beta$ are independent if and only if $\al \cap \beta = \emptyset$. Thus we can define a dependency graph $\Gamma$ where we join $\al$ to $\beta$ if and only if $\al \cap \beta \neq \emptyset$.
 \begin{prop}
@@ -112,7 +113,7 @@ Let's calculate the error bound in this example. If $I$ and $X_\al$ are as above
     \[\norm{\Pa_W - \Po_\la} \le \min\{3, 1/\la\} \left(\binom{n}{k}\sum_{a=1}^{k-1} \binom{k}{a}\binom{n-k}{n-a} C^{1-(2k-a)}+\binom{n}{k}\sum_{a=1}^{k}\binom{k}{a}\binom{n-k}{n-a} C^{2-2k}\right). \]
 \end{prop}
 \begin{proof}
-    In the first double sum of the Poisson approximation we have $\beta \in N_\al \setminus \{\al\}$ if and only if $\abs{\al \cap \beta}=a$ for some $a = 1,2,\ldots,k-1$. The number of such $\beta$ is precisely $\binom{k}{a}\binom{n-k}{n-a}$ since we must choose $a$ elements of $\al$ to be in $\beta$ and $n-a$ elements of $\{1,\ldots,n\} \setminus \al$ to be in $\beta$. Furthermore
+    In the first double sum of the Poisson approximation we have $\beta \in N_\al \setminus \{\al\}$ if and only if $\abs{\al \cap \beta}=a$ for some $a = 1,2,\ldots,k-1$. The number of such $\beta$ is precisely $\binom{k}{a}\binom{n-k}{n-a}$ since we must choose $a$ elements of $\al$ to be in $\beta$ and $k-a$ elements of $\{1,\ldots,n\} \setminus \al$ to be in $\beta$. Furthermore
     \begin{align*}
         p_{\al,\beta}&= \Pa\left(\text{everyone in } \al \cup \beta \text{ has the same color}\right)\\
         &=C^{1-\abs{\al \cup \beta}}\\
@@ -120,27 +121,66 @@ Let's calculate the error bound in this example. If $I$ and $X_\al$ are as above
         &=C^{1-k-k+a}\\
         &=C^{1-(2k-a)}.
     \end{align*}
-    The calculation for the second double sum.
+    The calculation for the second double sum is similar.
 \end{proof}
 \subsection{Homework}
 Consider the boys and girls birthday problem. Say we have $n$ boys and $n$ girls. We can then ask what is the chance that there is at least one boy-girl pair with the same birthday? We can then ask how large does $n$ need to be for this probability to equal $\frac{1}{2}$. There are many generalizations:
 \begin{itemize}
     \item We can consider any graph that describes how the $n$ people are connected. We can then ask questions about the probability that there is a collection of $k$ people that are all connected in the graph and all have the same colour.
-    \item The colours $i$ can be chosen with probability $p_i$. 
+    \item The colours $i$ can be chosen with probability $p_i$ instead of uniformly. 
 \end{itemize}
 \section{Stein's method}
 When we prove the Poisson approximation, we will use Stein's method and Stein's equation. We will use the following fact:
-\begin{prop}
-    A random variable $Z$ has $\Pa_\la$ distribution if and only if for every bounded function $f:\N \to \R$, 
+\begin{prop}\label{prop}
+    A random variable $Z$ has $\Po_\la$ distribution if and only if for every bounded function $f:\N \to \R$, 
     \begin{equation}
         \label{stein} \E[Zf(Z)] = \la \E[f(Z+1)].
     \end{equation}
 \end{prop}
 The equation \eqref{stein} is called \emph{Stein's equation}. As an exercise one can check that if $Z$ is Poisson$(\la)$, then Stein's equation does indeed hold. The essence of Stein's method is to show that $W$ approximately satisfies 
 \[\E[Wf(W)]  = \la \E[f(W+1)],\]
-and show that this implies $W$ is approximately Poisson$(\la)$. To prove the above Proposition we will prove the following analytic lemma:
-\begin{lemma}
+and show that this implies $W$ is approximately Poisson$(\la)$. To prove Proposition \ref{prop} we will prove the following analytic lemma:
+\begin{lemma}[$**$]
     Given $\la > 0$ and $A \subseteq \N$, there exists a unique function $f: \N \to \R$ such that $f(0)=0$ and for all $j \in \N$, $\abs{f(j)}\le 1.25$, $\abs{f(j+1)-f(j)} \le \min\{3,1/\la\}$ and
     \[\la f(j+1)-jf(j) = \delta_A(j)-\Po_\la(A).\]
 \end{lemma}
+To see that Lemma $(**)$ implies Proposition \ref{prop}, note that if $Z$ is a random variable that satisfies 
+\[\E[\la f(Z+1)-Zf(Z)] = 0, \]
+for all bounded $f$. Then given a subset $A \subseteq \N$, we can find $f$ as in Lemma $(**)$. This gives
+\begin{align*}
+    \Pa(Z \in A) - \Po_\la(A) &= \E\left[\delta_A(Z)-\Po_\la(A)\right]\\
+    &= \E[\la f(Z+1)-Zf(Z)]\\
+    &=0,
+\end{align*}
+and so $\Pa(Z \in A) = \Po_\la(A)$. Since this holds for all $A \subseteq \N$ we can conclude that $Z$ is Poisson$(\la)$.
+\section{3 basic problems in probability}
+The 3 fundamental problems in combinatorial probability are:
+\begin{enumerate}
+    \item[(1)]  The birthday problem with bells and whistles.
+    \item[(2)] Coupon collector problem.
+    \item[(3)]  The matching problem.
+\end{enumerate}
+All three of these can be solved and studied with Poisson approximation and the law of small numbers. We have already seen how this works for the birthday problem. We will briefly discuss the other two.
+\subsection{Coupon collector}
+\begin{itemize}
+    \item Drop $n$ balls into $B$ boxes where the chance a ball drops into box $i$ is $\ta_i$ for $i =1,\ldots, B$.
+    \item What is the chance that all boxes are covered?
+\end{itemize}
+We can define 
+\[X_i = \begin{cases}
+    1 & \text{ if box $i$ is covered},\\
+    0 & \text{ else}.
+\end{cases} \]
+and $W = \sum_{i=1}^B X_i$, then $W=0$ if and only if all boxes are covered and $\Pa(X_i) = (1-\ta_i)^n$. We can consider different variations. For example multiple balls could be dropped into distinct boxes at once.
+\subsection{Matching problem}
+\begin{itemize}
+    \item Two decks containing cards $1,2,\ldots,N$ are shuffled seperately. The cards in the deck are turned over simultaneously. We get a dollar everytime the two cards match.
+    \item What is the probability we make at least one dollar?
+\end{itemize}
+Define 
+\[X_i = \begin{cases}
+    1 & \text{ if the $i^{th}$ turn over match,}\\
+    0 &  \text{ else.}
+\end{cases} \]
+and $W = \sum_{i=1}^N X_i$. We have $W > 0$ if and only if there is at least one match. Note that $\Pa(X_i=1)= \frac{1}{n}$. Again we can consider variations such as multiple cards in the deck with the same label or more than two decks.
 \end{document}
