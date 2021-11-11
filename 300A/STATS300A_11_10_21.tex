@@ -1,0 +1,113 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 15}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{11/10/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 15}
+\lhead{11/10/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Motivation}
+Today we are going to develop optimal tests in one-dimensional exponential families. A UMP test need not exist in this case. Indeed, in the Gaussian model there is no UMP test for $H_0 : \mu =\mu_0$ against $H_1 : \mu \neq \mu_0$. This is because for an alternative $\mu_1 < \mu_0$, the MP test rejects $H_0$ when our data is small. For $\mu_1 >\mu_0$ the MP test rejects $H_0$ when our data is large (see picture below).
+\begin{center}
+    
+\end{center}
+
+
+There are various approaches that can be used when the UMP test does not exist. These include:
+\begin{enumerate}
+    \item Symmetric constraints on test. For example $\phi (c x) = \phi(x)$ for $c >0$.
+    \item Put a probability distribution on $\Om_1$. Then collapse the risk function and maximize the average power.
+    \item Maximize the worst case power (maximin test).
+    \item Monotonicity constraints.
+    \item Unbiasedness.
+\end{enumerate}
+\section{Unbiased tests}
+We will use the unbiasedness approach but it is good to know that there are other method available. 
+\begin{defn}
+    A test $\phi$ is \emph{unbiased} at level $\al$ if
+    \begin{enumerate}
+        \item For all $\ta_0 \in \Om_0$, $\E_{\ta_0} \phi \le \al$.
+        \item For all $\ta_1 \in \Om_1$, $\E_{\ta_1} \phi \ge \al$.
+    \end{enumerate}
+\end{defn}
+\begin{remark}
+    Some remarks on the above definition
+    \begin{itemize}
+        \item This is a form of risk unbiasedness. It corresponds to having level $\al$ and being risk unbiased under 0-1 loss.
+        \item UMP tests (if they exist) are always unbiased tests.
+        \item Recommending reading: \href{https://arxiv.org/abs/1410.2597}{Optimal inference after model selection} by Fiftian, Sun and Taylor. This is a recent paper that uses ideas of unbiased tests.
+    \end{itemize}
+\end{remark}
+The definition of unbiased gives us a new optimality condition. 
+\begin{defn}
+    A \emph{uniformly most power unbiased (UMPU) test} is an unbiased level $\al$ test which is uniformly most powerful among all unbiased level $\al$ tests.
+\end{defn}
+Thus we are restricting our set of tests. We have 
+\[\text{unbiased test} \subsetneq \text{all tests}. \]
+A UMPU test is a test in the first class which is uniformly optimal in the first class. Unlike UMP tests, UMPU tests often exist for test $H_0 : \ta =\ta_0$ against $H_1 : \ta \neq \ta_0$ and for testing $H_0 : \ta \le \ta_0$ against $H_1 : \ta > \ta_0$ in multiple parameter settings.
+\section{Constructing UMPU tests}
+\subsection{A recipe}
+Constructing UMPU tests is not a straight forward proceedure. The general recipe that we will use is
+\begin{enumerate}
+    \item Rewrite constraints as weaker constraints. We will replace unbiasedness with a weaker condition.
+    \item Fix a simple alternative $\ta_1 \in \Om_1$.
+    \item Find a MP under the constraints from (a). This will require a generalized Neyman Pearson lemma. Call this test $\phi_{\ta_1}$.
+    \item If the test $\phi = \phi_{\ta_1}$ does not depend on $\ta_1$, then $\phi$ is in fact the UMP under the constraints in (a).
+    \item Show that $\phi$ actuallly satisfies the stronger unbiased constraint and thus $\phi$ is UMPU.
+\end{enumerate}
+We will now work on each of the ingredients.
+\subsection{$\al$-similar tests}
+Typically $\Om_0$ and $\Om_1$ are subsets of $\R^k$ and so we can define 
+\[W = \overline{\Om}_0 \cap \overline{\Om}_1, \]
+where $\overline{A}$ is used to denote the closure of $A \subseteq \R^k$. 
+\begin{exs}
+\begin{itemize}
+    \item If we have the test $H_0: \ta = \ta_0$ and $H_1 : \ta \neq \ta_0$, then $W = \{\ta_0\}$.
+    \item If we have the test $H_0 : \ta_1 \le \wt{\ta}$ and $H_1 \ta_1 > \wh{\ta}$ where $\ta = (\ta_1,\ldots, \ta_k) \in \R^k$, then \[W = \{\ta \in \R^k : \ta_1 = \wt{\ta}\}.\]
+\end{itemize}
+\end{exs}
+\begin{defn}
+    A test $\phi$ is \emph{$\al$-similar} if $\E_\ta \phi = \al$ for all $\ta \in W$.
+\end{defn}
+\begin{lemma}
+    Suppose that the function $\beta_\phi(\ta) = \E_\ta \phi$ is continuous on $\Om$ for all test functions $\phi$. If a test $\phi_0$ is UMP among all $\al$-similar tests, then $\phi_0$ is also UMP among all unbiased test.
+\end{lemma}
+\begin{proof}
+    We will first show that $\phi_0$ is unbiased. Consider the constant test $\phi = \al$. The test $\phi$ is $\al$-similar. Since $\phi_0$ is UMP among all $\al$-similar tests we must have that for all $\ta \in \Om_1$,
+    \[\E_{\ta_1}\phi_0 \ge \E_{\ta_1} \phi = \al. \]
+    Thus $\phi_0$ is unbiased at level $\al$. To show that $\phi_0$ is the UMPU test, it suffices to show that every unbiased test is a level $\al$ test. If $\phi$ is unbiased, then by continuity of $\beta_\phi$ we have that 
+    \[\E_{\ta} \phi = \beta_\phi(\ta) \le \al,~~~\text{for all } \ta \in \overline{\Om}_0. \]
+    Likewise,
+    \[\E_{\ta} \phi = \beta_\phi(\ta) \ge \al,~~~\text{for all } \ta \in \overline{\Om}_1. \]
+    Thus $\E_\ta \phi = \al$ for all $\ta \in W = \overline{\Om}_0 \cap \overline{\Om}_1$.
+\end{proof}
+The idea behind this proof is that we have shown:
+
+Thus a test with UMP among $\al$-similar tests is UMP among unbiased tests.
+
+\subsection{Method of undetermined multipliers}
+We will now restrict our attention to one-dimensional exponential families so that 
+\[p_\ta(x) \propto h(a)\exb{\ta T(x)}.\]
+We wish to test $H_0 : \ta=\ta_0$ against $H_1 :\ta \neq \ta_0$. Recall that no UMP test exists. One can show by the dominated convergence theorem that the map $\beta_\phi(\ta) = \E_\ta \phi$ is continuous and in fact differentiable for all test functions $\phi$. 
+
+By our lemma from before we know that if $\phi$ is unbiased then $\E_{\ta_0}\phi = \al$ and $\E_\ta \phi \ge \al$ for all $\ta$. Thus every unbiased level $\al$ test must statisfy $\E_{\ta_0}\phi=\al$ and $\ta_0$ must be a global minimum of $\ta \mapsto \beta_\phi(\ta)$. So our power function looks something like this:
+
+
+
+Thus the derivative of the power function at $\ta=\ta_0$ must be zerp. Hence every unbiased test must satisfy the two constraints:
+\begin{equation}
+    \int_\X \phi(x) p_\ta(x)d\mu(x) = \al ~~~\text{and}~~~ \partial_\ta \beta_\phi(\ta)\mid_{\ta = \ta_0} = \int_\X \phi(x) \partial_\ta p_{\ta_0}(x)d\mu(x) =0.
+\end{equation}
+In the second constrain we used some of the regularity properties of exponential families to exchange integration and differentiation.
+
+\end{document}
