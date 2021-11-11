@@ -1,0 +1,227 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 14}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{11/09/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 14}
+\lhead{11/09/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Recap}
+Today we will continue with Stien's method and Poisson approximation. As before $\Po_\la$ will be used to denote the Poisson distribution with parameter $\la > 0$. That is, for $j \in \N = \{0,1,2,\ldots\}$, we have $\Po_\la(\{j\}) = \frac{e^{-\la}\la^j}{j!}$. As before we will say that a random variable $Z$ is Poisson$(\la)$ to mean that $Z$ has distribution $\Po_\la$ and so  
+\[\Pa(Z \in A) = \Po_\la(A). \]
+
+
+Suppose we have a finite index set $I$ and random variables $\{X_i\}_{i \in I}$ such that $X_i$ takes values 0, 1. Suppose $\Pa(X_i=1)=\E[X_i]=p_i$ and that $\Pa(X_i=1,X_j=1) = \E[X_iX_j] = p_{ij}$. Let 
+\[W = \sum_{i\in I}X_i, \]
+and
+\[\la = \sum_{i \in I}p_i = \E[W]. \]
+Also define $\Pa_W$ to be the probability measure $\Pa_W(A) = \Pa(W \in A)$ for $A \subseteq \N$. Suppose that we have a dependency graph $\Gamma$ for $\{X_i\}_{i \in I}$. That is, for all subsets $A,B \subseteq I$, if $A$ and $B$ are disjoint and there are no edges between $A$ and $B$ in $\Gamma$, then 
+\[\{X_i\}_{i \in A} ~~ \text{and}~~ \{X_j\}_{j \in B}, \]
+are independent. For $i \in I$ we define $N_i$ to be the neighbourhood of $i$ in $\Gamma$. That is,
+\[N_i = \{j \in I : \text{there is an edge from $i$ to $j$ in $\Gamma$}\} \cup \{i\}. \]
+We wish to prove
+\begin{thrm}
+    With notation as above
+    \[\norm{\Po_\la-\Pa_W}_{TV} \le \min(3,\la^{-1})\left(\sum_{i \in I}\sum_{i \in N_i \setminus \{i\}}p_{ij}+\sum_{i \in I}\sum_{j \in N_i}p_{ij}\right),\] 
+    where $\norm{\cdot}_{TV}$ is the total variation distance.
+\end{thrm}
+\section{Stein's equation}
+The key idea is the following proposition:
+\begin{prop}\label{stien}
+    A random variable is Poisson$(\la)$ if and only if for all bounded $f : \N \to \R$,
+    \[\E[Zf(Z)]-\la \E[f(Z+1)]=0. \]
+\end{prop}
+We'll need the following analytic lemma.
+\begin{lemma}[$**$]\label{**}
+    For all $A \subseteq \N$ and $\la > 0$, there exists a unique function $f : \N \to \R$ such that 
+    \begin{enumerate}
+        \item[i.] $f(0)=0$,
+        \item[ii.] For all $j \in \N$, $\la f(j+1)-jf(j) = \delta_A(j)-\Po_\la(A)$
+        \item[iii.] For all $j \in \N$, $\abs{f(j)} \le 1.25$.
+        \item[iv.] For all $j \in \N$, $\abs{f(j+1)-f(j)} \le \min(3,\la^{-1})$. 
+    \end{enumerate} 
+\end{lemma}
+\begin{proof}
+    Starting at $j=0$ we can set 
+    \[f(j+1) = \frac{1}{\la} \left(j f(j) +\delta_A(j)-\Po_\la(A)\right). \]
+    The function $f$ is well-defined by recursion and unique by induction. Thus there exists a unique function $f$ satisfying items \emph{i.} and \emph{ii.}. We wish to show that $f$ satisfies items \emph{iii.} and \emph{iv.}. If we multiply the equation 
+    \[ \la f(j+1)-jf(j) = \delta_A(j)-\Po_\la(A),\]
+    by $\frac{\la^j}{j!}$, we get the equation 
+    \[\frac{\la^{j+1}}{j!}f(j+1) - \frac{\la^j}{(j-1)!}f(j) = \frac{\la^j}{j!}\left(\delta_A(j)-\Po_\la(A)\right), \]
+    for $j \ge 1$ and for $j=0$ we have
+    \[\la f(1)=\la \left(\delta_A(0)-\Po_\la(A)\right). \]
+    Thus 
+    \begin{align*}
+        \frac{\la^k}{(k-1)!}f(k)&=\la f(1)+\sum_{j=1}^{k-1} \left(\frac{\la^{j+1}}{j!}f(j+1)-\frac{\la^j}{(j-1)!} f(j)\right)\\
+        &=\sum_{j=0}^{k-1} \frac{\la^j}{j!}\left(\delta_A(j)-\Po_\la(A)\right)\\
+        &=-\sum_{j=k}^\infty \frac{\la^j}{j!}\left(\delta_A(j)-\Po_\la(A)\right).
+    \end{align*}
+    The last equality hold because  
+    \begin{align*}
+        \sum_{j=0}^\infty \frac{\la^j}{j!}\left(\delta_A(j)-\Po_\la(A)\right)&=e^\la \sum_{j=0}^\infty \delta_A(j)\Po_\la(\{j\}) - \Po_\la(A)\sum_{j=0}^\infty \frac{\la^j}{j!}\\
+        &=e^\la \Po_\la(A) - \Po_\la(A)e^{\la}\\
+        &=0.
+    \end{align*}
+    Taking absolute values we get
+    \begin{align*}
+        \abs{f(k)} &= \frac{(k-1)!}{\la^k}\abs{\sum_{j=0}^{k-1}\frac{\la^j}{j!}\left(\delta_A(j)-\Po_\la(A)\right)}\\
+        &\le\frac{(k-1)!}{\la^k}\sum_{j=0}^{k-1}\frac{\la^j}{j!}\abs{\delta_A(j)-\Po_\la(A)}\\
+        &=\frac{1}{\la}\sum_{j=0}^{k-1}\frac{(k-1)!}{\la^{k-j-1}j!}\abs{\delta_A(j)-\Po_\la(A)}\\
+        &\le \frac{1}{\la}\sum_{j=0}^{k-1}\frac{(k-1)!}{\la^{k-j-1}j!}.
+    \end{align*}
+    The last equality holds since $\delta_A(j),\Po_\la(A) \in [0,1]$. We will now perform a change on variables and sum over $j' = k-j-1$ so that $j =k-j'-1$. We thus have
+    \begin{align*}
+        \abs{f(k)}&\le \frac{1}{\la}\sum_{j=0}^{k-1}\frac{(k-1)!}{\la^{k-j-1}j!}\\
+        &=\frac{1}{\la}\sum_{j'=0}^{k-1} \frac{(k-1)!}{\la^{j'}(k-1-j')!}\\
+        &=\frac{1}{\la}\sum_{j'=0}^{k-1} \frac{(k-1)(k-2)\ldots(k-j')}{\la^{j'}}\\
+        &\le \frac{1}{\la}\sum_{j'=0}^{k-1}\left(\frac{k-1}{\la}\right)^{j'}\\
+        &\le \frac{1}{\la}\sum_{j'=0}^{\infty}\left(\frac{k-1}{\la}\right)^{j'}.
+    \end{align*}
+    If $k < \la+1$, then above series is convergent and we have 
+    \begin{align*}
+        \abs{f(k)}&\le\frac{1}{\la}\left(\frac{1}{1-\frac{k-1}{\la}}\right)\\
+        &=\frac{1}{\la-k+1}. 
+    \end{align*}
+    In particular when $k \le \la + \frac{1}{5}$,
+    \[\abs{f(k)} \le \frac{1}{4/5} = 1.25. \]
+    Using 
+    \[\frac{\la^k}{(k-1)!}f(k) = -\sum_{j=k}^\infty \frac{\la^j}{j!}\left(\delta_A(j)-\Po_\la(A)\right), \]
+    we also have
+    \begin{align*}
+        \abs{f(k)} &\le \frac{(k-1)!}{\la^k} \sum_{j=k}^\infty \frac{\la^j}{j!}\abs{\delta_A(j)-\Po_\la(A)}\\
+        &\le \frac{(k-1)!}{\la^k}\sum_{j=k}^\infty \frac{\la^j}{j!}\\
+        &=\frac{1}{k}\sum_{j=k}^\infty \frac{\la^{j-k}k!}{j!}\\
+        &=\frac{1}{k}\sum_{m=0}^\infty \frac{\la^{m}k!}{(m+k)!}\\
+        &=\frac{1}{k}\sum_{m=0}^\infty \frac{\la^{m}}{(m+k)(m+k-1)\ldots (k+1)}\\
+        &\le \frac{1}{k}\sum_{m=0}^\infty \left(\frac{\la}{k+1}\right)^m
+    \end{align*}
+    If $k > \la -1$, then the above series is convergent and so
+    \[\abs{f(k)} \le \frac{1}{k}\left(\frac{1}{1-\frac{\la}{k+1}}\right) = \frac{k+1}{k(k+1-\la)}. \] 
+    In particular if $k > \la + 1/5$ and $k \ge 2$, then $\frac{k+1}{k} \le \frac{3}{2}$ and so  
+    \[\abs{f(k)} \le \frac{k+1}{k(1+1/5)} = \frac{5(k+1)}{6k} \le 1.25. \]
+    For $k < 2$, we have $f(0)=0$ and 
+    \[\abs{f(1)} = \frac{1}{\la}\abs{\delta_A(1)-\Po_\la(A)}, \]
+    which is maximized when $A = \{0\}$ or $A = \N \setminus \{0\}$. In both these cases,
+    \[\abs{\delta_A(1)-\Po_\la(A)} = 1-e^{-\la}, \]
+    and thus 
+    \[\abs{f(1)} \le \frac{1}{\la}\left(
+        1-e^{-\la}\right) \le 1. \]
+        Thus we have shown \emph{iii.}. To show \emph{iv.}  we need to bound $\abs{f(j+1)-f(j)}$. 
+        By the triangle inequality
+        \[\abs{f(j+1)-f(j)} \le \abs{f(j+1)}+\abs{f(j)} \le 2\times 1.25 \le 3. \]
+        For homework show that 
+        \[\abs{f(j+1)-f(j)} \le \la^{-1}, \]
+        for $\la \ge \frac{1}{3}$.
+\end{proof}
+We are now ready to prove proposition \ref{stien}.
+\begin{proof}
+    First suppose that $Z$ is Poisson$(\la)$ and $f:\N \to \R$ is bounded, then 
+    \begin{align*}
+        \E[Zf(Z)]&=\sum_{j=0}^\infty j f(j) \Po_\la(\{j\})\\
+        &=\sum_{j=0}^\infty jf(j) \frac{e^{-\la}\la^j}{j!}\\
+        &=\sum_{j=1}^\infty jf(j) \frac{e^{-\la}\la^j}{j!}\\
+        &=\sum_{j=1}^\infty f(j) \frac{e^{-\la}\la^j}{(j-1)!}\\
+        &=\sum_{k=0}^\infty f(k+1) \frac{e^{-\la}\la^{k+1}}{k!}\\
+        &=\la \sum_{k=0}^\infty f(k+1)\Po_\la(\{k\})\\
+        &=\la\E[f(Z+1)]. 
+    \end{align*}
+    Alternative one can note that the equation 
+    \[\E[Zf(Z)] = \la \E[f(Z+1)],\]
+    is linear in $f$ and thus reduce the result to the case when $f$ is an indicator function (that is, use a (1),(2),(3) argument).
+
+    Now conversely suppose that for all bound $f:\N \to \R$,
+    \[ \E[Zf(Z)] = \la \E[f(Z+1)].\]
+    Let $A$ be a subset of $\N$ and let $f$ be as in Lemma $(**)$. We then have
+    \begin{align*}
+        \Pa(Z \in A) - \Po_\la(A) &= \sum_{j=0}^\infty \left(\delta_A(j)-\Po_\la(A)\right)\Pa(Z=j)\\
+        &=\sum_{j=0}^\infty \left(jf(j)-\la f(j+1)\right)\Pa(Z=j)\\
+        &=\E[Zf(Z)-\la f(Z+1)]\\
+        &=0.
+    \end{align*}
+    So $\Pa(Z \in A) = \Po_\la(A)$ and $Z$ is Poisson$(\la)$.
+\end{proof}
+\section{Proof of the Poisson approximation}
+We are now ready to prove 
+\[\norm{\Pa_W - \Po_\la}_{TV} \le \min(3,\la^{-1})\left(\sum_{i \in I}\sum_{i \in N_i \setminus \{i\}}p_{ij}+\sum_{i \in I}\sum_{j \in N_i}p_{ij}\right), \]
+where the notation is as at the start of this lecture.
+\begin{proof}
+    Since \[\norm{\Pa_W-\Po_\la}_{TV} = \sup_{A \subseteq \N}\abs{\Pa_W(A)-\Po_\la(A)},\]
+    it suffices to show that 
+    \[\abs{\Pa_W(A)-\Po_\la(A)}\le \min(3,\la^{-1})\left(\sum_{i \in I}\sum_{i \in N_i \setminus \{i\}}p_{ij}+\sum_{i \in I}\sum_{j \in N_i}p_{ij}\right),\]
+    for all $A \subseteq \N$. Fix such an $A$ and define $\Delta = \Pa_W(A)-\Po_\la(A)$. Let $f$ be as in Lemma $(**)$. Then, as seen in the previous proof,
+    \begin{align*}
+        \Delta &= \Pa(W \in A) - \Po_\la(A) \\
+        &= \E[Wf(W)-\la f(W+1)]\\
+        &=\E\left[\sum_{i \in I}X_i f(W)-p_i f(W+1)
+            \right]\\
+        &=\sum_{i \in I}\E\left[X_if(W)-p_i f(W+1)\right]
+    \end{align*}
+    For every $i$, let $W_i = W-X_i$ and $V_i = \sum_{j \in N_i^c} X_j$. Note that by the definition of a dependency graph, $V_i$ is independent of $X_i$. Note also that 
+    \begin{align*}
+        X_if(W) &= \begin{cases}
+            0 & \text{if } X_i=0,\\
+            f(W_i+1)&\text{if } X_i = 1.
+        \end{cases}\\
+        &=X_i f(W_i+1).
+    \end{align*}
+    Thus
+    \begin{align}\label{1and2}
+        \Delta &= \sum_{i \in I}\E\left[(X_i-p_i)f(W_i+1)+p_i(f(W_i+1)-f(W+1))\right]\nonumber\\
+        &=\sum_{i \in I}\E\left[(X_i-p_i)(f(W_i+1)-f(V_i+1))\right]+\E\left[p_i(f(W_i+1)-f(W+1))\right].\\
+        &=\sum_{i \in I}\E\left[(X_i-p_i)(f(W_i+1)-f(V_i+1))\right]+\sum_{i\in I}\E\left[p_i(f(W_i+1)-f(W+1))\right]\nonumber \\
+        &=(I)+(II).\nonumber
+    \end{align}
+   The equality in \eqref{1and2} holds because $V_i$ and $X_i$ are independent and thus for each $i$,
+    \begin{align*}
+        E\left[(X_i-p_i)f(W_i+1)\right] &= \E\left[(X_i-p_i)(f(W_i+1)-f(V_i+1))\right]+\E[(X_i-p_i)f(V_i+1)]\\
+        &=\E\left[(X_i-p_i)(f(W_i+1)-f(V_i+1))\right]+\E[(X_i-p_i)]\E[f(V_i+1)]\\
+        &=\E\left[(X_i-p_i)(f(W_i+1)-f(V_i+1))\right].
+    \end{align*}
+    We will now bound the absolute value of the sums $(I)$ and $(II)$. We'll start with $(II)$ which is simplier. For each $i$, $f(W_i+1)=f(W+1)$ if $X_i=0$ and otherwise $W_i+1$ and $W+1$ differ by 1. Thus,
+    \[\abs{f(W_i+1)-f(W+1)} \le X_i \min(3,\la^{-1}). \]
+    And so we have
+    \begin{align*}
+        \abs{\sum_{i \in I}\E\left[p_i(f(W_i+1)-f(W+1))\right]}&\le \sum_{i\in I} p_i\E\left[\abs{f(W_i+1)-f(W+1)}\right]\\
+        &\le \min(3,\la^{-1})\sum_{i \in I}p_i \E[X_i]\\
+        &=\min(3,\la^{-1})\sum_{i \in I}p_ip_i.
+    \end{align*}
+    The sum $(I)$ is trickier but similar ideas can be used to bound it. For a fixed $i$, let $X_1',\ldots, X_m'$ be an enumeration of the variables in $N_i \setminus \{i\}$. We then have
+     \begin{align*}
+         \abs{f(W_i+1)-f(V_i+1)}&=\abs{f\left(1+V_i+\sum_{k=1}^m X_k'\right)-f(1+V_i)}\\
+         &=\abs{\sum_{j=1}^m X_j'\left(f\left(1+V_i+\sum_{k=1}^j X_k'\right)-f\left(1+V_i+\sum_{k=1}^{j-1} X_k'\right)\right)}\\
+         &\le \sum_{j=1}^m X_j'\abs{f\left(1+V_i+\sum_{k=1}^j X_k'\right)-f\left(1+V_i+\sum_{k=1}^{j-1} X_k'\right)}\\
+         &\le \min(3,\la^{-1})\sum_{j=1}^m X_j'\\
+         &=\min(3,\la^{-1})\sum_{j \in N_i \setminus \{i\}} X_j.
+     \end{align*}
+     Thus we have that 
+     \begin{align*}
+         \abs{\sum_{i \in I}\E\left[(X_i-p_i)(f(W_i+1)-f(V_i+1))\right]}&\le \min(3,\la^{-1})\sum_{i\in I}\sum_{j \in N_i \setminus \{i\}} \E[\abs{X_i-p_i}X_j]\\
+         &=\min(3,\la^{-1})\sum_{i\in I}\sum_{j \in N_i \setminus \{i\}} \E[X_iX_j]+p_i\E[X_j]\\
+         &=\min(3,\la^{-1})\sum_{i\in I}\sum_{j \in N_i \setminus \{i\}} p_{ij}+p_ip_j.\\
+     \end{align*}
+     Thus combining our bounds on $(I)$ and $(II)$ we have 
+     \begin{align*}
+         \abs{\Delta} &\le \min(3,\la^{-1})\left(\sum_{i\in I}\sum_{j \in N_i \setminus \{i\}} p_{ij}+p_ip_j + p_{i}p_i\right)\\
+         &= \min(3,\la^{-1})\left(\sum_{i \in I}\sum_{i \in N_i \setminus \{i\}}p_{ij}+\sum_{i \in I}\sum_{j \in N_i}p_{ij}\right)\qedhere 
+     \end{align*}
+\end{proof}
+\newpage
+\section{References}
+Three references are 
+\begin{itemize}
+    \item ``\href{https://projecteuclid.org/journals/statistical-science/volume-5/issue-4/Poisson-Approximation-and-the-Chen-Stein-Method/10.1214/ss/1177012015.full}{Poisson Approximation and the Chen-Stein Method}'' by Arratia, Goldstein and Gord.
+    \item ``\href{https://arxiv.org/abs/math/0411525}{Exchangeable pairs and Poisson approximation}'' by Chatterjee, Diaconis and Meckes.
+    \item ``\href{https://searchworks.stanford.edu/view/12910822}{An Introduction to Stein's Method}'' by Barbour and Chen. This is a textbook which is available online through Stanford Libraries.
+\end{itemize}
+
+\end{document}
