@@ -1,0 +1,209 @@
+\include{preamble}
+\include{definitions}
+
+
+\newcommand{\s}{s}
+
+
+\title{STATS310A - Lecture 15}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{11/11/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 15}
+\lhead{11/11/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Final comments on Stein's method}
+\subsection{Dependency}
+In the Poisson case we used dependency graphs. There is a version where we only require that the disconnected $X_i$ are ``not too dependent'' rather than requiring that disconnected $X_i$ are independent. Consider our familiar set up $X_i \in \{0,1\}$, $\Pa(X_i=1)=p_i$, $\Pa(X_i=1,X_j=1)=p_{ij}$, $W = \sum_{i \in I} X_i$, $\la = \sum_{i \in I}p_i = \E[W]$ and $\Pa_W(A) = \Pa(W \in A)$. We assume that for each $i \in I$ we have a subset $N_i \subseteq I$. Next define
+\begin{align*}
+    b_1 &= \sum_{i \in I}\sum_{j \in N_i\setminus \{i\}} p_{ij},\\
+    b_2 &=\sum_{i\in I}\sum_{j \in N_i} p_ip_j,\\
+    b_3 &= \sum_{i \in I} \E(\abs{X_i-p_i}|X_j \in N_i^c).
+\end{align*}
+The quantity $b_3$ measures how independent $X_i$ is of $N_i^c$. 
+\begin{thrm}
+    With notation as above
+    \[\norm{P_W-\Po_\la}_{TV} \le 2(b_1+b_2+b_3),\]
+    where $\Po_\la$ is the Poisson distribution with parameter $\la$. Also,
+    \[\abs{\Pa(W=0)-e^{-\la}} \le (b_1+b_2+b_3)\frac{1-e^{-\la}}{\la}.\]
+\end{thrm}
+This result can be found in ``\href{https://projecteuclid.org/journals/statistical-science/volume-5/issue-4/Poisson-Approximation-and-the-Chen-Stein-Method/10.1214/ss/1177012015.full}{Poisson Approximation and the Chen-Stein Method}'' by Arratia, Goldstein and Gord. The article ``\href{https://arxiv.org/abs/1404.1392}{A short survey of Stein's method}'' by Sourav Chatterjee was presented at ICM 2014 and is recommended reading.
+\subsection{Stein's method and normal approximation}
+Although we will not show it here, Stein's method can be used to prove the central limit theorem. See ``\href{https://searchworks.stanford.edu/view/9115286}{Normal approximation by Stein's method}'' by Chen, Goldstein and Shao. To do this we again use a characteristic operator. In particular we need the theorem
+\begin{thrm}
+    A random variable $Z$ is $\Na(0,1)$ if and only if for all bounded $C_1$ functions $f: \R \to \R$, 
+    \[\E[Zf(Z)-f'(Z)]=0. \]
+\end{thrm}
+In the interest of displaying a variety of a probabilistic techniques we will not use Stein's method to prove the CLT in this class.
+\section{Normal approximation and the CLT}
+\subsection{Normal heuristic}
+Let $X_i$, $i \in I$ has mean 0 and variance $\sigma^2$. Suppose that the $X_i$ are not too wild and not too dependent. Define $S_n = \sum_{i \in I}X_i$, then 
+\[\Pa\left(\frac{S_n}{\sqrt{\V(S_n)}} \le x \right) \approx \Phi(x), \]
+where $\Phi$ is the cummulative distribution function of the standard normal distribution.
+\begin{ex}
+    Suppose we have a finite graph (such as an $n\times n$ grid). On each vertex $i$ place independent uniform random variables $U_i \in [0,1]$. For each vertex define $X_i = 1$ if $X_i$ is a local maximum and $X_i=0$ else. Then $\Pa(X_i = 1)=1/(d_i+1)$ where $d_i$ is the number of neighbours of $X_i$. Let $W = \sum_{i \in I} X_i$, then under some assumptions on the graph,
+    \[\Pa \left(\frac{W-\sum_{i \in I}\frac{1}{d_i+1}}{\sqrt{\sum_{i \in I}\frac{1}{d_i}\left(1-\frac{1}{d_i}\right)}}\le x\right)\approx \Phi(x). \]
+\end{ex}
+\begin{ex}
+    Pick $i \in [n] = \{1,2,\ldots, n\}$ uniformly at random and let $W$ be the number of 1's in the binary expansion of $i$. Then 
+    \[W = \sum_{j=1}^{\log_2(n+1)}X_j,\]
+    where 
+    \[X_j = \begin{cases}
+        1 & \text{if the } j^{th} \text{ bit of } i \text{ equals 1},\\
+        0 & \text{else.}  
+    \end{cases}\]
+    Then,
+    \[\Pa\left(\frac{W-\frac{\log_2(n)}{2}}{\sqrt{n/4}}\right) \to \Phi(x). \]
+\end{ex}
+\subsection{Lindeberg's condition}
+We will use Lindeberg's form of the central limit theorem and the proof will use the idea of coupling. First some notation
+\begin{defn}
+    A \emph{triangular array of random variables} is a collection of random variables
+    \[\begin{matrix}
+        X_{1,1},\\
+        X_{2,1}, &X_{2,2}\\
+        \vdots & \vdots&\ddots \\
+        X_{n,1} &X_{n,2} & \ldots &X_{n,k_n}\\
+        \vdots &\vdots & &\vdots&\ddots  
+    \end{matrix} \] 
+    We will say that a triangular array has \emph{independent rows} if for every $n$, the random variables $X_{n,1},\ldots,X_{n,k_n}$ are independent.
+\end{defn}
+The idea of triangular arrays is to generalize the notion of i.i.d. sequences where now we allow for the distribution of $X_i$ to depend on $n$.
+
+Suppose we have a triangular array with independent rows such that $\E[X_{i,n}]=0$ and  $\sigma_{n,i}^2 = \V(X_{n,i}) < \infty$. Then define $\s_n^2 = \sum_{i=1}^{k_n}\sigma_{n,i}^2.$ With this notation we have
+\begin{thrm}[Linderberg]
+    Suppose that for all $\eps > 0$ we have 
+    \begin{equation}\label{lind}\frac{1}{\s_n^2}\sum_{i=1}^{k_n}\int_{\{\abs{X_{i,n}} > \eps\s_n\}}\abs{X_{i,n}}^2d\Pa \stackrel{n \to \infty}{\longrightarrow} 0. 
+    \end{equation}
+    Then 
+    \[\Pa\left(\frac{S_n}{\s_n} \le x\right)\to \Phi(x). \]
+\end{thrm}
+We will call equation \eqref{lind} \emph{Linderberg's condition}.
+\begin{ex}
+    Suppose we have an i.i.d. sequence $(X_i)_{i =1}^\infty$ with mean 0 and variance $\sigma^2$. Then 
+    \[\Pa\left(\frac{S_n}{\sigma\sqrt{n}} \le x\right)\to \Phi(x). \]
+    To see why this holds consider the triangular array 
+    \[\begin{matrix}
+        X_1\\X_1&X_2\\X_1&X_2&X_3\\ \vdots &&&\ddots
+    \end{matrix}\]
+    which clearly has independent rows. Note that $\s_n^2 = n \sigma^2$ and so we can check Linderberg's condition \eqref{lind}
+    \begin{align*}
+        \frac{1}{s_n^2}\sum_{i=1}^n \int_{\{\abs{X_i} > \eps\s_n\}}\abs{X_{i}}^2d\Pa&=\frac{1}{n \sigma^2}\sum_{i=1}^n \int_{\{\abs{X_i} > \eps\sqrt{n} \sigma\}}\abs{X_{i}}^2d\Pa\\
+        &= \frac{1}{\sigma^2}\int_{\{\abs{X_1} > \eps \sqrt{n}\sigma\}}\abs{X_1}^2d\Pa\\
+        &\to 0,
+    \end{align*}
+    by the DCT. 
+\end{ex}
+\begin{ex}
+    We can apply this to our ESP card guessing example. Consider cards labelled $1,\ldots, n$. The cards are guessed one at a time and each time complete feedback is given. Define 
+    \[X_{n,i} = \begin{cases}
+        1 & \text{if guess $i$ is correct},\\
+        0 & \text{else}.
+    \end{cases} \] 
+    Then $\Pa(X_{n,i}=1) = \frac{1}{n-i+1}$ since we are given complete feedback and will never guess a card that we have seen already (and we don't have ESP!). Define 
+    \[Y_i = X_{n,i} - \frac{1}{n-i+1}. \]
+    We then have $\E[Y_i]=0$ and $\V(Y_i) = \V(X_i) = \frac{1}{n-i+1}\left(1-\frac{1}{n-i+1}\right)$. Thus
+    \begin{align*}
+        \s_n^2 &= \sum_{i=1}^n \frac{1}{n}\left(1-\frac{1}{n}\right)\\
+        &= \log(n)-\gamma+\frac{\pi^2}{6}+O(1/n)\\
+        &\sim \log(n),
+    \end{align*}
+    where $\gamma$ is Euler's constant (Persi directs interested students to ``\href{https://www.ams.org/journals/bull/2013-50-04/S0273-0979-2013-01423-X/S0273-0979-2013-01423-X.pdf}{Euler's constant: Euler's work and modern developments}'' by Lagarias for the AMS Bulliten). Thus we can check Linderberg's condition \eqref{lind}. Note that
+    \[\frac{1}{\s_n^2}\sum_{i=1}^{n}\int_{\{\abs{Y_{i,n}} > \eps\s_n\}}\abs{X_{i,n}}^2d\Pa\approx \frac{1}{\log(n)}\sum_{i=1}^{n}\int_{\{\abs{X_{i,n}} > \eps\sqrt{\log(n)}\}}\abs{Y_{i,n}}^2d\Pa, \]
+    and the right hand side is 0 for sufficiently large $n$ because $\abs{Y_{i,n}}$ is bounded by 1. Thus
+    \[\Pa\left(\frac{S_n}{\s_n}\le x\right)\to \Phi(x). \]
+\end{ex}
+\subsection{Weak$^*$ convergence}
+\begin{defn}
+    Let $Q_n,Q$ be probability measures on $\R^k$ with the Borel subsets. We will say that $Q_n$ \emph{converges weak$^*$} to $Q$  and write $Q_n \Rightarrow Q$ if for all bounded and continuous $g: \R^k \to \R$,
+    \[\int_{\R^k}g dQ_n \longrightarrow \int_{\R^k}g dQ. \]  
+\end{defn}
+\begin{thrm}[Portmanteau]
+    Let $Q_n,Q$ be probability measures on $\R^k$, then the following are equivalent:
+    \begin{enumerate}
+        \item The sequence of measures $Q_n$ converges weak$^*$ to $Q$.
+        \item For all $f:\R^k \to \R$ which are continuous with compact support, $\int f dQ_n \to \int f dQ$.
+        \item For all $f : \R^k \to \R$ which are smooth with compact support, $\int fdQ_n \to \int fdQ$.
+        \item If $F_n$ is the cdf of $Q_n$ and $F$ if the cdf of $Q$ (so that $F_n(x) = Q_n(\{y \in \R^k: y_i \le x_i\})$ and $F(x) = Q(\{y \in \R^k: y_i \le x_i\})$), then $F_n(x) \to F(x)$ at all points $x \in \R^k$ where $F$ is continuous. 
+    \end{enumerate}
+\end{thrm}
+\begin{proof}
+    We will start the proof today and finish it next week. We will also only prove the case when $k=1$. The general case is essentially the same but one has to work with the norm $\norm{x}=\sqrt{\sum_{i=1}^k x_i^2}$ instead of the absolute value.
+    
+    Note that we trivially have (a) implies (b) and (b) implies (c). We will first prove (b) implies (a). Let $f:\R \to \R$ be a continuous function such that $\abs{f(x)} \le c$ for all $x$. Given $\eps >0$ there exists $N$ such that 
+    \[Q(\{\abs{x}> N\}) \le \frac{\eps}{4C}. \]
+    Define \[\ta_N(x) = \begin{cases}
+        1 & \text{if } \abs{x} \le N,\\
+        0 & \text{if } \abs{x} \ge N+1,\\
+        N+1-\abs{x} &\text{if } \abs{x} \in (N,N+1).
+    \end{cases}\] 
+    The function $\ta_N$ is continuous and has compact support. Thus
+    \begin{align*}
+        \underline{\lim}Q_n(\{\abs{x} \le N+1\}) &\ge \underline{\lim}\int \ta_N dQ_n\\
+        &= \int \ta_n dQ\\
+        &\ge 1-\frac{\eps}{4C}.
+    \end{align*}
+    Thus
+    \begin{align*}
+        \overline{\lim}Q_n(\{\abs{x}>N+1\})&=1-\underline{\lim}Q_n(\{\abs{X_n}\le N+1\})\\
+        &= \frac{\eps}{4C}.
+    \end{align*}
+    Note let $g=f\ta_{N+1}$. The function $g$ is continuous with compact support. Note that $g$ is piecewise linear. We also have 
+    \begin{align*}
+        \abs{\int f dQ_n - \int f dQ} &\le \abs{\int f dQ_n - \int g dQ_n} + \abs{\int g dQ_n - \int g dQ}+\abs{\int g dQ-\int fdQ}.
+    \end{align*}
+    The middle term goes to 0 since we have assumed (b). Furthermore, $f=g$ when $\abs{x} \le N+1$. Thus
+    \begin{align*}
+        \overline{\lim} \abs{\int f dQ_n - \int g dQ_n} &\le\overline{\lim}\int_{\abs{x} > N+1} \abs{f(x)} dQ_n\\
+        &\le C\overline{\lim} Q_n(\{\abs{x}>N+1\})\\
+        &\le \frac{\eps}{4}.
+    \end{align*}
+    Likewise 
+    \begin{align*}
+        \overline{\lim} \abs{\int f dQ - \int g dQ} &= \abs{\int f dQ - \int g dQ}\\
+        &\le\int_{\abs{x} > N+1} \abs{f(x)} dQ\\
+        &\le C Q(\{\abs{x}>N+1\})\\
+        &\le C Q(\{\abs{x}>N\})\\
+        &\le \frac{\eps}{4}.
+    \end{align*}
+    Thus we have 
+    \begin{align*}
+        \overline{\lim}\abs{\int f dQ_n - \int f dQ}\le \frac{\eps}{2}.
+    \end{align*}
+    Letting $\eps \to 0$ we see that $\int f dQ_n \to \int f dQ$ proving (b) implies (a).
+
+    We will now prove that (c) implies (b). Let $f$ be continuous with compact support for $\eta > 0$ define
+    \[\rho_\eta(x) = Z(\eta)e^{-\frac{1}{1-\frac{x^2}{\eta^2}}}\delta_{[-\eta,\eta]}(x), \]
+    where $Z(\eta)$ is such that $\int_{-\eta}^\eta \rho_\eta(x)dx=1$. One can prove by induction that $\rho_\eta$ is smooth. The function $\rho_\eta$ clearly has compact support. 
+    
+    Now let $\eps > 0$ be given. Since $f$ is continuous with compact support, $f$ is uniformly continuous. Thus there exists $\eta = \eta(\eps)$ such that for all $x. y \in \R$, $\abs{x-y} \le \eta$ implies that $\abs{f(x)-f(y)}\le \eps$. Define
+    \[f^\eps(x) = \int_\R f(y)\rho_\eta(x-y)dy = \int_{-\eta}^\eta f(x-y)\rho_\eta(y)dy.\] 
+    The function $f^\eps$ is also smooth and $f^\eps$ has compact support since $f$ and $\rho_\eta$ both have compact support. Furthermore 
+    \begin{align*}
+        \abs{f(x)-f^\eps(x)} & =\abs{\int_{-\eta}^\eta  f(x)\rho_\eta(y)dy-\int_{-\eta}^\eta f(x-y)\rho_\eta(y)dy}\\
+        &\le \int_{-\eta}^\eta \abs{f(x)-f(x-y)}\rho_\eta(y)dy\\
+        &\le  \int_{-\eta}^\eta\eps \rho_\eta(y)dy\\
+        &= \eps.
+    \end{align*}
+    Since $Q_n$ and $Q$ are both probability measures we thus have 
+    \[\abs{\int f dQ_n - \int f^\eps dQ_n } \le \eps~~~\text{and}~~~\abs{\int f dQ - \int f^\eps dQ} \le \eps.\]
+    Thus, by a similiar argument to before we have 
+    \begin{align*}
+        &~\overline{\lim} \abs{\int f dQ_n - \int f dQ}\\
+        \le & ~\overline{\lim} \abs{\int f dQ_n - \int f^\eps dQ_n}+\overline{\lim} \abs{\int f^\eps dQ_n - \int f^\eps dQ}+\overline{\lim} \abs{\int f^\eps dQ - \int f dQ}\\
+        \le & ~\eps + 0 + \eps \\
+        =& ~2\eps.
+    \end{align*}
+    Letting $\eps \to 0$ we see that $\int fdQ_n \to \int fdQ$. Thus (c) implies (b).
+\end{proof}
+
+
+We will prove that (d) is also equivalent next lecture.
+
+\end{document}
