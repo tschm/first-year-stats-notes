@@ -17,7 +17,7 @@
 \maketitle
 \tableofcontents
 \section{Motivation}
-Today we are going to develop optimal tests in one-dimensional exponential families. A UMP test need not exist in this case. Indeed, in the Gaussian model there is no UMP test for $H_0 : \mu =\mu_0$ against $H_1 : \mu \neq \mu_0$. This is because for an alternative $\mu_1 < \mu_0$, the MP test rejects $H_0$ when our data is small. For $\mu_1 >\mu_0$ the MP test rejects $H_0$ when our data is large (see picture below).
+Today we are going to develop optimal two-sided tests in one-dimensional exponential families. A UMP test need not exist in this case. Indeed, in the Gaussian model there is no UMP test for $H_0 : \mu =\mu_0$ against $H_1 : \mu \neq \mu_0$. This is because for an alternative $\mu_1 < \mu_0$, the MP test rejects $H_0$ when our data is small. For $\mu_1 >\mu_0$ the MP test rejects $H_0$ when our data is large (see picture below).
 \begin{center}
     
 \end{center}
@@ -25,7 +25,7 @@ Today we are going to develop optimal tests in one-dimensional exponential famil
 
 There are various approaches that can be used when the UMP test does not exist. These include:
 \begin{enumerate}
-    \item Symmetric constraints on test. For example $\phi (c x) = \phi(x)$ for $c >0$.
+    \item Symmetry constraints on tests. For example $\phi (c x) = \phi(x)$ for $c >0$.
     \item Put a probability distribution on $\Om_1$. Then collapse the risk function and maximize the average power.
     \item Maximize the worst case power (maximin test).
     \item Monotonicity constraints.
@@ -101,13 +101,91 @@ We will now restrict our attention to one-dimensional exponential families so th
 We wish to test $H_0 : \ta=\ta_0$ against $H_1 :\ta \neq \ta_0$. Recall that no UMP test exists. One can show by the dominated convergence theorem that the map $\beta_\phi(\ta) = \E_\ta \phi$ is continuous and in fact differentiable for all test functions $\phi$. 
 
 By our lemma from before we know that if $\phi$ is unbiased then $\E_{\ta_0}\phi = \al$ and $\E_\ta \phi \ge \al$ for all $\ta$. Thus every unbiased level $\al$ test must statisfy $\E_{\ta_0}\phi=\al$ and $\ta_0$ must be a global minimum of $\ta \mapsto \beta_\phi(\ta)$. So our power function looks something like this:
+\begin{center}
+    
+\end{center}
 
 
-
-Thus the derivative of the power function at $\ta=\ta_0$ must be zerp. Hence every unbiased test must satisfy the two constraints:
+Thus the derivative of the power function at $\ta=\ta_0$ must be zero. Hence every unbiased test must satisfy the two constraints:
 \begin{equation}
     \int_\X \phi(x) p_\ta(x)d\mu(x) = \al ~~~\text{and}~~~ \partial_\ta \beta_\phi(\ta)\mid_{\ta = \ta_0} = \int_\X \phi(x) \partial_\ta p_{\ta_0}(x)d\mu(x) =0.
 \end{equation}
-In the second constrain we used some of the regularity properties of exponential families to exchange integration and differentiation.
+In the second constrain we used some of the regularity properties of exponential families to exchange integration and differentiation. We will use the two above constraints to prove a generalized Neyman Pearson lemma which is called the method of undetermined multipliers. The method of undetermined multipliers is similar to the use of Lagrange multipliers in optimization. We will use the following general lemma.
+\begin{lemma}[TSH Lemma 3.6.1]
+    Suppose $f_1,\ldots,f_m,f_{m+1}$ are real valued functions on a space $U$ and that we want to maximize $f_{m+1}(u)$ subject to the constraints $f_i(u)=c_i$ for $i=1,\ldots,m$. If $u_0 \in U$ satisfies the the constaints $f_i(u_0)=c_i$ and there exist $k_1,\ldots,k_m \in \R$ such that $u_0$ maximizes
+    \[f_{m+1}(u)-\sum_{i=1}^m k_if_i(u),\]
+    then $u_0$ maximizes the orginal optimization problem.
+\end{lemma}
+ 
+\begin{proof}
+    Suppose we have such a $u_0$ and corresponding values of $k_i$. Let $u \in U$ satisfy the constaints $f_i(u)=c_i$. Then
+    \begin{align*}
+        f_{m+1}(u) &= f_{m+1}(u)-\sum_{i=1}^m k_i f_i(u) + \sum_{i=1}^m k_ic_i\\
+        &\le f_{m+1}(u_0)-\sum_{i=1}^m k_i f_i(u_0) + \sum_{i=1}^m k_ic_i\\
+        &= f_{m+1}(u_0).
+    \end{align*}
+    Thus $u_0$ maximizes $f_{m+1}(u)$ subject to $f_i(u)=c_i$.
+\end{proof}
+The coefficients $k_1,\ldots, k_m$ are called \emph{undetermined multipliers}. The idea is that for every choice of $k=(k_1,\ldots,k_m)$, solving the unconstrained optimization problem is easy and gives us a solution $u_0 = u_0(k)$. We then vary $k$ so that $u_0$ actually satisfies the constraints. This last step is often much hard than the unconstrained optimization. 
+\subsection{UMPU tests for one-dimensional exponential families}
+Returning to the setting of one-dimensional exponential families, our space $U$ is the set of all test functions $\phi : \X \to [0,1]$. For a fixed alternative we wish to maximize the power of $\phi$
+\[f_3(\phi)=\E_{\ta_1}\phi = \int \phi(x)p_{\ta_1}(x)d\mu(x). \]
+Subject to the constraints
+\[f_2(\phi)=\int \phi(x)p_{\ta_0}(x)d\mu(x) = \al, \]
+and
+\[f_1(\phi) = \int \phi(x) \partial_\ta p_{\ta_0}(x)d\mu(x) = 0. \]
+The constraint $f_2(\phi)=\al$ is sufficient for $\phi$ to be $\al$-similar and the constraint $f_1(\phi)=0$ is necessary for $\phi$ to be unbiased. For undetermined multipliers $k_1,k_2$, we wish to maximize
+\begin{align}\label{multipliers}
+    f_3(\phi)-k_1f_1(\phi)-k_2f_2(\phi) &= \int \phi(x)(p_{\ta_1}(x)-k_1p_{\ta_0}(x)-k_2\partial_\ta p_{\ta_0}(x))d\mu 
+\end{align}
+The test function $\phi$ is always in $[0,1]$. Thus any function $\phi_{k_1,k_2}$ satisfying
+\begin{align}\label{k1k2}
+    \phi_{k_1,k_2}(x) &=\begin{cases}
+        1 &\text{if }p_{\ta_1}(x)-k_1p_{\ta_0}(x)-k_2\partial_\ta p_{\ta_0}(x)>0,\\
+        0 & \text{if }p_{\ta_1}(x)-k_1p_{\ta_0}(x)-k_2\partial_\ta p_{\ta_0}(x)<0.
+    \end{cases}\nonumber\\
+    &=\begin{cases}
+        1 &\text{if }p_{\ta_1}(x)>k_1p_{\ta_0}(x)+k_2\partial_\ta p_{\ta_0}(x),\\
+        0 & \text{if }p_{\ta_1}(x)<k_1p_{\ta_0}(x)+k_2\partial_\ta p_{\ta_0}(x).
+    \end{cases}
+\end{align}
+maximizes equation \eqref{multipliers}. Thus we wish to find $k_1,k_2$ and $\phi_{k_1,k_2}$ satisfying equation \eqref{k1k2} such that 
+\begin{align*}
+    \int \phi_{k_1,k_2} p_{\ta_0}d\mu &=\al \\
+    \int \phi_{k_1,k_2} \partial_\ta p_{\ta_0} d\mu =0.
+\end{align*}
+By the method of moments, such a test will be MP. Recall that 
+\[p_\ta(x)=h(x)\exb{\ta T(x)-A(\ta)}, \]
+and so 
+\begin{align*} 
+    \partial p_\ta(x)& = h(x)\exb{\ta T(x)-A(\ta)}(T(x)-A'(\ta))\\
+    &=p_\ta(x)(T(x)-A'(\ta))\\
+    &=p_\ta(x)(T(x)-\E_\ta[T(X)]),
+\end{align*}
+by previous results on exponential families. Thus the condition $p_{\ta_1}(x)>k_1p_{\ta_0}(x)+k_2\partial_\ta p_{\ta_0}(x)$ from \eqref{k1k2} is equivalent to
+\[\frac{p_{\ta_1}(x)}{p_{\ta_0}(x)}=c\exb{(\ta_1-\ta_0)T(x)} > k_2+k_1(T(x)-\E_{\ta_0}[T(X)]), \]
+where $c>0$ is a constant which does not depend on $x$. If we plot both $c\exb{(\ta_1-\ta_0)T(x)}$ and $k_2+k_1(T(x)-\E_{\ta_0}[T(X)])$ as functions of $T(x)$ we get a plot like the picture bellow. From this plot we can calculate the corresponding rejection region (shown in red).
 
+\begin{center}
+
+\end{center}
+
+It is however possible that the two curves only intersect once in which case we would get a plot and rejection region that looks like this:
+
+\begin{center}
+    
+\end{center}
+However, the above test is one-sided and thus will not satisfy the derivative constraint and thus will not be unbiased. Thus we know that we only need to consider tests where the curves interesect twice. We will thus reparametrize our problem 
+\[(k_1,k_2) \longleftrightarrow (c_1,c_2), \]
+where $c_1 \le c_2$ are the two values of $T(x)$ where the curves intersect. Under this parametrization our test will be
+\begin{align*}
+    \phi(x) & =\begin{cases}
+        1 & \text{if } T(x) < c_1,\\
+        \gamma_1 & \text{if } T(x) = c_1,\\
+        0 & \text{if } c_1 < T(x) < c_2,\\
+        \gamma_2 & \text{if } T(x) = c_2,\\
+        1 & \text{if } T(x) > c_1.
+    \end{cases}
+\end{align*}
+Using the method of moments we need to choose $c_1,c_2,\gamma_1,\gamma_2$ so that the constraints $f_2(\phi)=\al$ and $f_3(\phi)=0$. Such a test will be MP under the constraints. Since the test $\phi$ does not depend on $\ta_1$ the test will be UMP under the constraints. Thus by our first lemma this test will also be UMPU. 
 \end{document}
