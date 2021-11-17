@@ -185,7 +185,7 @@ Then the projection onto $\Ss$ is $\Pi_\Ss = QQ^T$ where $Q = [q_1,\ldots,q_k] \
 \begin{align*}
     \text{dist}^2(x,\Ss) &= \norm{x-\Pi_\Ss x}_2^2\\
     &= \norm{(I-QQ^T)x}_2^2\\
-    &=\norm{x}_2^2+\norm{Q^Tx}_2^2.
+    &=\norm{x}_2^2-\norm{Q^Tx}_2^2.
 \end{align*}
 This gives us a procedure for PCA. We wish to find a $k$-dimensional subspace which is closest to all our data $x_1,\ldots, x_n$. Thus we wish to solve
 \begin{align*}
