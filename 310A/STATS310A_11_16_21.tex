@@ -1,0 +1,67 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 16}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{11/16/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 16}
+\lhead{11/16/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+Final homeowork uploaded to Canvas and due November 30.
+\begin{itemize}
+    \item Read chpaters 25,26.
+    \item Do 25 / 1,3 and 26 1,3,12-14.
+    \item The hints contain surprises.
+\end{itemize}
+\section{The central limit theorem}
+We are in the process of proving Lindeberg's version of the central limit theorem. Recall that we have a triangular array of random variables $\{X_{n,i}\}$ where $i=1,\ldots, k_n$ and $n=1,2,\ldots$. We assume that the array has independent rows. That is, for each $n$, $\{X_{n,i}\}_{i=1}^{k_n}$ are independent. Assume also that 
+\[\E[X_{n,i}]=0 ~~~\text{and}~~~\sigma_{i,n}^2 = \V(X_{n,i})< \infty. \]
+Define $S_n = \sum_{i=1}^{k_n}X_{n,i}$ and $s_n^2=\sum_{i=1}^{k_n} \sigma_{i,n}^2 = \V(S_n)$. 
+\begin{defn}
+    A triangular array  with independent rows $\{X_{n,i}\}$ is said to satisfy \emph{Lindeberg's condtion} if for all $\eps > 0$
+    \[\frac{1}{s_n^2} \sum_{i=1}^{k_n} \int_{\{\abs{X_{n,i}}>\eps s_n\}}\abs{X_{n,i}}^2d\Pa \stackrel{n}{\longrightarrow} 0. \]
+\end{defn}
+Lindeberge's version of the central limit theorem is:
+\begin{thrm}[Lindeberg]
+    Let $\{X_{n,i}\}$ be a triangular array with independent rows. If $\{X_{n,i}\}$ satisfy Lindeberg's condtion, then for all $x \in \R$,
+    \[\Pa\left(\frac{S_n}{s_n} \le x\right) \to \Phi(x),\]
+    where $\Phi(x) = \Pa(Z \le x)$ for $Z \sim \Na(0,1)$.
+\end{thrm}
+\begin{proof}
+To prove this we will use the portmanteau theorem. Let $C^\infty_c(\R)$ be the class of infinitely differentiable functions on $\R$ with compact support. By the portmanteau theorem it suffices to show that for all $f \in C^\infty_c(\R)$, $\E[f(S_n/s_n)] \stackrel{n}{\to} \E[f(Z)]$ where $Z \sim \Na(0,1)$. Thus fix such an $f$. Define $Z_{n,i}$ is be independent random variables such that $Z_{n,i} \sim \Na(0,\sigma_{n,i}^2)$. Let $Z_n = \sum_{i=1}^{k_n}Z_{n,i}$, Then
+\[Z=\frac{1}{s_n}Z_n \sim \Na(0,1). \]
+The idea behind the proof is to swap out $X_{n,i}$ for $Z_{n,i}$ one at a time. With this in mind, define
+\[T_{n,i}= X_{n,1}+\ldots+X_{n,i-1}+Z_{n,i}+\ldots+Z_{n,k_n}. \]
+Note that $X_i,Z_i$ are independent of $T_{n,i}$ for each $i$. Furthermore we have
+\[S_n = T_{n,k_n}+Z_{n,k_n}~~~\text{and}~~~Z_n = T_{n,1}+Z_{n,1}. \]
+And also
+\[T_{n,i}+Z_{n,i} = T_{n,i-1}+X_{n,i-1}, \]
+for $i=2,\ldots, k_n$. Thus by telescoping we have
+\[f\left(\frac{S_n}{s_n}\right)-f\left(\frac{Z_n}{s_n}\right)=\sum_{i=1}^{k_n} f\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)-f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right). \]
+And so 
+\begin{equation}\label{telescope}
+    \abs{\E\left[f\left(\frac{S_n}{s_n}\right)\right]-\E\left[f(Z)\right]}\le \sum_{i=1}^{k_n}\abs{\E\left[f\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)\right]-\E\left[f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right)\right]}
+\end{equation}
+We will now use Taylor's approximation to bounded each of the terms in the above sum. For $h \in \R$, define
+\[g(h) = \abs{f(x+h)-f(x)-hf'(x)-\frac{h^2}{2}f''(x)}.\]
+Since all deriviates of $f$ are bounded, Taylor's approximation with remainder says that there exists $k > 0$ such that for all $h$ and $x$
+\[g(h) \le k \min\{\abs{h}^3,\abs{h}^2\}. \]
+Thus for all $x,h_1,h_2$ we have
+\[\abs{f(x+h_1)-f(x+h_2)-f'(x)(h_1-h_2)-\frac{1}{2}f''(x)(h_1^2-h_2^2)}=\abs{g(h_1)-g(h_2)} \le \abs{g(h_1)}+\abs{g(h_2)}. \] 
+We wish to apply this to equation \eqref{telescope} with $x=\frac{T_{n,i}}{s_n}$, $h_1=\frac{X_{n,i}}{s_n}$ and $h_2 = \frac{Z_{n,i}}{s_n}$. Thus we need to add the high order terms $f'(x)(h_1-h_2)$ and $\frac{1}{2}f''(x)(h_1^2-h_2^2)$. Since $X_{n,i}$ and  $Z_{n,i}$ have the same mean and variance and $X_{n,i},Z_{n,i}$ are independent of $T_{n,i}$, we have
+\begin{align*}
+    & \E\left[\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)\right]-\E\left[f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right)\right]\\
+    =&
+\end{align*}
+\end{proof}
+\end{document}
