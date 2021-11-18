@@ -20,7 +20,7 @@
 Final homeowork uploaded to Canvas and due November 30.
 \begin{itemize}
     \item Read chpaters 25,26.
-    \item Do 25 / 1,3 and 26 1,3,12-14.
+    \item Do 25 / 1,3 and 26 / 1,3,12-14.
     \item The hints contain surprises.
 \end{itemize}
 \section{The central limit theorem}
@@ -31,9 +31,9 @@ Define $S_n = \sum_{i=1}^{k_n}X_{n,i}$ and $s_n^2=\sum_{i=1}^{k_n} \sigma_{i,n}^
     A triangular array  with independent rows $\{X_{n,i}\}$ is said to satisfy \emph{Lindeberg's condtion} if for all $\eps > 0$
     \[\frac{1}{s_n^2} \sum_{i=1}^{k_n} \int_{\{\abs{X_{n,i}}>\eps s_n\}}\abs{X_{n,i}}^2d\Pa \stackrel{n}{\longrightarrow} 0. \]
 \end{defn}
-Lindeberge's version of the central limit theorem is:
+Lindeberg's version of the central limit theorem is:
 \begin{thrm}[Lindeberg]
-    Let $\{X_{n,i}\}$ be a triangular array with independent rows. If $\{X_{n,i}\}$ satisfy Lindeberg's condtion, then for all $x \in \R$,
+    Let $\{X_{n,i}\}$ be a triangular array with independent rows. If $\{X_{n,i}\}$ satisfy Lindeberg's condition, then for all $x \in \R$,
     \[\Pa\left(\frac{S_n}{s_n} \le x\right) \to \Phi(x),\]
     where $\Phi(x) = \Pa(Z \le x)$ for $Z \sim \Na(0,1)$.
 \end{thrm}
@@ -43,7 +43,7 @@ To prove this we will use the portmanteau theorem. Let $C^\infty_c(\R)$ be the c
 The idea behind the proof is to swap out $X_{n,i}$ for $Z_{n,i}$ one at a time. With this in mind, define
 \[T_{n,i}= X_{n,1}+\ldots+X_{n,i-1}+Z_{n,i}+\ldots+Z_{n,k_n}. \]
 Note that $X_i,Z_i$ are independent of $T_{n,i}$ for each $i$. Furthermore we have
-\[S_n = T_{n,k_n}+Z_{n,k_n}~~~\text{and}~~~Z_n = T_{n,1}+Z_{n,1}. \]
+\[S_n = T_{n,k_n}+X_{n,k_n}~~~\text{and}~~~Z_n = T_{n,1}+Z_{n,1}. \]
 And also
 \[T_{n,i}+Z_{n,i} = T_{n,i-1}+X_{n,i-1}, \]
 for $i=2,\ldots, k_n$. Thus by telescoping we have
@@ -52,16 +52,107 @@ And so
 \begin{equation}\label{telescope}
     \abs{\E\left[f\left(\frac{S_n}{s_n}\right)\right]-\E\left[f(Z)\right]}\le \sum_{i=1}^{k_n}\abs{\E\left[f\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)\right]-\E\left[f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right)\right]}
 \end{equation}
-We will now use Taylor's approximation to bounded each of the terms in the above sum. For $h \in \R$, define
+We will now use Taylor's approximation to bound each of the terms in the above sum. For $x,h \in \R$, define
 \[g(h) = \abs{f(x+h)-f(x)-hf'(x)-\frac{h^2}{2}f''(x)}.\]
 Since all deriviates of $f$ are bounded, Taylor's approximation with remainder says that there exists $k > 0$ such that for all $h$ and $x$
 \[g(h) \le k \min\{\abs{h}^3,\abs{h}^2\}. \]
-Thus for all $x,h_1,h_2$ we have
-\[\abs{f(x+h_1)-f(x+h_2)-f'(x)(h_1-h_2)-\frac{1}{2}f''(x)(h_1^2-h_2^2)}=\abs{g(h_1)-g(h_2)} \le \abs{g(h_1)}+\abs{g(h_2)}. \] 
+Thus for all $x,h_1,h_2\in \R$ we have
+\begin{align*}
+    \abs{f(x+h_1)-f(x+h_2)-f'(x)(h_1-h_2)-\frac{1}{2}f''(x)(h_1^2-h_2^2)}&=\abs{g(h_1)-g(h_2)} \\
+    &\le \abs{g(h_1)}+\abs{g(h_2)}.
+\end{align*}
 We wish to apply this to equation \eqref{telescope} with $x=\frac{T_{n,i}}{s_n}$, $h_1=\frac{X_{n,i}}{s_n}$ and $h_2 = \frac{Z_{n,i}}{s_n}$. Thus we need to add the high order terms $f'(x)(h_1-h_2)$ and $\frac{1}{2}f''(x)(h_1^2-h_2^2)$. Since $X_{n,i}$ and  $Z_{n,i}$ have the same mean and variance and $X_{n,i},Z_{n,i}$ are independent of $T_{n,i}$, we have
 \begin{align*}
-    & \E\left[\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)\right]-\E\left[f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right)\right]\\
-    =&
+    &\abs{\E\left[f\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)\right]-\E\left[f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right)\right]}\\
+    =&\Bigg|\E\left[f\left(\frac{T_{n,i}+X_{n,i}}{s_n}\right)\right]-\E\left[f\left(\frac{T_{n,i}+Z_{n,i}}{s_n}\right)\right]-\E\left[f'\left(\frac{T_{n,i}}{s_n}\right)\left(\frac{X_{n,i}}{s_n}-\frac{Z_{n,i}}{s_n}\right)\right]\\
+    &~-\frac{1}{2}\E\left[f''\left(\frac{T_{n,i}}{s_n}\right)\left(\frac{X_{n,i}^2}{s_n^2}-\frac{Z_{n,i}^2}{s_n^2}\right)\right]\Bigg|\\
+    \le&\E\left[g\left(\frac{X_{n,i}}{s_n}\right)+g\left(\frac{Z_{n,i}}{s_n}\right) \right].
 \end{align*}
+Thus combining this with equation \eqref{telescope}, we have
+\begin{align*}
+    \abs{\E\left[f\left(\frac{S_n}{s_n}\right)\right]-\E[f(Z)]}&\le \sum_{i=1}^{k_n}
+    \E\left[g\left(\frac{X_{n,i}}{s_n}\right)+g\left(\frac{Z_{n,i}}{s_n}\right) \right]\\
+    &=\sum_{i=1}^{k_n}\E\left[g\left(\frac{X_{n,i}}{s_n}\right)\right] +\sum_{i=1}^{k_n}\E\left[g\left(\frac{Z_{n,i}}{s_n}\right)\right]\\
+    &=(I)+(II).
+\end{align*}
+We will deal with the sum $(I)$ first. Recall that $g(h) \le k\min\{h^2,h^3\}$. Thus we will split $\E\left[g\left(\frac{X_{n,i}}{s_n}\right)\right]$ into two regions where we will use two different bounds. For each $\eps > 0$, we have
+\begin{align*}
+    (I) &=\sum_{i=1}^{k_n} \E\left[g\left(\frac{X_{n,i}}{s_n}\right)\right]\\
+    &=\sum_{i=1}^{k_n} \int_{\{X_{n,i} \le \eps s_n\}} g\left(\frac{X_{n,i}}{s_n}\right)d\Pa + \sum_{i=1}^{k_n}\int_{\{X_{n,i}  > \eps s_n \}} g\left(\frac{X_{n,i}}{s_n}\right)d\Pa\\
+    &\le k\sum_{i=1}^{k_n} \int_{\{X_{n,i} \le \eps s_n\}} \abs{\frac{X_{n,i}}{s_n}}^3d\Pa + k\sum_{i=1}^{k_n}\int_{\{X_{n,i}  > \eps s_n \}}\abs{\frac{X_{n,i}}{s_n}}^2d\Pa\\
+    &=\frac{k}{s_n^2}\sum_{i=1}^{k_n} \int_{\{X_{n,i} \le \eps s_n\}} \abs{\frac{X_{n,i}}{s_n}}\abs{X_{n,i}}^2d\Pa + \frac{k}{s_n^2}\sum_{i=1}^{k_n}\int_{\{X_{n,i}  > \eps s_n \}}\abs{X_{n,i}}^2d\Pa   \\
+    &\le  \frac{k\eps }{s_n^2}\sum_{i=1}^{k_n} \int_{\{X_{n,i} \le \eps s_n\}} \abs{X_{n,i}}^2d\Pa + \frac{k}{s_n^2}\sum_{i=1}^{k_n}\int_{\{X_{n,i}  > \eps s_n \}}\abs{X_{n,i}}^2d\Pa \\
+    &\le\frac{k\eps }{s_n^2}\sum_{i=1}^{k_n}\V(X_{n,i}) + \frac{k}{s_n^2}\sum_{i=1}^{k_n}\int_{\{X_{n,i}  > \eps s_n \}}\abs{X_{n,i}}^2d\Pa \\
+    &= k\eps + \frac{k}{s_n^2}\sum_{i=1}^{k_n}\int_{\{X_{n,i}  > \eps s_n \}}\abs{X_{n,i}}^2d\Pa.
+\end{align*}
+By Lindeberg's condtion we have that the second term goes to zero for all $\eps > 0$. Thus
+\[\overline{\lim_n}\sum_{i=1}^{k_n} \E\left[g\left(\frac{X_{n,i}}{s_n}\right)\right] \le k\eps.  \]
+And so the sum $(I)$ goes to 0 as $n$ goes to infinity. For sum $(II)$, we can get a similar bound. If we split each expectation into two regions, then we again get
+\[(II) = \sum_{i=1}^{k_n}\E\left[g\left(\frac{Z_{n,i}}{s_n}\right)\right] \le k\eps + \frac{k}{s_n^2}\sum_{i=1}^{k_n}\int_{\{Z_{n,i}  > \eps s_n \}}\abs{Z_{n,i}}^2d\Pa.\]
+Note that it thus suffices to prove that $\{Z_{n,i}\}$ satisfy Lindeberg's condtion. This is because if $\{Z_{n,i}\}$ satisfies Lindeberg's condtion, then sum $(II)$ will go to zero by the same argument we used for $(I)$. 
+
+We have only assumed that Lindeberg's condition holds of $\{X_{n,i}\}$ but we can prove this implies Lindeberg's condition holds for $\{Z_{n,i}\}$. Note that for all $\eps' > 0$ we have 
+\begin{align*}
+    \frac{\sigma_{n,i}^2}{s_n^2} &= \frac{1}{s_n^2}\int \abs{X_{n,i}}^2 d\Pa \\
+    &= \frac{1}{s_n^2}\int_{\{\abs{X_{n,i}}\le\eps' s_n\}}\abs{X_{n,i}}^2d\Pa+\frac{1}{s_n^2} \int_{\{\abs{X_{n,i}}>\eps' s_n\}} \abs{X_{n,i}}^2 d\Pa\\
+    &\le (\eps')^2+\frac{1}{s_n^2} \int_{\{\abs{X_{n,i}}>\eps' s_n\}} \abs{X_{n,i}}^2 d\Pa.
+\end{align*}
+Thus, by Lindeberg's condtion on $\{X_{n,i}\}$, we have
+\[\overline{\lim_n} \max_{1 \le i \le k_n}\left\{\frac{\sigma_{n,i}^2}{s_n^2}\right\} \le \eps'. \]
+It follows that $\max\limits_{1\le i \le k_n} \left\{\frac{\sigma_{n,i}}{s_n}\right\}$ goes to zero as $n$ goes to infinity. Let $Z \sim \Na(0,1)$. To show that $\{Z_{n,i}\}$ satisfy Lindeberg's condition let $\eps > 0$ be given. We then have
+\begin{align*}
+    \frac{1}{s_n^2}\sum_{i=1}^{k_n} \int_{\{Z_{n,i}  > \eps s_n \}}\abs{Z_{n,i}}^2d\Pa&=\frac{1}{s_n^2}\sum_{i=1}^{k_n} \int_{\{\sigma_{n,i}\abs{Z}  > \eps s_n \}}\abs{\sigma_{n,i}Z}^2d\Pa\\
+    &\le \frac{1}{s_n^2}\sum_{i=1}^{k_n} \int_{\{\sigma_{n,i}\abs{Z}  > \eps s_n \}}\abs{\sigma_{n,i}Z}^2\frac{\sigma_{n,i}\abs{Z}}{\eps s_n}d\Pa\\
+    &\le \frac{\E[\abs{Z}^3]}{\eps s_n^3}\sum_{i=1}^{k_n} \sigma_{n,i}^3\\
+    &\le \frac{\E[\abs{Z}^3]}{\eps s_n^3}\max_{1 \le i \le k_n}\left\{\sigma_{n,i}\right\}\sum_{i=1}^{k_n} \sigma_{n,i}^2\\
+    &=  \frac{\E[\abs{Z}^3]}{\eps}\max_{1 \le i \le k_n}\left\{\frac{\sigma_{n,i}}{s_n}\right\}\\
+    &\to 0.
+\end{align*}
+Thus $\{X_{n,i}\}$ satisfies Lindeberg's condtion and we are done.
 \end{proof}
+\section{Comments}
+\subsection{The main idea and generalizations}
+In some sense our proof was elementary but the idea is \emph{very general}. Any random variable $Z$ can be expressed as 
+\[Y=U(X_1,\ldots, X_n), \]
+where $X_i$ are independent and $U$ is a function. If $U$ is smooth and we have bounds on the derivatives of $U$, then $Y$ will be close to 
+\[U(Z_1,\ldots,Z_n),\]
+where $Z_1,\ldots,Z_n$ are independent normal. Sourav Chatterjee writes about this in ``\href{https://www.jstor.org/stable/25449948
+}{A generalization of Lindeberg's principle}'' in the Annals of Probability. The only property of the normal distribution that we really used was that normals have finite third moment and that sums of independent normals are normal. 
+\subsection{Comments on the theorem and proof}
+There is a converse to Lindeberg's theorem (Lindeberg-Feller). Suppose $s_n \to \infty$ and $\frac{\sigma_{n,i}}{n} \to 0$. Under this assumption, if $\frac{S_n}{s_n}$ converges weakly to a normal random variable, then Lindeberg's condtion holds. This is proved in the textbook.
+
+Our version of the central limit theorem is a limit theorem. It does not have an error bound or tell us anything about finite $n$. It is possible to get explicit error bounds and Lindeberg did do this. For notation, define
+\[S(x) = \begin{cases}
+    x^3 &\text{if } \abs{x} \le 1,\\
+    x^2 &\text{if } \abs{x} \ge 1.
+\end{cases}\]
+There exists a constant $C > 0$ such that for all $X_1,X_2,\ldots$ independent with mean 0 and variance $\sigma_i^2$, then 
+\[\sup_{x \in \R} \abs{\Pa\left(\frac{S_n}{s_n} \le x\right) - \Phi(x)} \le C\left(\sum_{i=1}^n l_i\right)^{1/4}, \]
+where $l_i = \E\left[S\left(\frac{X_n}{s_n}\right)\right]$. See S.D. Chatterji ``\href{https://www.sciencedirect.com/science/article/pii/S0723086906000429}{Lindeberg's central limit theorem \`a la Hausdorff}.''
+
+The ``right'' convergence rate was proved in the Berry-Essen theorem.
+\begin{thrm}
+    The exists a constant $C \in (0.4097,0.4748)$ such that if $X_i$ are i.i.d. with mean $\mu$, variance $\sigma^2$ and finite third moment, then 
+    \[\sup_{x \in \R} \abs{\Pa\left(\frac{S_n}{s_n} \le x\right)-\Phi(x)} \le \frac{c \E[\abs{X_1}^3]}{\sigma^3\sqrt{n}}. \]
+\end{thrm}
+Thus when $X_i$ has a third moment, the convergence is at a rate of $\frac{1}{\sqrt{n}}$.
+\subsection{The noraml heuristic}
+In our central limit thoerem the rows were independent. In many cases if $X_{n,i}$ are not too wild and not too dependent, then $\frac{S_n}{s_n} \Longrightarrow \Na(0,1)$. This is the normal heuristic and multiple examples were discussed previously.
+\subsection{Different proof techniques}
+There are many ways to prove the central limit theorem. For example
+\begin{enumerate}
+    \item Lindeberg coupling (our proof).
+    \item Stein's method (showing $\E[Wf(W)]\approx  \E[f'(W)]$ where $W = \frac{S_n}{s_n}$).
+    \item The method of moments (Laplace's proof). We need the result:
+    \begin{thrm}
+        If $Q_n$ are a sequence of probabilities on $\R$ and 
+        \[ \int x^j Q_n(dx) \to  \E[Z^j],\]
+        for $j=1,2,3,\ldots,$ then $Q_n((-\infty,x])\to \Phi(x)$ for all $x$.
+    \end{thrm}
+    These ideas are used in physics.
+\item Fourier analysis and characteristic functions (we will discuss these ideas next week).
+\item Entropy. On $\R$ the distribution with a fixed variance $\sigma^2$ and the largest entropy is $\Na(0,\sigma^2)$ where the entropy of a distribution $Q$ with density $q$ is defined to be
+\[\E_Q[-\log(q(X))].\]
+Convoluting two distributions increases entropy. Thus $\frac{S_n}{s_n}$ has increasing entropy and fixed variance and so it should be approaching the normal distribution. Turning this idea into a proof is Linnik's argument.
+\end{enumerate}
 \end{document}
