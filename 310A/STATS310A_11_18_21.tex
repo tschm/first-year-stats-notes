@@ -1,0 +1,94 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310A - Lecture 17}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{11/18/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 17}
+\lhead{11/18/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Characteristic functions}
+Today we will be discussing the use of Fourier analysis in probability. In this area, the key objects of study are characteristic functions. The plan is to first define characteristic functions and state some of their properties. We will then uses characteristic functions in some interesting examples and then we will prove the properties we used.
+\subsection{Definitions}
+
+\begin{defn}
+    Let $\mu$ be a probability measure on $\R$ the \emph{characterstic funcion of $\mu$} is the function $\phi_\mu : \R \to \C$ given by 
+    \[\phi_\mu(t) = \int_\R e^{itx}\mu(dx) = \int_\R \cos(tx)\mu(dx) + i\int_\R \sin(tx)\mu(dx). \]
+\end{defn}
+\begin{defn}
+    If $X$ is a random variable on $\R$ with distribution $\mu$, the \emph{characteristic function of $X$} is defined to be $\phi_X = \phi_\mu$.
+\end{defn}
+Note that if $X \sim \mu$, then
+\[\phi_X(t) = \E[e^{itX}] = \E[\cos(tX)]+i\E[\sin(tX)]. \]
+We will regularly interchange $\phi_\mu$ and $\phi_X$.
+\subsection{Properties}
+Some properties of characteristic functions are
+\renewcommand\labelenumi{(\theenumi)}
+\begin{enumerate}
+    \item The integral $\phi_X(t)$ is well defined for all $t$ and $X$.
+    \item The function $\abs{\phi_X}$ is bounded by 1 and $\phi_X(0)=1$.
+    \item The function $\phi_X$ is continuous.
+    \begin{proof}
+        For all $t,h \in \R$ we have
+        \begin{align*}
+            \abs{\phi_X(t+h)-\phi_X(t)} &=\le \E\left[\abs{e^{i(t+h)X}-e^{itX}}\right]\\
+            &=\E\left[\abs{e^{itX}}\abs{e^{ihX}-1}\right]\\
+            &=\E\left[\abs{e^{ihX}-1}\right].
+        \end{align*}
+        By the dominated convergence theorem, 
+        \[ \E\left[\abs{e^{ihX}-1}\right]\stackrel{h\to 0}{\longrightarrow} 0 .\]
+        Thus $\phi_X$ is in fact uniformly continuous.
+    \end{proof}
+    \item If $X$ and $Y$ are independent random variables, then 
+    \[\phi_{X+Y}(t)=\phi_X(t)\phi_Y(t).\]
+    Equivalently, if $\mu$ and $\nu$ are two probability measures on $\R$, then 
+    \[\phi_{\mu *\nu}(t)=\phi_\mu(t)\phi_\nu(t), \]
+    where $\mu*\nu$ is the convolution of $\mu$ and $\nu$.
+    \item If the $k^{th}$ moment $\E[X^k]$ exists, then $\phi$ is $k$ times differentiable at 0 and
+    \[\E[X^k] = i^k \phi^{(k)}_X(0).\]
+    The converse is not necessarily true. The differentiability of $\phi_X$ does not imply the existence of moments.
+    \item If $\phi_\mu(t)=\phi_\nu(t)$ for all $t$, then $\mu = \nu$. This is called the \underline{uniqueness theorem}.
+    \item Let $\mu_n$ be a sequence of measures, then $\mu_n \Rightarrow \mu$ if and only $\phi_{\mu_n}(t) \to \phi_\mu(t)$ for all $t$. This is called the \underline{continuity theorem}.
+\end{enumerate}
+\subsection{Motivation}
+Regarding characteristic functions, one might ask ``what's it about?''. One answer is that we defined $\mu_n \Rightarrow \mu$ by $\int f d\mu_n \to \int f d\mu$ for all continuous bounded $f$. The continuity theorem says we only need to consider the very special functions $f_t(x) = e^{itx}$. The usefullness of this can be seen in the following example.
+\begin{ex}
+    Let's return to our card guessing ESP example. Suppose we have card $\{1,2,\ldots, n\}$ which are shuffled and turned over one at a time. We have seen that with complete feedback there is probability $\frac{1}{n-i+1}$ of correctly guessing the $i^{th}$ card to be turned over. We previously considered examples where guessing card $i$ correctly results in a constant reward. We will now consider what happens if rewards are proportionate to difficulty. 
+
+    With this in mind, define independent random variables $(\wt{X}_i)_{i=1}^\infty$ by
+    \[\wt{X}_i = \begin{cases}
+        i & \text{with probability } \frac{1}{i},\\
+        0 & \text{with probability } 1-\frac{1}{i}.
+    \end{cases} \]
+    Then $\E[\wt{X}_i]=1$ and 
+    \[\V(\wt{X}_i) = i^2\left(\frac{1}{i}\left(1-\frac{1}{i}\right)\right) = i-1. \]
+    Next define $X_i = \wt{X}_i-1=\wt{X}_i-\E[\wt{X}_i]$ so that $X_i$ has mean 0. We can try to apply the central limit theorem to $X_i$. To do this we need to check Lindeberg's condition. With notation as in the statement of the central limit theorem we have
+    \[S_n = \sum_{i=1}^n X_i, ~~\sigma_i = \sqrt{V(X_i)} = \sqrt{i-1}~~ \text{and}~~s_n^2 = \sum_{i=1}^n \sigma_i^2 = \binom{n}{2}.\]
+    For $\eps = \frac{\sqrt{2}}{2}$ we have 
+    \begin{align*}
+        \frac{1}{s_n^2}\sum_{i=1}^n \int_{\{\abs{X_n} > \eps s_n\}}\abs{X_i}^2 d\Pa &=\frac{2}{n(n-1)}\sum_{i=1}^n \int_{\left\{\abs{X_n} > \eps\sqrt{n(n-1)/2}\right\}}\abs{X_i}^2 d\Pa\\
+        &= \frac{2}{n(n-1)}\sum_{i=1}^n \int_{\left\{\abs{X_n} > \frac{1}{2}\sqrt{n(n-1)}\right\}}\abs{X_i}^2 d\Pa\\
+        &\ge \frac{2}{n^2}\sum_{i = \lceil n/2 \rceil}^n \int_{\left\{\abs{X_n} > \frac{1}{2}n\right\}}\abs{X_i}^2 d\Pa\\
+        &=\frac{2}{n^2} \sum_{i = \lceil n/2 \rceil}^n \frac{1}{i}(i-1)^2\\
+        &\not\to  0.
+    \end{align*}
+    This Lindeberg's condition does not hold for $\eps = \frac{\sqrt{2}}{2}$ and thus the central limit theorem does not hold:
+    
+    \grumpy
+
+    But we can still use characteristic functions! Note that
+    \begin{align*}
+        \E[e^{i t X_j}] &= e^{it(j-1)}\frac{1}{j}+e^{-it}\left(1-\frac{1}{j}\right)\\
+        &= \frac{e^{-it}}{j}\left(e^{itj}+j-1\right)
+    \end{align*}
+\end{ex}
+\end{document}
