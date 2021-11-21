@@ -1,0 +1,77 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 16}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{11/15/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 16}
+\lhead{11/15/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Recap}
+Our current goal is to find uniformally most powerful unbiased (UMPU) tests for testing $H_0 : \ta \in \Om_0$ against $H_1 : \ta \in \Om_1$. Recall that a test function $\phi$ is unbiased at level $\al$ if 
+\[\E_{\ta_0}\phi \le \al \text{ for all } \ta_0 \in \Om_0,\]
+and 
+\[\E_{\ta_1}\phi \ge \al \text{ for all } \ta_1 \in \Om_1. \]
+We also say a test $\phi$ was $\al$-similar if for all $\ta \in W$ where $W = \overline{\Om}_0 \cap \overline{\Om}_1$. We previously proved the following theorem which relates unbiased and $\al$-similar tests.
+\begin{thrm}[TSH 4.11]
+    If $\ta \mapsto \E_\ta \phi$ is continuous for all tests $\phi$ and $\phi$ is uniformly most powerful among level $\al$ $\al$-similar tests, then $\phi$ is UMPU at level $\al$. 
+\end{thrm}
+Today we will find optimal unbiased tests in multiparameter exponential families. Specifically we will derive optimal one sided tests in the presence of nuisance parameters.
+\section{Multiparameter exponential families}
+Suppose we have a model $\{P_{\ta,\la}\}$ where $(\ta,\la) \in \R^{k+1}$ is unknown and $P_{\ta,\la}$ has density
+\[p_{\ta,\la}(x) = h(x) \exb{\ta U(x)+\sum_{i=1}^k \la_i T_i(x) - A(\ta,\la)}. \]
+We wish to test $H_0 : \ta \le \ta_0$ against $H_1 : \ta > \ta_0$. For a fixed $\ta$, the family $\{p_{\ta,\la}\}$ is an exponential family with sufficient statistics $T = (T_1,\ldots, T_k)$ and so 
+\[P_{\ta,\la}(X|T) = P_\ta(X|T). \]
+In particular we have $P_{\ta,\la}(U(X)|T(X)) = P_\ta(U(X)|T(X))$ and so $U(X)|T(X)$ has no $\la$ dependence.
+\begin{remark}
+    This observation is important. We have shown that conditioning eliminates the nuisance parameters. Thus we can fix $(\ta_0,\la_0) \in \Om_1$ and $(\ta_1,\la_1)$ and construct a test based on $P_{\ta_0}(X|T)$ against $P_{\ta_1}(X|T)$ which has no $\la$ dependence. Even better, conditioning on $T$ gives us a one-dimensional exponential family.
+\end{remark}
+\begin{lemma}
+    For each $t$, $U(X)|T=t$ forms a one-dimensional exponetial family in $\ta$.
+\end{lemma}
+\begin{proof}
+    We will only consider the discrete case. For all $u$ and $t$ let
+    \[A_{u,t} = \{x \in \X : U(x)=u, T(x)=t\}~~~\text{and}~~~ A_t = \{x \in \X: T(x)=t\}. \]
+    \begin{align*}
+        P_{\ta,\la}(U(X)=u|T(X)=t) &= \frac{P_{\ta,\la}(U(X)=u, T(X)=t)}{P_{\ta,\la}(T(X)=t)}\\
+        &=\frac{\sum\limits_{x\in A_{u,t}}p_{\ta,\la}(x)}{\sum\limits_{x \in A_t}p_{\ta,\la}(x)}\\
+        &=\frac{\sum\limits_{x\in A_{u,t}}\exb{\ta u + \sum_{i=1}^k \la_i t_i}h(x)}{\sum\limits_{x \in A_t}\exb{\ta U(x)+\sum_{i=1}^k \la_i t_i}h(x)}\\
+        &=\underbrace{\exb{\ta u}}_{\text{exponential tilt}} \times \underbrace{\sum_{x \in A_{u,t}} h(x)}_{g(t,u) = \text{base measure}} \times ~~\underbrace{\frac{1}{\sum\limits_{x \in A_t} \exb{\ta U(x)}h(x)}}_{c(t,\ta)=\text{normalizing constant}}.
+    \end{align*}
+    So $U(X)|T(X)=t$ is a one-dimensional exponential family with sufficient statistic $U$.
+\end{proof}
+Thus we can apply our previously developed theory to the conditional distribution $U|T$. Our general recipe for one sided testing $\ta \le \ta_0$ against $\ta > \ta_0$ is 
+\renewcommand\labelenumi{(\theenumi)}
+\begin{enumerate}
+    \item Fix an alternative $\ta = \ta_1 > \ta_0$ and $\la_1 \in \R^k$.
+    \item Condition on $T$ so that $X|T$ does not depend on $\la$ and $U|T$ follows a one dimensional exponential family. 
+    \item Construct the MP test for the conditional distribution. That is
+    \[\phi_t(u) = \begin{cases}
+        1 & \text{if } u > k(t),\\
+        \rho(t) & \text{if } u = k(t),\\
+        0 & \text{if } u < k(t).
+    \end{cases}\]
+    where $k(t)$ and $\rho(t)$ are determined by the conditional level constraint
+    \begin{align}\label{cond}
+        \E_{\ta_0}[\phi_t | T=t] = \al.
+    \end{align}
+\end{enumerate}
+We will next argue that under some assumptions that test $\phi^*(u,t) = \phi_t(u)$ is the UMPU test for $H_0$ against $H_1$. Note that for every test $\phi$
+\[\E_{\ta,\la} \phi = \E_{\ta,\la}\left[\E_{\ta,\la}[\phi|T]\right] = \E_{\ta,\la}\left[\E_{\ta}[\phi|T]\right]. \]
+In particular if $\ta \le \ta_0$, then 
+\[\E_{\ta,\la} \phi^* = \E_{\ta,\la}\left[\E_\ta[\phi|T]\right]\le \E_{\ta,\la}[\al]=\al, \]
+and we have equality if $\ta = \ta_0$. Thus $\phi^*$ is level $\al$ and $\al$-similar.
+
+By Neyman-Pearson, there is no test that satisfies the constraint \eqref{cond} and has strictly large power thatn $\phi^*$ for some fixed $t$ and $\ta_1 > \ta$. Thus $\phi^*$ is the most powerful test in the class of tests satisfying \eqref{cond} for any fixed $\ta_1 > \ta$. Since $\phi^*$ does not depend on $\ta_1$, the test $\phi^*$ is in fact the UMP test among tests satisfying the constrain \eqref{cond}.
+
+Recall that we are trying to show that $\phi^*$ is the UMPU test. 
+\end{document}
