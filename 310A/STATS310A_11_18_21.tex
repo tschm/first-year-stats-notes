@@ -60,35 +60,147 @@ Some properties of characteristic functions are
     \item Let $\mu_n$ be a sequence of measures, then $\mu_n \Rightarrow \mu$ if and only $\phi_{\mu_n}(t) \to \phi_\mu(t)$ for all $t$. This is called the \underline{continuity theorem}.
 \end{enumerate}
 \subsection{Motivation}
-Regarding characteristic functions, one might ask ``what's it about?''. One answer is that we defined $\mu_n \Rightarrow \mu$ by $\int f d\mu_n \to \int f d\mu$ for all continuous bounded $f$. The continuity theorem says we only need to consider the very special functions $f_t(x) = e^{itx}$. The usefullness of this can be seen in the following example.
+Regarding characteristic functions, one might ask ``what's it about?''. One answer is that we defined $\mu_n \Rightarrow \mu$ by $\int f d\mu_n \to \int f d\mu$ for all continuous bounded $f$. The continuity theorem says we only need to consider the very special functions $f_t(x) = e^{itx}$. The usefulness of this can be seen in the following example.
 \begin{ex}
-    Let's return to our card guessing ESP example. Suppose we have card $\{1,2,\ldots, n\}$ which are shuffled and turned over one at a time. We have seen that with complete feedback there is probability $\frac{1}{n-i+1}$ of correctly guessing the $i^{th}$ card to be turned over. We previously considered examples where guessing card $i$ correctly results in a constant reward. We will now consider what happens if rewards are proportionate to difficulty. 
+    Let's return to our card guessing ESP example. Suppose we have cards $\{1,2,\ldots, n\}$ which are shuffled and turned over one at a time. We have seen that with complete feedback there is probability $\frac{1}{n-j+1}$ of correctly guessing the $j^{th}$ card. We previously considered examples where guessing card $j$ correctly results in a constant reward. We will now consider what happens if the reward for guess card $j$ is proportional to difficulty of guessing card $j$. 
 
-    With this in mind, define independent random variables $(\wt{X}_i)_{i=1}^\infty$ by
-    \[\wt{X}_i = \begin{cases}
-        i & \text{with probability } \frac{1}{i},\\
-        0 & \text{with probability } 1-\frac{1}{i}.
+    With this in mind, define independent random variables $(X_j)_{j=1}^\infty$ by
+    \[X_j = \begin{cases}
+        j & \text{with probability } \frac{1}{j},\\
+        0 & \text{with probability } 1-\frac{1}{j}.
     \end{cases} \]
-    Then $\E[\wt{X}_i]=1$ and 
-    \[\V(\wt{X}_i) = i^2\left(\frac{1}{i}\left(1-\frac{1}{i}\right)\right) = i-1. \]
-    Next define $X_i = \wt{X}_i-1=\wt{X}_i-\E[\wt{X}_i]$ so that $X_i$ has mean 0. We can try to apply the central limit theorem to $X_i$. To do this we need to check Lindeberg's condition. With notation as in the statement of the central limit theorem we have
-    \[S_n = \sum_{i=1}^n X_i, ~~\sigma_i = \sqrt{V(X_i)} = \sqrt{i-1}~~ \text{and}~~s_n^2 = \sum_{i=1}^n \sigma_i^2 = \binom{n}{2}.\]
+    Then $\E[X_j]=1$ and 
+    \[\V(X_j) = j^2\left(\frac{1}{j}\left(1-\frac{1}{j}\right)\right) = j-1. \]
+    Next define $\wt{X}_j = X_j-1=X_j-\E[X_j]$ so that $\wt{X}_j$ has mean 0. We can try to apply the central limit theorem to $\wt{X}_j$. To do this we need to check Lindeberg's condition. With notation as in the statement of the central limit theorem we have
+    \[S_n = \sum_{j=1}^n \wt{X}_j, ~~\sigma_j = \sqrt{\V(\wt{X}_j)} = \sqrt{j-1}~~ \text{and}~~s_n^2 = \sum_{j=1}^n \sigma_j^2 = \binom{n}{2}.\]
     For $\eps = \frac{\sqrt{2}}{2}$ we have 
     \begin{align*}
-        \frac{1}{s_n^2}\sum_{i=1}^n \int_{\{\abs{X_n} > \eps s_n\}}\abs{X_i}^2 d\Pa &=\frac{2}{n(n-1)}\sum_{i=1}^n \int_{\left\{\abs{X_n} > \eps\sqrt{n(n-1)/2}\right\}}\abs{X_i}^2 d\Pa\\
-        &= \frac{2}{n(n-1)}\sum_{i=1}^n \int_{\left\{\abs{X_n} > \frac{1}{2}\sqrt{n(n-1)}\right\}}\abs{X_i}^2 d\Pa\\
-        &\ge \frac{2}{n^2}\sum_{i = \lceil n/2 \rceil}^n \int_{\left\{\abs{X_n} > \frac{1}{2}n\right\}}\abs{X_i}^2 d\Pa\\
-        &=\frac{2}{n^2} \sum_{i = \lceil n/2 \rceil}^n \frac{1}{i}(i-1)^2\\
+        \frac{1}{s_n^2}\sum_{j=1}^n \int_{\{\abs{\wt{X}_j} > \eps s_n\}}\abs{\wt{X}_j}^2 d\Pa &=\frac{2}{n(n-1)}\sum_{j=1}^n \int_{\left\{\abs{\wt{X}_j} > \eps\sqrt{n(n-1)/2}\right\}}\abs{\wt{X}_j}^2 d\Pa\\
+        &= \frac{2}{n(n-1)}\sum_{j=1}^n \int_{\left\{\abs{\wt{X}_j} > \frac{1}{2}\sqrt{n(n-1)}\right\}}\abs{\wt{X}_j}^2 d\Pa\\
+        &\ge \frac{2}{n^2}\sum_{j = \lceil n/2 \rceil}^n \int_{\left\{\abs{\wt{X}_j} > \frac{1}{2}n\right\}}\abs{\wt{X}_j}^2 d\Pa\\
+        &=\frac{2}{n^2} \sum_{j = \lceil n/2 \rceil}^n \frac{1}{j}(j-1)^2\\
         &\not\to  0.
     \end{align*}
-    This Lindeberg's condition does not hold for $\eps = \frac{\sqrt{2}}{2}$ and thus the central limit theorem does not hold:
+    This Lindeberg's condition does not hold for $\eps = \frac{\sqrt{2}}{2}$ and thus our central limit theorem cannot be used:
     
     \grumpy
 
-    But we can still use characteristic functions! Note that
+    But we can still use characteristic functions! To do this we will work with orginal random variables $X_j$. Note that
     \begin{align*}
-        \E[e^{i t X_j}] &= e^{it(j-1)}\frac{1}{j}+e^{-it}\left(1-\frac{1}{j}\right)\\
-        &= \frac{e^{-it}}{j}\left(e^{itj}+j-1\right)
+        \E[e^{i t X_j}] &= e^{itj}\frac{1}{j}+e^{-it\cdot 0}\left(1-\frac{1}{j}\right)\\
+        &= 1-\frac{1-e^{itj}}{j}.
     \end{align*}
+    Let $S_n = \sum_{j=1}^n X_j$. By independence we have 
+    \begin{align*}
+        \E[e^{itS_n}]&=\prod_{j=1}^n \E[e^{i t X_j}]\\
+        &= \prod_{j=1}^n \left(1- \frac{1-e^{itj}}{j}\right)\\
+        &= \exp\left({\sum_{j=1}^n \log\left(1-\frac{1-e^{itj}}{j}\right)}\right).
+    \end{align*}
+    Thus
+    \begin{align*}
+        \phi_{\frac{S_n}{n}}(t) &= \E\left[e^{it\frac{S_n}{n}}\right]\\
+        &=\exp\left({\sum_{j=1}^n \log\left(1-\frac{1-e^{it\frac{j}{n}}}{j}\right)}\right) \\
+        &\sim \exp\left(-\sum_{j=1}^n \frac{1-e^{it\frac{j}{n}}}{j} \right),
+    \end{align*}
+    since for large $j$, $\frac{1-e^{it\frac{j}{n}}}{j}$ is close to zero and so we can use the approximation $\log(1-x)\approx x$ for small $x$. For small values of $j$, we have $e^{it\frac{j}{n}} \approx 1$ and so 
+    \[\log\left(1-\frac{1-e^{it\frac{j}{n}}}{j}\right) \approx \log(1) = 0 \approx \frac{1-e^{-t\frac{j}{n}}}{j}.  \]
+    Note that 
+    \[\sum_{j=1}^n \frac{1-e^{it\frac{j}{n}}}{j} = \frac{1}{n}\sum_{j=1}^n \frac{e^{it\frac{j}{n}}}{\frac{j}{n}}, \]
+    is a Reimann sum that approximates the integral $\int_0^1 \frac{1-e^{itx}}{x}dx$. And thus for all $t\in \R$ we have 
+    \[\phi_{\frac{S_n}{n}}(t) \to \exp\left(-\int_0^1 \frac{1-e^{itx}}{x}dx\right). \]
+    Thus $\frac{S_n}{n} \to F_\infty$ where $F_\infty$ is the distribution satisfying 
+    \[\phi_{F_\infty}(t) =  \exp\left(-\int_0^1 \frac{1-e^{itx}}{x}dx\right). \]
 \end{ex}
+\begin{remark}
+    Persi has a story about the distribution $F_\infty$. There are three classes of distribution which arise as the limit of sums of independent random variables. 
+    \begin{enumerate}
+        \item \emph{Stable laws} are limits $\frac{S_n-a_n}{b_n} \Rightarrow F$ where $S_n = X_1+X_2+\ldots+X_n$ where $\{X_j\}$ are independent and identically distributed.
+        \item \emph{Infinitely divisible laws} are limits $\frac{S_n-a_n}{b_n} \Rightarrow F$ where $S_n = X_{n,1}+X_{n,2}+\ldots+X_{n,k_n}$ and $\{X_{n,j}\}$ is a triangular array with independent rows. 
+        \item \emph{Class L laws} are limits $\frac{S_n - a_n}{b_n} \Rightarrow F$ where $S_n = X_1+\ldots+X_n$ and $\{X_j\}$ are independent.
+    \end{enumerate}
+    Note that $(1) \subseteq (3) \subseteq (2)$. The distrubtion $F_\infty$ from the previous example is a class L law. There was much debate amongst probabilists about whether all class L laws are unimodal. Proofs with mistakes were published, $F_\infty$ was incorrectly claimed to be bimodal but eventually it was proved that all class L laws are unimodal. The paper that settled the score was read very closely.
+\end{remark}
+\section{Other modes of convergence}
+In addition to convergence in distribution $F_n \Rightarrow F$, we also have the following two forms of convergence.
+\begin{defn}
+    Let $X_n$, $X$ be random variables on a probability space $(\Om,\Pa,\F)$. We say that $X_n$ \emph{converges in probability} to $X$ if for every $\eps > 0$,
+    \[\Pa(\abs{X_n-X} > \eps) \to 0.\]
+    We will denote convergence in probability by $X_n \stackrel{\Pa}{\to} X$.
+\end{defn}
+\begin{defn}
+    Agian let $X_n,X$ be random variables on a probability space $(\Om,\Pa,\F)$. We say that $X_n$ \emph{converges almost surely} to $X$ if 
+    \[ \Pa(\{\w \in \Om : \lim_{n \to \infty} X_n(\w) = X(\w)\} )=1.\]
+    We will denote almost sure convergence by $X_n \stackrel{a.s.}{\to} X$.
+\end{defn}
+Note that almost sure convergence is equivalent to for all $\eps > 0$
+\[\Pa(\abs{X_n - X} > \eps ~ i.o.)=0,\]
+which shows that almost sure convergence implies convergence in probability. The converse is not true as the following examples show.
+\begin{ex}
+    Let $(\Om,\F,\Pa)$ be the interval $[0,1]$ with the Borel $\sigma$-algebra and Lebesgue measure. Define
+    \begin{align*}
+        X_1 &= \delta_{[0,1/2]}, ~X_2 = \delta_{[1/2,1]}\\
+        X_3 &= \delta_{[0,1/4]}, ~X_4 = \delta_{[1/4,1/2]}, ~ X_5 = \delta_{[1/2,3/4]}, ~ X_6 = \delta_{[3/4,1]},\\
+        X_7 &= \delta_{[0,1/8]}, ~\ldots,\\
+        \ldots &
+    \end{align*}
+    Then $\Pa(\abs{X_n} > \eps) \to 0$ for all $\eps > 0$ since $\Pa(\abs{X_n} > 0)\le 2^{-\lfloor \log_2(n) \rfloor}$. However for every $\w \in \Om$, $X_n(\w) = 1$ infinitely often. Thus $X_n \stackrel{\Pa}{\to} 0$ but $X_n$ does not converge almost surely to 0.
+\end{ex}
+\begin{ex}
+    Define
+    \[f(x) = \begin{cases}
+        \frac{\log(2)\log(\abs{x}+1)}{x^2\log(\abs{x})^2} & \text{if } \abs{x} > 2,\\
+        0 & \text{if } \abs{x} \le 2. \end{cases} \]
+    The function $f$ is a probability density with respect to Lebesgue measure on $\R$. Let $X_1,X_2,\ldots $ be an i.i.d. sequence with density $f$. Define $S_n = \sum_{j=1}^n X_j$, then $\frac{S_n}{n} \stackrel{\Pa}{\to} 0$ but $\E[X_1]$ is not defined and $\frac{S_n}{n}$ does not converge to 0 almost surely. Thus this is an example when the weak law of large numbers holds but the strong law does not hold. See these \href{https://www.stat.umn.edu/geyer/8112/notes/weaklaw.pdf}{lecture notes} (the function $F$ there is the CDF of a random variable with density $f$).
+\end{ex}
+In general convergence in distribution is weaker than convergence in probability but if $X_n$ converges in distibution to a constant $c$, then $X_n$ converges in probability to $c$. Another result relating the different modes of convergence is the following.
+\begin{thrm}[Slutsky]
+    Let $X_n, Y_n, Z$ be random variables on a probability space $(\Om,\F,\Pa)$. Suppose that $X_n \Rightarrow Z$ and $X_n - Y_n \stackrel{\Pa}{\to} 0$, then
+    \[Y_n \Rightarrow Z. \]
+\end{thrm}
+We have already implicitly used this result many times when manipulating limits as in Example 1 of this lecture.
+\begin{proof}
+    Let $F_Z$ be the CDF of $Z$ and let $x$ be a continuity point of $F$. Given $\delta > 0$ choose $\eps > 0$ so that $\abs{F_Z(y)-F_Z(x)} < \delta$ for all $y$ such that $\abs{y-x} < 2\eps$. Now choose $y'$ and $y''$ which are continuity points of $F_Z$ and satisfy
+    \[x-2\eps < y' < x-\eps,\] 
+    and \[x+\eps < y'' < x+2\eps. \]
+    Suppose that $\w \in \{Y_n \le x\}$. If $\w \notin \{X_n \le y''\}$, then 
+    \[\abs{X_n(\w) - Y_n(\w)} \ge y'' - x > x+\eps - x=\eps. \]
+    Thus we have the inclusion 
+    \[\{Y_n \le x\} \subseteq \{X_n \le y''\} \cup \{\abs{X_n-Y_n} > \eps \}. \]
+    Similarly suppose that $\w \in \{X_n \le y'\}$. If $\w \notin \{Y_n \le x\}$, then 
+    \[\abs{X_n(\w)-Y_n(\w)} \ge x-y' > x-x+\eps =\eps. \]
+    And so 
+    \[\{X_n \le y' \} \subseteq \{Y_n \le x\} \cup \{\abs{X_n - Y_n} > \eps\}. \]
+    Thus we have
+    \begin{align*}
+        \Pa(X_n \le y') -\Pa(\abs{X_n-Y_n}  > \eps)& \le \Pa(Y_n \le x)\\
+        &\le \Pa(X_n \le y'') + \Pa(\abs{X_n - Y_n} > \eps).
+    \end{align*}
+    Since $X_n - Y_n \stackrel{\Pa}{\to} 0$ and $X_n \Rightarrow F$ we  thus have 
+    \[F_Z(y') \le \underline{\lim}_n \Pa(Y_n \le x) \le \overline{\lim}_n \Pa(Y_n \le x) \le F_Z(y''). \]
+    However $\abs{y'-x},\abs{y''-x} \le 2\eps$ and so we have 
+    \[F_Z(x)-\delta \le \underline{\lim}_n \Pa(Y_n \le x) \le \overline{\lim}_n \Pa(Y_n \le x) \le F_Z(x)+\delta. \]
+    Thus 
+    \[ \lim_n \Pa(Y_n \le x) = F_Z(x),\]
+    and so $Y_n \Rightarrow Z$.
+\end{proof}
+\section{Cantor's diagonalization argument}
+We will end this lecture by developing one of the tools that will help us prove the uniqueness and continuity theorems for characteristic functions.
+\begin{thrm}
+    Let $(x_{n,j})_{n,j=1}^\infty$ be a double sequence of real numbers,
+    \[\begin{matrix}
+        x_{1,1}&x_{1,2}&x_{1,3}&\ldots\\
+        x_{2,1}&x_{2,2}&x_{2,3}&\ldots \\
+        x_{3,1}&x_{3,2}&x_{3,3}&\ldots \\
+         \vdots &\vdots & \vdots & \ddots
+    \end{matrix}\]
+    such that each row $(x_{n,j})_{j=1}^\infty$ is bounded. Then there exists a sequence $(l_n)_{n=1}^\infty$ and an increasing sequence of natural numbers $(j_k)_{k=1}^\infty$ such that for all $n$
+    \[\lim_{k \to \infty} x_{n,j_k} = l_n.\]
+\end{thrm}
+\begin{proof}
+    First consider the sequence $(x_{1,j})$. This is a bounded sequence of real numbers. By the Heine-Borel theorem, $(x_{1,j})$ contains a convergent subsequence $(x_{1,j_{1,k}})$ such that \[\lim_{k\to \infty} x_{1,j_{1,k}} = l_1.\] 
+    The sequence $(x_{2,j_{1,k}})$ is also a bounded sequence of real numbers. Thus there exists a further subsequence $(x_{2,j_{2,k}})$ such that \[\lim_{k\to \infty} x_{2,j_{2,k}} \to l_2.\]
+
+    We can repeat this with each row which gives us the following. For each $n \ge 2$ we have a sequence $(j_{n,k})$ which is a subsequence of $(j_{n-1,k})$ such that \[\lim_{k\to \infty} x_{n,j_{n,k}} = l_n.\] 
+    We next take the diagonal of these sequence of subsequences. That is, define $j_k := j_{k,k}$. For every $n$, the tail of $(j_k)$ is a subsequence of $(j_{n,k})$ and so $\lim_k x_{n,j_k} = l_n$ for every $n$. 
+\end{proof}
 \end{document}
