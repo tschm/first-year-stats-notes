@@ -1,0 +1,167 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300A - Lecture 17}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{11/17/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 17}
+\lhead{11/17/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Recap}
+Last lecture we spoke about multi-dimensional exponential families and optimal tests in the presence of nuisance parameters. Suppose that $\gamma = (\ta,\la) \in \R^{d+1}$ and we have an exponential family $\{P_\gamma\}$ with densities 
+\[p_\gamma(x) = h(x)\exb{\ta U(x)+\sum_{j=1}^k \la_iT_i(x)-A(\gamma)}. \]
+We looked at testing 
+\[H_0 : \ta \le \ta_0 \text{ against } H_1 : \ta > \ta_0. \]
+We saw that for fixed $\ta$, the statistic $T$ was sufficient for the model. We said that a test at level $\al$ had Neyman structure if:
+\[\E_\gamma[\phi|T] = \al, \]
+almost surely for all $\gamma \in W = \{(\ta,\la):\ta=\ta_0\}$. We proved that if $T$ is complete for $\{P_\gamma : \gamma  \in W\}$, then a test is $\al$-similar if and only if the test has Neyman structure. We then concluded that the optimal test with Neyman structure is in fact UMPU. In particular for these hypotheses 
+\[H_0 : \ta \le \ta_0 \text{ against } H_1 : \ta > \ta_0, \]
+the optimal test is a function of $(U,T)$ and is given by
+\[\phi(u,t) = \begin{cases}
+    1 & \text{if } u > k_t,\\
+    \rho_t & \text{if } u = k_t,\\
+    0 & \text{if } u < k_t.
+\end{cases} \]
+where $\rho_t,k_t$ are determined by 
+\[\al = \Pa_{\ta_0}(U(X) > k_t|T(X)=t) + \rho_t \Pa_{\ta_0}(U(X)=k_t|T(X)=t). \]
+Note that since $T$ is sufficient for fixed $\ta$, the above probabilities are well defined.
+\section{Optimality of the t-test}
+We will now use this theory to show that the familiar t-test is in fact the UMPU test. Consider data $X_1,\ldots, X_n \iid \Na(\mu,\sigma^2)$ where both $\mu$ and $\sigma^2$ are unknown. We will consider the one sided test
+\[H_0 : \mu \le 0 \text{ agianst } H_1 : \mu > 0.\]  
+The random variables $X_1,\ldots, X_n$ have joint density
+\[p(x;\mu,\sigma^2) \propto \exb{-\frac{1}{2\sigma^2}\sum_{i=1}^n x_i^2 +\frac{n\mu}{\sigma^2}\bar{x}}, \]
+where $\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$. We will thus reparametrize our family with 
+\[\ta = \frac{n\mu}{\sigma^2} ~~~\text{and}~~~\la=-\frac{1}{2\sigma^2}. \]
+Our null and alternative hypotheses thus become 
+\[H_0: \ta \le 0 \text{ against } H_1 : \ta > 0.\]
+Our sufficient statistics are $U(x) = \bar{x}$ and $T(x) = \sum_{i=1}^n x_i^2$. By the above result, the UMPU test if one that rejects when 
+\[\bar{x} \ge k_{T(x)}, \]
+and accepts otherwise. The constant $k_{T(x)}$ is chosen such that 
+
+\begin{equation}\label{level}
+    \Pa_{0}(\bar{X} \ge k_{t} | T=t) = \al.
+\end{equation}
+We wish to transform our data to get a more recognisable test. Suppose that $h(u,t)$ is any function such that $h(\cdot,t)$ is strictly increasing for each fixed $t$. Then the UMPU test is equivalent to the test $\phi$ given by
+\[\phi(u,t) = \begin{cases}
+    1 & \text{if } h(u,t) > k'_{t},\\
+    0 & \text{if } h(u,t) \le k'_t.
+\end{cases} \]
+where 
+\[\Pa_{\ta_0}(h(U,T) > k'_T |T) = \al.  \]
+We can choose 
+\begin{align*}
+    h(U,T) &= \frac{\bar{X}}{\sqrt{\sum_{i=1}^n\left(X_i-\bar{X}\right)^2}}\\
+    &= \frac{\bar{X}}{\sqrt{\sum_{i=1}^n X_i - n\bar{X}^2}}\\
+    &= \frac{U}{\sqrt{T-nU^2}}.
+\end{align*}
+One can check that 
+\begin{itemize}
+    \item The function $h(u,t)$ is strictly increasing for fixed $t$. 
+    \item For fixed $\ta = 0$, then statistic $h(U,T)$ is ancillary. This is because when $\ta=0$ our model becomes a scale model and $h(U,T)$ is scale invariant. 
+    \item The statistic $T$ is complete and sufficient on the boundary since $T$ is the sufficient statistic for a full rank exponential family on the boundary.
+    \item Thus by Basu's theorem $h(U,T)$ and $T$ are independent. 
+\end{itemize}
+Let 
+\[Y= \frac{\sqrt{n}\bar{X}}{\sqrt{\frac{\sum_{i=1}^n (X_i-\bar{X})^2}{n-1}}} = \frac{\sqrt{n}}{\sqrt{n-1}} h(U,T). \]
+When $\ta =0$, the statistic $Y$ has Student's t-distribution with $n-1$ degrees of freedom which we can write as $Y \sim t_{n-1}$. Also since $Y$ is a function of $h(U,T)$, we know that $Y$ is independent of $T$ on the boundary. Thus the constraint
+\[\Pa_{0}\left(h(U,T) \le k'_{T}|T\right) =\al, \]
+becomes
+\[\Pa_0\left(Y \le k''\right) =\al,\]
+by independence. Thus we can take $k''$ to be the $1-\al$ quartile of $t_{n-1}$. Then the test function 
+\[\phi = \mathbb{I}(Y > t_{1-\al}), \]
+satisfies condtion \eqref{level} and is thus UMPU.
+\section{Confidence regions}
+\subsection{Definition}
+\begin{defn}
+    A \emph{confidence region} with level $1-\al$ is a set valued function $S(X) \subseteq \Om$ such that for all $\ta \in \Om$,
+    \[\Pa_\ta\left(\ta \in S(X)\right) \ge 1-\al.\]
+\end{defn}
+We will see that our optimality theory of testing translates to an optimality theory for confidence intervals. Suppose for all $\ta_0 \in \Om$ we have a level $\al$ test $\phi_{\ta_0}$ that test $H_0 : \ta = \ta_0$ against $H_0 : \ta > \ta_0$. Define $A(\ta_0)$ to be the acceptance region of $\phi_{\ta_0}$. That is
+\[A(\ta_0) = \{x \in \X : \phi_{\ta_0}(x)=0\}. \]
+Then 
+\[\Pa_{\ta_0}(X \in A(\ta_0)) = 1 - \Pa_{\ta_0}(\phi_{\ta_0}(X) > 0) \ge 1-\E\phi_{\ta_0} \ge 1-\al. \]
+This is because $\Pa_{\ta_0}(X \in A(\ta_0))$ is the probability of accepting the null under the null. Flipping this we can define 
+\[S(x) = \{\ta \in \Om : x \in A(\ta)\}. \]
+Thus the set $S(X)$ is the set of all null hypotheses that do not get rejected after we see data $X$. One can think of a subset $C \subseteq \Om \times \X$ given by
+\[C = \{(\ta,x) : \phi_{\ta_0}(x)=0\}. \]
+The set $C$ could be thought of the set of all pairs $(\ta,x)$ where the parameter $\ta$ is ``compatible'' with the data $x$. Where ``compatible'' means that we do not reject the null corresponding to $\ta$ after seeing the data $x$. Note that we have
+\[A(\ta) = \{x \in \X : (\ta,x) \in C\} ~~\text{and}~~ S(x) = \{\ta \in \Om : (\ta,x) \in C\}. \] 
+Thus the sets $A(\ta)$ and $S(x)$ are both sections of the set $C$. This immediately gives us the duality
+\[x \in A(\ta) \Longleftrightarrow \ta \in S(x). \]
+This duality immediately gives that $S(X)$ is a level $1-\al$ confidence region since
+\[\Pa_{\ta}(\ta \in S(X)) = \Pa_{\ta}(X \in A(\ta))\ge 1-\al. \]
+\begin{remark}
+    Note that the $S(X)$ is random but $\ta$ is not. This causes subtleties. For example
+\begin{itemize}
+    \item The statement ``$S(X)$ has a 95\% chance of covering $\ta$'' is a correct statment.
+    \item The statement ``95\% chance that $\ta$ is in $S(x_0)$'' is not true and doesn't make sense.
+\end{itemize}
+\end{remark}
+\begin{remark}
+    This process of ``inverting'' a test and going from $A(\ta)$ to $S(x)$ is simple mathematically but is complicated in practice. Suppose we have a model $\Po = \{P_\ta : \ta \in \Om\}$ but our data is actually drawn from $\wt{P} \notin \Po$. Then our confidence regions will be artificially small. In this setting, it may appear that our small confidence regions reflect a high degree of certainty about the true value of $\ta$. In reality the small confidence regions are a result of \emph{none} of the models in $\Po$ being compatitble with our data. See the scribed notes and this \href{https://statmodeling.stat.columbia.edu/2013/06/24/why-it-doesnt-make-sense-in-general-to-form-confidence-intervals-by-inverting-hypothesis-tests/}{post by Andrew Gelman} for more details.
+\end{remark}
+\subsection{Optimality}
+Intuitively we want small confidence regions which correspond to large rejection regions. Thus we wish for optimal confidence regions to correspond to most powerful tests.
+\begin{defn}
+    A $1-\al$ confidence region $S(X)$ is \emph{uniformly most accurate (UMA)} if for all $1-\al$ confidence regions $S'(X)$ we have
+    \[\Pa_{\ta_1}(\ta_0 \in S(X)) \le \Pa_{\ta_1}(\ta_0 \in S'(X)), \]
+    for all $\ta_0 \in \Om$ and $\ta_1 > \ta_0$.
+\end{defn}
+Thus a UMA test is one which, under the alternative, has the least probability of covering the null $\ta_0$. 
+\begin{prop}
+    If for all $\ta_0$, the set $A(\ta_0)$ is the acceptance region of a UMP test, then the corresponding confidence region $S(X)$ is UMA.
+\end{prop}
+\begin{proof}
+    Let $S^*(X)$ be a $1-\al$ confidence region. Define a test $\phi^*_{\ta_0}$ by specifying the acceptance region of $\phi^*_{\ta_0}$ to be 
+    \[A^*(\ta_0) = \{x \in \X : \ta_0 \in S^*(x)\}. \]
+    Note that 
+    \[\Pa_{\ta_0}(X \notin A(\ta_0)) = 1-\Pa_{\ta_0}(\ta_0 \in S^*(X)) \le 1-(1-\al)=\al. \]
+    Thus the test $\phi^*_{\ta_0}$ has level $\al$. Since $A(\ta_0)$ is the acceptance region of a UMP test we have for all $\ta_1 > \ta_0$,
+    \begin{align*}
+        \Pa_{\ta_1}(\ta_0 \in S(X)) &= \Pa_{\ta_1}(X \in A(\ta_0))\\
+        &=1-\Pa_{\ta_1}(X \notin A(\ta_0))\\
+        &\le 1-\Pa_{\ta_1}(X \notin A^*(\ta_0))\\
+        &=\Pa_{\ta_1}(X \in A^*(\ta_0))\\
+        &= \Pa_{\ta_1}(\ta_0 \in S^*(X)) \qedhere        
+    \end{align*}
+\end{proof}
+\begin{remark}
+    Two final comments on confidence regions:
+    \begin{itemize}
+        \item We thus get optimal confidence regions almost for free simply from inverting our hypothesis tests.
+        \item We can aso get optimal unbiased confidence regions when doing two sided tests or tests with nuisance parameters.
+    \end{itemize}
+\end{remark}
+\section{P-values}
+A informal (and probably familiar) definitions of a p-value is as follows. Suppose we have a test that rejects $H_0$ for large values of $T(X)$ for some statistic $T$. If we observed some data $x$, then the p-value for $x$ would be
+\[p(x)= \Pa_{H_0}(T(X) > T(x)). \]
+We will now give a more formal definition.
+\begin{defn}
+    Suppose that for each significance level $\al$ we have a level $\al$ test $\phi_\al$. Suppose furthermore that the tests are monotone in the sense that $\phi_\al(x) \le \phi_{\al'}(x)$ for all $x \in \X$ and all $\al \le \al'$. The \emph{p-value} of observed data $x \in \X$ is defined to be 
+    \[p(x) = \inf\{\al : \phi_{\al}(x)=1\}. \]
+\end{defn}
+The monotone condition means that as the significance level decreases, the rejection regions also decrease. The p-value is thus the smallest significance level at which our family of tests $\{\phi_\al\}$ rejects. 
+\begin{prop}
+    For all $\ta_0 \in \Om_0$,
+    \[\Pa_{\ta_0}(p(X) \le \al) \le \al. \]
+\end{prop}
+\begin{proof}
+    Fix $\al_1 > \al$.  By monotonicity,
+    \begin{align*}
+        \Pa_{\ta_0}(p(X) \le \al) &= \Pa_{\ta_0}(\phi_{\al'}(x)=1, \text{ for all } \al'>\al)\\
+        &\le \Pa_{\ta_0}(\phi_{\al_1}(x)=1)\\
+        &\le \al_1.
+    \end{align*}
+    Thus $\Pa_{\ta_0}(p(X) \le \al) \le \al_1$ for all $\al_1 > \al$. Thus $\Pa_{\ta_0}(p(X) \le \al)\le \al$. 
+\end{proof}
+The above proposition means that p-values ``stochastically dominate'' the uniform distribution on $[0,1]$. See the scribed notes for some comments on the relationship between the informal and formal definitions of p-values.
+\end{document}
