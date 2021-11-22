@@ -1,6 +1,7 @@
 \include{preamble}
 \include{definitions}
 
+\newcommand{\poi}{\text{Pois}}
 
 
 \title{STATS300A - Lecture 16}
@@ -22,18 +23,18 @@ Our current goal is to find uniformally most powerful unbiased (UMPU) tests for 
 and 
 \[\E_{\ta_1}\phi \ge \al \text{ for all } \ta_1 \in \Om_1. \]
 We also say a test $\phi$ was $\al$-similar if for all $\ta \in W$ where $W = \overline{\Om}_0 \cap \overline{\Om}_1$. We previously proved the following theorem which relates unbiased and $\al$-similar tests.
-\begin{thrm}[TSH 4.11]
+\begin{thrm}[TSH 4.11]\label{al_similar}
     If $\ta \mapsto \E_\ta \phi$ is continuous for all tests $\phi$ and $\phi$ is uniformly most powerful among level $\al$ $\al$-similar tests, then $\phi$ is UMPU at level $\al$. 
 \end{thrm}
 Today we will find optimal unbiased tests in multiparameter exponential families. Specifically we will derive optimal one sided tests in the presence of nuisance parameters.
 \section{Multiparameter exponential families}
-Suppose we have a model $\{P_{\ta,\la}\}$ where $(\ta,\la) \in \R^{k+1}$ is unknown and $P_{\ta,\la}$ has density
-\[p_{\ta,\la}(x) = h(x) \exb{\ta U(x)+\sum_{i=1}^k \la_i T_i(x) - A(\ta,\la)}. \]
+Suppose we have a model $\{P_{\gamma}\}$ where $\gamma = (\ta,\la) \in \R^{k+1}$ is unknown and $P_{\gamma}$ has density
+\[p_\gamma(x) = p_{(\ta,\la)}(x) = h(x) \exb{\ta U(x)+\sum_{i=1}^k \la_i T_i(x) - A(\ta,\la)}. \]
 We wish to test $H_0 : \ta \le \ta_0$ against $H_1 : \ta > \ta_0$. For a fixed $\ta$, the family $\{p_{\ta,\la}\}$ is an exponential family with sufficient statistics $T = (T_1,\ldots, T_k)$ and so 
-\[P_{\ta,\la}(X|T) = P_\ta(X|T). \]
-In particular we have $P_{\ta,\la}(U(X)|T(X)) = P_\ta(U(X)|T(X))$ and so $U(X)|T(X)$ has no $\la$ dependence.
+\[P_{(\ta,\la)}(X|T) = P_\ta(X|T). \]
+In particular we have $P_{(\ta,\la)}(U(X)|T(X)) = P_\ta(U(X)|T(X))$ and so $U(X)|T(X)$ has no $\la$ dependence.
 \begin{remark}
-    This observation is important. We have shown that conditioning eliminates the nuisance parameters. Thus we can fix $(\ta_0,\la_0) \in \Om_1$ and $(\ta_1,\la_1)$ and construct a test based on $P_{\ta_0}(X|T)$ against $P_{\ta_1}(X|T)$ which has no $\la$ dependence. Even better, conditioning on $T$ gives us a one-dimensional exponential family.
+    This observation is important. We have shown that conditioning eliminates the nuisance parameters. Thus we can fix $\gamma_0 =(\ta_0,\la_0) \in \Om_1$ and $\gamma_1 = (\ta_1,\la_1)$ and construct a test based on $P_{\ta_0}(X|T)$ against $P_{\ta_1}(X|T)$ which has no $\la$ dependence. Thus we can use tools from one-dimensional hypothesis testing. Even better, conditioning on $T$ gives us a one-dimensional exponential family.
 \end{remark}
 \begin{lemma}
     For each $t$, $U(X)|T=t$ forms a one-dimensional exponetial family in $\ta$.
@@ -49,7 +50,7 @@ In particular we have $P_{\ta,\la}(U(X)|T(X)) = P_\ta(U(X)|T(X))$ and so $U(X)|T
     \end{align*}
     So $U(X)|T(X)=t$ is a one-dimensional exponential family with sufficient statistic $U$.
 \end{proof}
-Thus we can apply our previously developed theory to the conditional distribution $U|T$. Our general recipe for one sided testing $\ta \le \ta_0$ against $\ta > \ta_0$ is 
+ Our general recipe for one sided testing $\ta \le \ta_0$ against $\ta > \ta_0$ is 
 \renewcommand\labelenumi{(\theenumi)}
 \begin{enumerate}
     \item Fix an alternative $\ta = \ta_1 > \ta_0$ and $\la_1 \in \R^k$.
@@ -66,12 +67,73 @@ Thus we can apply our previously developed theory to the conditional distributio
     \end{align}
 \end{enumerate}
 We will next argue that under some assumptions that test $\phi^*(u,t) = \phi_t(u)$ is the UMPU test for $H_0$ against $H_1$. Note that for every test $\phi$
-\[\E_{\ta,\la} \phi = \E_{\ta,\la}\left[\E_{\ta,\la}[\phi|T]\right] = \E_{\ta,\la}\left[\E_{\ta}[\phi|T]\right]. \]
+\[\E_{\gamma} \phi = \E_{\gamma}\left[\E_{\gamma}[\phi|T]\right] = \E_{\gamma}\left[\E_{\ta}[\phi|T]\right]. \]
 In particular if $\ta \le \ta_0$, then 
-\[\E_{\ta,\la} \phi^* = \E_{\ta,\la}\left[\E_\ta[\phi|T]\right]\le \E_{\ta,\la}[\al]=\al, \]
+\[\E_{\gamma} \phi^* = \E_{\gamma}\left[\E_\ta[\phi|T]\right]\le \E_{\gamma}[\al]=\al, \]
 and we have equality if $\ta = \ta_0$. Thus $\phi^*$ is level $\al$ and $\al$-similar.
 
-By Neyman-Pearson, there is no test that satisfies the constraint \eqref{cond} and has strictly large power thatn $\phi^*$ for some fixed $t$ and $\ta_1 > \ta$. Thus $\phi^*$ is the most powerful test in the class of tests satisfying \eqref{cond} for any fixed $\ta_1 > \ta$. Since $\phi^*$ does not depend on $\ta_1$, the test $\phi^*$ is in fact the UMP test among tests satisfying the constrain \eqref{cond}.
+By Neyman-Pearson, there is no test that satisfies the constraint \eqref{cond} and has strictly large power than $\phi^*$ for any fixed $t$ or $\ta_1 > \ta$. Thus $\phi^*$ is the most powerful test in the class of tests satisfying \eqref{cond} for any fixed $\ta_1 > \ta$. Since $\phi^*$ does not depend on $\ta_1$, the test $\phi^*$ is in fact the UMP test among tests satisfying the constrain \eqref{cond}.
 
-Recall that we are trying to show that $\phi^*$ is the UMPU test. 
+Recall that we are trying to show that $\phi^*$ is the UMPU test. By theorem \eqref{al_similar} it suffices to show that $\phi^*$ is uniformly most powerful among $\al$-similar tests. We thus wish to relate the tests that satisfy condition \eqref{cond} to the $\al$-similar tests. With this in mind we make the following definition.
+\begin{defn}
+    Let $\phi$ be a test for $H_0 : \gamma \in\Om_0$ against $H_1 : \gamma \in \Om_1$ and let $W = \overline{\Om}_0 \cap \overline{\Om}_1$. Suppose that $T$ is a sufficient statistic for $\{P_\gamma : \gamma \in W\}$. For $\al \in [0,1]$, a test $\phi$ is said to have \emph{Neyman structure} if $\E_\gamma[\phi|T]=\al$ almost surely for all $\gamma \in W$.     
+\end{defn}
+Thus tests with Neyman structure are precisely those test that satisfy condtion \eqref{cond}. Note that all tests with Neyman structure are $\al$-similar. This is because for $\gamma \in W$,
+\begin{align*}
+    \E_{\gamma} \phi &= \E_\gamma \left[\E[\phi|T]\right]\\
+    &=\E_\gamma [\al]\\
+    &=\al.
+\end{align*}
+The converse is not true in general. Note that we can define the function $g(T) = \E_\gamma[\phi|T]-\al$ for some $\gamma \in W$. The function $g$ is well defined because $T$ is sufficient for $\{P_\gamma : \gamma \in W\}$.The $\phi$ has Neyman structure if $g(t)$ is almost surely 0. On the other hand suppose that $\phi$ is $\al$-similar. Then, for all $\gamma \in W$, we have
+\[\E_\gamma[g(t)] = \E_\gamma[\E_\gamma[\phi|T]-\al] = \E_\gamma[\phi]-\al = 0. \]
+Thus $\phi$ being $\al$-similar implies that $g(T)$ is first order ancillary. Thus for a converse we need completeness.
+\begin{lemma}
+    If $T$ is sufficient and complete for $\{P_\gamma : \gamma \in W\}$, then every $\al$-similar test has Neyman structure.
+\end{lemma}
+\begin{proof}
+    As before let $g(T) = \E_\gamma[\phi|T]$ which is well defined by sufficiency. As noted above $g(T)$ is first order ancillary. Since $T$ is complete, this implies that $g(T)=0$ almost surely. Thus $\E_\gamma[\phi|T]=\al$ almost surely and so $\phi$ has Neyman structure.
+\end{proof}
+Combing what we have done this lecture with Theorem \eqref{al_similar} we have
+\begin{thrm}
+    Suppose $\beta_\phi(\gamma)= \E_\gamma[\phi]$ is continuous for every test $\phi$. If $\phi^*$ is UMP among level $\al$ tests with Neyman structure, then
+    \begin{enumerate}
+        \item The test $\phi$ is UMP among $\al$-similar tests.
+        \item The test $\phi$ is UMPU at level $\al$.
+    \end{enumerate}
+\end{thrm}
+\section{A Poisson example}
+Consider data $(X,Y)$ where $X \sim \poi(v)$, $Y\sim \poi(u)$ and $X$ and $Y$ are independent. For example $Y$ could model the number of people who recovered from a disease after recieving a new medicine and $X$ could model the number of people who recovered from the same disease in a control group. With this application in mind we would like to test the hypotheses
+\[H_0 : u \le v \text{ against } H_1 : u > v.\]
+Thus rejecting the null would correspond to a belief that our drug increases the chance of recovery. So that we can work with an exponential family we will rewrite these hypotheses as 
+\[H_0 : \log\left(\frac{u}{v}\right) \le 0\text{ against } H_1 : \log\left(\frac{u}{v}\right) > 0. \]
+The joint density of $(X,Y)$ is
+\begin{align*}
+    p_{u,v}(x,y) &= \frac{\exb{-v}v^x}{x!}\frac{\exb{-u}v^y}{y!}\\
+    &= \frac{1}{x!y!}\exb{x\log(v)+y\log(u)-v-u}\\
+    &\propto \frac{1}{x!y!}\exb{y\log\left(\frac{u}{v}\right)+(x+y)\log(u)}.
+\end{align*}
+If we use the notation of the previous example we have 
+\[\gamma = (\ta, \la) = \left(\log\left(\frac{u}{v}\right), \log(v)\right),\]
+and 
+\[(U,T) = (Y,X+Y).\]
+Our goal is to test $\ta < 0$ in the presence of the nuisance parameter $\la$. Our first step is to check that $T$ is sufficient for fixed $\ta$ and that $\ta$ is complete on the boundary $W=\{(0,\la)\}$. One can check that when
+\[Y|(X+Y=n) \sim \text{Binomial}\left(n,\frac{u}{u+v}\right).\]
+Note that if $\log(\frac{u}{v}) = \ta$ and $\log\left(v\right)=\la$, then $v = \exb{\la}$ and $u = \exb{\ta+\la}$. Thus 
+\[\frac{u}{u+v} = \frac{\exb{\ta+\la}}{\exb{\ta+\la}+\exb{\la}}=\frac{\exb{\ta}}{\exb{\ta}+1}.\]
+Thus for fixed $\ta$, the distribution of $Y|X+Y$ does not depend on $\la$ and so $T=X+Y$ is sufficient for $Y$. Furthermore on $W=\{(\ta,\la) : \ta = 0\}$ we have
+\[p(x,y;\la) \propto \frac{1}{x!y!}\exb{(x+y)\la}, \]
+and so $ T$ is complete on the boundary by results on exponential famillies. 
+
+
+We next have the derive the UMP test with Neyman structure. For all $n$, the family model \[\left\{\text{Binomial}\left(n,\frac{e^{\ta}}{1+e^{\ta}}\right): \ta \in \R\right\},\] has monotone likelihood ratio in $Y$. Furthermore when $\ta=0$, the distribution of $X|X+Y=n$ is $\text{Binomial}(n,0.5)$. Thus the optimal test for $H_0$ against $H_1$ is
+\begin{align*}
+    \phi(k,n) = \begin{cases}
+        1 & \text{if } k > c_n,\\
+        \rho_n & \text{if } k = c_n,\\
+        0 & \text{if } k < c_n.
+    \end{cases}
+\end{align*}
+where the constants $\rho_n$ and $c_n$ are chosen so that 
+\[\Pa(Z>c_n)+\rho_n\Pa(Z=c_n) =\al, \]
+where $Z \sim \text{Binomial}(n,0.5)$. The test $\phi$ is the UMP level $\al$ test with Neyman structure. Thus the results of the previous section imply that $\phi$ is UMPU at level $\al$.
 \end{document}
