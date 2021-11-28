@@ -110,10 +110,10 @@ Thus we can set the above equal to 1/2 and answer the question of how many peopl
 Let's calculate the error bound in this example. If $I$ and $X_\al$ are as above, then $X_\al$ and $X_\beta$ are independent if and only if $\al \cap \beta = \emptyset$. Thus we can define a dependency graph $\Gamma$ where we join $\al$ to $\beta$ if and only if $\al \cap \beta \neq \emptyset$.
 \begin{prop}
     With notation and definitions as above we have 
-    \[\norm{\Pa_W - \Po_\la} \le \min\{3, 1/\la\} \left(\binom{n}{k}\sum_{a=1}^{k-1} \binom{k}{a}\binom{n-k}{n-a} C^{1-(2k-a)}+\binom{n}{k}\sum_{a=1}^{k}\binom{k}{a}\binom{n-k}{n-a} C^{2-2k}\right). \]
+    \[\norm{\Pa_W - \Po_\la} \le \min\{3, 1/\la\} \left(\binom{n}{k}\sum_{a=1}^{k-1} \binom{k}{a}\binom{n-k}{k-a} C^{1-(2k-a)}+\binom{n}{k}\sum_{a=1}^{k}\binom{k}{a}\binom{n-k}{k-a} C^{2-2k}\right). \]
 \end{prop}
 \begin{proof}
-    In the first double sum of the Poisson approximation we have $\beta \in N_\al \setminus \{\al\}$ if and only if $\abs{\al \cap \beta}=a$ for some $a = 1,2,\ldots,k-1$. The number of such $\beta$ is precisely $\binom{k}{a}\binom{n-k}{n-a}$ since we must choose $a$ elements of $\al$ to be in $\beta$ and $k-a$ elements of $\{1,\ldots,n\} \setminus \al$ to be in $\beta$. Furthermore
+    In the first double sum of the Poisson approximation we have $\beta \in N_\al \setminus \{\al\}$ if and only if $\abs{\al \cap \beta}=a$ for some $a = 1,2,\ldots,k-1$. The number of such $\beta$ is precisely $\binom{k}{a}\binom{n-k}{k-a}$ since we must choose $a$ elements of $\al$ to be in $\beta$ and $k-a$ elements of $\{1,\ldots,n\} \setminus \al$ to be in $\beta$. Furthermore
     \begin{align*}
         p_{\al,\beta}&= \Pa\left(\text{everyone in } \al \cup \beta \text{ has the same color}\right)\\
         &=C^{1-\abs{\al \cup \beta}}\\
