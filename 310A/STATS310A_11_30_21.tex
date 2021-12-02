@@ -26,7 +26,7 @@ Here goes.
 \begin{thrm}[Helly's selection theorem]
     If $\{F_n\}_{n=1}^\infty$ are any cumulative distribution functions on $\R$, then there exists a subsequence $n_k$ and a monotone, right continuous function $F$ such that $F_{n_k}(x) \to F(x)$ for all $x$ such that $F$ is continuous at $x$.
 \end{thrm}
-Before we prove the above theorem it is important to note that $F$ need no be a cumulative distribution function.
+Before we prove the above theorem it is important to note that $F$ might not be a cumulative distribution function.
 \begin{proof}
     Let $\{r_i\}_{i=1}^\infty$ be an enumeration of $\Q$. We can form the array
     \begin{align*}
@@ -45,7 +45,7 @@ Before we prove the above theorem it is important to note that $F$ need no be a 
     \[F(x) \le F(y) \le G(r) < F(x)+\eps.\]
     Thus, $F$ is right continuous. Now we just need to prove that if $x$ is a continuity point of $F$, then $F_{n_k}(x) \to F(x)$.
 
-    This is elementaty but (slightly tedious). Given $x$ a continuity point and $\eps > 0$, choose $y < x$ such that $F(x)-\eps < F(y)$. Next choose rational numbers $r$ and $s$ so that $y < r< x< s$ and
+    This is elementaty but (slightly) tedious. Given $x$ a continuity point and $\eps > 0$, choose $y < x$ such that $F(x)-\eps < F(y)$. Next choose rational numbers $r$ and $s$ so that $y < r< x< s$ and
     \[G(s) < F(x)+\eps. \]
     It follows that 
     \[F(x)-\eps < F(y)\le G(r) \le G(s) < F(x)+\eps. \]
@@ -64,9 +64,10 @@ Before we prove the above theorem it is important to note that $F$ need no be a 
 \begin{ex}
     As mentioned before, the limiting function $F$ need not be a cumulative distribution function. For example,
     \begin{itemize}
-        \item If $F_n$ is the cumulative distribution function of a point mass of $n$, then $F_n(x) \to 0$ for all $x$.
-        \item If $F_n$ is the cumulative distribution function of a point mass of $-n$, then $F_n(x) \to 1$ for all $x$.
+        \item If $F_n$ is the cumulative distribution function of a point mass at $n$, then $F_n(x) \to 0$ for all $x$.
+        \item If $F_n$ is the cumulative distribution function of a point mass at $-n$, then $F_n(x) \to 1$ for all $x$.
     \end{itemize}
+    Neither of these limits are cumulative distribution functions.
 \end{ex}
 The kind of convergence in the statement of the Helly's selection theorem is called \emph{vague convergence}.
 \section{Tightness}
@@ -78,10 +79,10 @@ We will sometimes say $\{\mu_n\}$ are ``almost compactly supported'' to mean $\{
 \begin{thrm}
     Let $\{\mu_n\}$ be a family of probability distributions on $\R$. Then $\{\mu_n\}$ is tight if and only if for every subsequence $n_k$, there exists a further subsequence $n_{k_i}$ and a probability distribution $\mu$ such that $\mu_{n_{k_i}} \Rightarrow \mu$ as $i \to \infty$.
 \end{thrm}
-\begin{proof}
-    We will also use that if $\{\mu_n\}$ is tight, then for every subsequence $n_k$, there exists a further subsequence $n_{k_i}$ and a probability distribution $\mu$ such that $\mu_{n_{k_i}} \Rightarrow \mu$ as $i \to \infty$. Thus we will only prove this direction.
 
-    Let $\{\mu_n\}$ be a tight family of probability distributions with corresponding cumulative distribution functions $F_{n_k}$. Let $n_k$ be a subsequence. By Helly's selection theorem, there exists a further subsequence $n_{k_i}$ and a monotone right-continuous function $F$ such that $F_{n_{k_i}}(x) \to F(x)$ for all $x$ such that $F$ is continuous at $x$. 
+In the remaining lectures, we will only use that if $\{\mu_n\}$ is tight, then for every subsequence $n_k$, there exists a further subsequence $n_{k_i}$ and a probability distribution $\mu$ such that $\mu_{n_{k_i}} \Rightarrow \mu$ as $i \to \infty$. Thus we will only prove this direction of the above theorem.
+\begin{proof}
+    Let $\{\mu_n\}$ be a tight family of probability distributions with corresponding cumulative distribution functions $F_{n}$. Let $n_k$ be a subsequence. By Helly's selection theorem, there exists a further subsequence $n_{k_i}$ and a monotone right-continuous function $F$ such that $F_{n_{k_i}}(x) \to F(x)$ for all $x$ such that $F$ is continuous at $x$. 
     
     We wish to shown that $F$ is a cumulative distribution function for some probability measure $\mu$ as this will imply that $\mu_n \Rightarrow \mu$. To show that $F$ is a cumulative distribution function, it suffices to show that $\lim\limits_{x \to \infty}F(x)=1$ and $\lim\limits_{x \to - \infty}F(x)=0$. We know that $F(x) \in [0,1]$ for all $x$ since each $F_{n_{k_i}}$ is a cumulative distribution function. Furthermore since $\{\mu_n\}$ is tight, for every $\eps>0$ there exist $a<b$ such that $F$ is continuous at $a$ and $b$ and for all $i$
     \[F_{n_{k_i}}(b)-F_{n_{k_i}}(a) > 1-\eps.\]
@@ -111,7 +112,7 @@ The below theorem states that pointwise convergence of characteristic functions 
     Let $\{F_n\},F$ be cumulative distribution functions with characteristic functions $\phi_n,\phi$, then $F_n \Rightarrow F$ if and only if for all $t \in \R$, $\phi_n(t)\to\phi(t)$.
 \end{thrm}
 \begin{proof}
-    Let $\mu_n$ and $\mu$ be the probability distributions corresponding to $F_n$ and $F$. The functions $x\mapsto \cos(tx)$ and $x \mapsto \sin(tx)$ are both bounded and continuous, then if $F_n \Rightarrow F$, then 
+    Let $\mu_n$ and $\mu$ be the probability distributions corresponding to $F_n$ and $F$. The functions $x\mapsto \cos(tx)$ and $x \mapsto \sin(tx)$ are both bounded and continuous. Thus if $F_n \Rightarrow F$, then 
     \[\phi_n(t) = \int_\R (\cos(tx)+i\sin(tx))\mu_n(dx) \to \int_\R (\cos(tx)+i\sin(tx))\mu(dx) = \phi(t). \]
     Now suppose that $\phi_n(t)\to\phi(t)$ for all $t$. We will show later that this implies that $\{\mu_n\}$ is tight. Now suppose that $F_n \not\Rightarrow F$. Then there exists some $x \in \R$ such that $F$ is continuous at $x$ but $F_n(x) \not\to F(x)$. Thus there exists a subsequence $n_k$ and $\eps > 0$ such that $\abs{F_{n_k}(x)-F_(x)} > \eps$ for all $k$. Since we will show that $\phi_n$ is tight, this implies that there exists a cumulative distribution function $G$ and a further subsequence $n_{k_i}$ such that $F_{n_{k_i}}\Rightarrow G$. Note that we cannot have $G = F$ as this will imply that $G$ is continuous at $x$ and hence $F_{n_{k_i}}(x) \to G(x)=F(x)$. 
 
@@ -128,12 +129,12 @@ The below theorem states that pointwise convergence of characteristic functions 
         &\ge 2\int_{\{x:\abs{x}>2/u\}} \frac{1}{2}\mu(dx)\\
         &=\mu\left(\left\{x:\abs{x} > \frac{2}{u}\right\}\right)
     \end{align*}
-    Now $\phi(t)$ is continuous and $\phi(0)=1$. Thus for all $t>0$, there exists $u$ sufficiently small such that $\abs{1-\phi(t)}< \frac{\eps}{2}$, given $\abs{t} <\eps$. This implies that 
+    Now $\phi(t)$ is continuous and $\phi(0)=1$. Thus for all $t>0$, there exists $u>0$ sufficiently small such that $\abs{1-\phi(t)}< \frac{\eps}{2}$, given $\abs{t} <u$. This implies that 
     \[\abs{\frac{1}{u}\int_{-u}^u 1-\phi(t)dt} < \eps. \]
     We know that $\phi_n(t) \to \phi(t)$ for all $t \in \R$. Thus by the bouunded convergence theorem, there exists $n_0$ such that if $n \ge n_0$, then 
-    \[\mu_n\left(\{x:\abs{x}> \frac{2}{u}\}\right) \le \frac{1}{u}\int_{-u}^u 1-\phi_n(t)dt \le 2 \eps. \]
+    \[\mu_n\left(\left\{x:\abs{x}> \frac{2}{u}\right\}\right) \le \frac{1}{u}\int_{-u}^u 1-\phi_n(t)dt \le 2 \eps. \]
     By taking $u$ smaller we can ensure that $u>0$ and 
-    \[\mu_n\left(\{x:\abs{x}> \frac{2}{u}\}\right) \le 2\eps, \]
+    \[\mu_n\left(\left\{x:\abs{x}> \frac{2}{u}\right\}\right) \le 2\eps, \]
     for $n=1,2,\ldots,n_0-1$. Thus we have shown that $\{\mu_n\}$ is tight. 
 \end{proof}
 If you'd like to learn more about Laplace and his proof of the central limit theorem, search for ``Steve Stigler, Laplace.''
@@ -141,7 +142,61 @@ If you'd like to learn more about Laplace and his proof of the central limit the
     Two comments.
     \begin{itemize}
         \item The continuity theorem is a substantial theorem that uses topology and Helly's selection theorem.
-        \item Our proof relies on the uniqueness theorem which remains to be proven.
+        \item Our proof relies on the uniqueness theorem which we have not yet proved.
     \end{itemize}
 \end{remark}
+
+\section{Uniqueness theorem}
+\begin{thrm}[Inversion theorem]
+    Let $\mu$ be a probability on $\R$ with characteristic function $\phi$. If $a<b$, then,
+    \[\mu((a,b))+\frac{1}{2}\mu(\{a,b\}) = \lim_{T \to \infty}\frac{1}{2\pi} \int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt. \]
+\end{thrm}
+The uniqueness theorem is a corollary.
+\begin{cor}
+    If $\mu$ and $\nu$ are probability measures and $\phi_\mu = \phi_\nu$, then $\mu=\nu$.
+\end{cor}
+\begin{proof}
+    The family of sets 
+    \[\Po = \{(a,b): \mu(\{a\})=\mu(\{b\})=\nu(\{a\})=\nu(\{b\})=0\},\] 
+    is a $\pi$-system that generates the Borel $\sigma$-algebra. Since $\phi_\mu = \phi_\nu$, the inversion theorem implies that $\mu$ and $\nu$ agree on $\Po$. By the trusty old $\pi-\la$ theorem, this implies that $\mu=\nu$. 
+\end{proof}
+The inversion theorem does not give a formula for $\mu$ in terms of $\phi$ since it involves a limit. If we put additional assumptions on $\phi$, then we do get a formula for $\mu$. 
+\begin{thrm}
+    If $\int_{-\infty}^\infty \abs{\phi(t)}dt < \infty$, then $\mu$ has a bounded density $f$ and 
+    \[f(y) = \frac{1}{2\pi}\int_{-\infty}^\infty e^{-ity}\phi(t)dt. \]
+\end{thrm}
+We will prove these theorems on Thursday.
+\section{Generalizations}
+There are versions of characteristic functions for measures on lots of spaces other than $\R$. For example one can work with measures on groups and do Fourier analysis on non-commutative groups. See ``Group Representations in Probability and Statistics'' by Persi. We won't talk about characteristic functions on non-commutative groups here but we will talk about characteristic functions on $\R^d$.
+\begin{defn}
+    Let $\mu$ be a probability distribution on $\R^d$. The \emph{characteristic function of $\mu$} is the function $\phi_\mu : \R^d \to \C$ given by 
+    \[\phi_u(t) = \E_\mu[e^{it\cdot x}], \]
+    where $t\cdot x$ denotes the dot product between $t$ and $x$.
+\end{defn}
+All of the theorems we studied on $\R$, hold for characteristic functions on $\R^d$. We also have the following result.
+\begin{prop}[Cramer-Wold device]
+    If $X \in \R^d$ is a random vector and we know the distribution of $\sum_{j=1}^d a_j X_j$ for all $a \in \R^d$,  then we know the distribution of $X$.
+\end{prop}
+\begin{proof}
+    If we know the distribution of $t \cdot X$ for all $t \in \R^d$, then we know $\phi(t) = \E[e^{it\cdot  X}]$ for all $t$. Thus we know the characteristic function of $X$ and hence the distribution of $X$.
+\end{proof}
+\begin{ex}
+    The Cramer-Wold device can be used to a prove multivariate central limit theorems for $(X_1^{(n)},\ldots,X_d^{(n)})$ from univariate central limit theorems for $t\cdot X^{(n)}$. For example, if $X_1,X_2,\ldots$ are i.i.d. in $\R^d$ with mean $\mu$ and covariance matrix $\Sigma$. If $S_n = \frac{1}{n}\sum_{j=1}^n(X_j-\mu)$, then 
+    \[\sqrt{n}S_n \Rightarrow \Na_d(0,\Sigma), \]
+    by the univariate central limit theorem and the Cramer-Wold device. There are also multivariate central limit theorems for triangular arrays.
+\end{ex}
+\begin{remark}
+    Some final comments:
+    \begin{itemize}
+        \item \underline{Please} look in the book to see how similar the proof of the central limit theorem is to the one that we proved in class. They both use a swapping argument.
+        \item Persi would have liked to have talked about infinitely divisible laws but there wasn't time this quarter.
+        \item There are all kinds of tricks, maneuvers and proofs that are acheivable with charactertistic functions and the full power of complex analysis. The best source for this is W. Feller - ``An introduction to probability and it's applications'' Vol II (2nd edition) chapter 15. For example, these tools can prove the following:
+        \begin{thrm}
+            Suppose $X,Y$ are independent and there exist non-zero $a,b,c,d\in \R$, such that $(aX+bY, cX+dY)$ has the same distribution as $(X,Y)$, then $X$ and $Y$ are normal.
+        \end{thrm}
+    \end{itemize}
+    
+\end{remark}
+
+
 \end{document}
