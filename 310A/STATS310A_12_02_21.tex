@@ -1,0 +1,90 @@
+\include{preamble}
+\include{definitions}
+\DeclareMathOperator*{\sgn}{sgn}
+
+
+\title{STATS310A - Lecture 19}
+\author{Persi Diaconis\\ Scribed by Michael Howes}
+\date{12/02/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310A - Lecture 19}
+\lhead{12/02/21}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Fourier inversion}
+\begin{thrm}
+    Suppose that $\mu$ is a probability on $\R$ with charateristic function $\phi$. If $\mu(\{a\})=\mu(\{b\})=0$, then 
+    \begin{equation}\label{inv}\mu((a,b)) = \lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt.
+    \end{equation}
+\end{thrm}
+To prove this we will need several classic calculus facts. We won't prove them here but their derivations are in section 26 of Billingsley. 
+\begin{enumerate}
+    \item Let $S(T) = \int_0^T \frac{\sin(t)}{t}dt$ ($S(T)$ is also known as $\text{sinc}(T)$). While $\int_0^\infty \frac{\sin(t)}{t}dt$ does not exist as a Lebesgue integral, a classical calculation shows that 
+    \[\lim_{T \to \infty} S(T)=\frac{\pi}{2}.  \]
+    Thus $S(T)$ is bounded on $[0,\infty)$. Let $\sgn$ be the function 
+    \[\sgn(\ta) =\begin{cases}
+        -1 & \text{if } \ta < 0,\\
+        0 & \text{if } \ta=0,\\
+        1 & \text{if } \ta > 0.
+    \end{cases} \]
+    By using a change of variables, one can show that 
+    \begin{equation}\label{sinc}\int_0^T \frac{\sin(t\ta)}{t}dt = \sgn(\ta)S(T\abs{\ta}).\end{equation}
+    \item Using Taylor's theorem we have for all real $t$.
+    \begin{enumerate}
+        \item $\abs{e^{ix}-1}\le\min\{\abs{x},2\}$.
+        \item $\abs{e^{ix}-(1+ix)}\le \min\left\{\frac{1}{2}x^2,2\abs{x}\right\}$.
+    \end{enumerate}
+    Using (ii.) we see that the integrand in equation \eqref{inv} converges to $b-a$ as $t \to 0$. Thus the integrand in \eqref{inv} is continuous and by (i.) it is bounded. Thus the integral in \eqref{inv} exists for every $T$.
+\end{enumerate}
+With these calculus facts we are ready to prove Theorem 1.
+\begin{proof}
+    For $T>0$, let
+    \[I_T =\frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt. \]
+    Note that 
+    \[I_T =\frac{1}{2\pi}\int_{-T}^T \int_\R \frac{e^{-ita}-e^{-itb}}{it}e^{itx} \mu(dx)dt. \]
+    The above integrand is a bounded function and the space $[-T,T]\times \R$ has finite measure with respect to $dt\times \mu(dx)$. Thus we can apply Fubinni's theorem which gives
+    \[I_T = \frac{1}{2\pi} \int_\R \int_{-T}^T \frac{e^{it(x-a)}-e^{it(x-b)}}{it}dt\mu(dx). \]
+    We will now use equation \eqref{sinc} and the fact $\sin$ and $\cos$ are odd and even respectively. This gives us 
+    \begin{align*}
+        I_T& = \frac{1}{2\pi} \int_\R 2\int_0^T \frac{\sin(t(x-a))}{t}-\frac{\sin(t(x-b))}{t}dt \\
+        &= \int_\R \left[\frac{\sgn(x-a)}{\pi}S(T\abs{x-a})-\frac{\sgn(x-b)}{\pi}S(T\abs{x-b})\right]\mu(dx).
+    \end{align*}
+    The function $f_T(x)=\frac{\sgn(x-a)}{\pi}S(T\abs{x-a})-\frac{\sgn(x-b)}{\pi}S(T\abs{x-b})$ is uniformly bounded over $x$ and $T$. We know that for $x \neq a,b$, \[\frac{1}{\pi}S(T\abs{x-a}), \frac{1}{\pi}S(T\abs{x-b}) \to \frac{1}{\pi}\cdot \frac{\pi}{2}=\frac{1}{2}.\]
+    Thus if $\sgn(x-a)=\sgn(x-b)$ and $x\neq a,b$, then $f_T(x) \to 0$. Also if $\sgn(x-a)\neq \sgn(x-b)$ and $x \neq a,b$, then $f_T(x) \to 1$. If $x=a$, then $\sgn(x-b)=-1$ and $f_T(x) \to \frac{1}{2}$. Lastly, if $x = b$, then $\sgn(x-a)=1$ and $f_T(x) \to \frac{1}{2}$. Summarising this, we can conclude that $f_T$ converges pointwise to the function $\psi_{a,b}$ where 
+    \[\psi_{a,b}(x) = \begin{cases}
+        0 & \text{if } x < a,\\
+        \frac{1}{2} & \text{if } x = a,\\
+        1 & \text{if } a<x<b,\\
+        \frac{1}{2} & \text{if } x = b,\\
+        0 & \text{if } x > b.
+    \end{cases} \]
+    Since $\mu(\{a,b\})=0$, we can conclude that $f_T$ converges to $\delta_{(a,b)}$ $\mu$-almost surely. Thus, by the dominated convergence theorem we have
+    \[\lim_{T\to \infty} I_T = \lim_{T \to \infty} \int_\R f_T(x)\mu(dx)=\int_\R \delta_{(a,b)}(x)\mu(dx)=\mu((a,b)). \qedhere  \]
+\end{proof}
+Note that this proof also shows that 
+\[\mu((a,b))+\frac{1}{2}\mu(\{a,b\}) = \lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt, \]
+which was the version of the Fourier inversion theorem stated on Tuesday.
+\begin{remark}
+    To be honest, while careful, this proof sort of ``stink''. It doesn't give any feeling for what's going on. We'll come back to this later when we look at a discrete version of characteristic functions. This ``lack of transparency'' is what led Stein to develop Stein's method. It's also why we studied Lindeberg's proof of the central limit theorem in class.
+\end{remark}
+\begin{remark}
+    Note that if $F$ is the cumulative distribution function of $\mu$, then equation \eqref{inv} can be written as 
+    \[F(b)-F(a) = \lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt. \]
+    In particular for $c \in \R$ and $h>0$,
+    \[\frac{F(c+h)-F(c)}{h} =\lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-itc}(1-e^{-ith})}{ith}\phi(t)dt. \]
+    If we assume that $\phi$ is integrable (so that $\int_\R \abs{\phi(t)}dt < \infty$), then an analysis of the aboe equation can be used to show that $\mu$ has a density $f$ given by
+    \[f(c) = F'(c) = \int_\R e^{-itc}\phi(t)dt. \]
+\end{remark}
+\begin{ex}[The usual CLT]
+    The following is a typical application. Let $X_1,X_2,\ldots$ be i.i.d. with $\E[X_1]=0$, $\E[X_1^2]=1$ and characteristic function $\phi$. Let $S_n = \frac{1}{\sqrt{n}}\sum_{j=1}^n X_j$. Since the first two moments of $X_j$ exist $\phi$ is twice continuously differentiable with $\phi'(0)=1$ and $\phi''(0)=-1$. 
+
+    Since $X_1,X_2,\ldots$, are independent, we know the that
+    \[\phi_{S_n}(t)=\phi(t/\sqrt{n})^n = \left(1-\frac{t^2}{2n}+o\left(1/n\right)\right)^n \to e^{-\frac{t^2}{2}} =\phi_{\Na}(t), \]
+    where $\phi_\Na$ denotes the characteristic function of the standard normal distribution.
+\end{ex}
+\end{document}
