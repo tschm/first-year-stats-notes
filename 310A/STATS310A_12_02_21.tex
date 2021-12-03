@@ -22,7 +22,7 @@
     \begin{equation}\label{inv}\mu((a,b)) = \lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt.
     \end{equation}
 \end{thrm}
-To prove this we will need several classic calculus facts. We won't prove them here but their derivations are in section 26 of Billingsley. 
+To prove this we will need several classic calculus facts. We won't prove them here but their derivations are in Section 26 of Billingsley. 
 \begin{enumerate}
     \item Let $S(T) = \int_0^T \frac{\sin(t)}{t}dt$ ($S(T)$ is also known as $\text{sinc}(T)$). While $\int_0^\infty \frac{\sin(t)}{t}dt$ does not exist as a Lebesgue integral, a classical calculation shows that 
     \[\lim_{T \to \infty} S(T)=\frac{\pi}{2}.  \]
@@ -70,21 +70,133 @@ Note that this proof also shows that
 \[\mu((a,b))+\frac{1}{2}\mu(\{a,b\}) = \lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt, \]
 which was the version of the Fourier inversion theorem stated on Tuesday.
 \begin{remark}
-    To be honest, while careful, this proof sort of ``stink''. It doesn't give any feeling for what's going on. We'll come back to this later when we look at a discrete version of characteristic functions. This ``lack of transparency'' is what led Stein to develop Stein's method. It's also why we studied Lindeberg's proof of the central limit theorem in class.
+    To be honest, while careful, this proof ``sort of stinks''. It doesn't give any feeling for what's going on. We'll come back to this later when we look at a discrete version of characteristic functions. This ``lack of transparency'' is what led Stein to develop Stein's method. It's also why we studied Lindeberg's proof of the central limit theorem in class.
 \end{remark}
 \begin{remark}
     Note that if $F$ is the cumulative distribution function of $\mu$, then equation \eqref{inv} can be written as 
     \[F(b)-F(a) = \lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-ita}-e^{-itb}}{it}\phi(t)dt. \]
     In particular for $c \in \R$ and $h>0$,
     \[\frac{F(c+h)-F(c)}{h} =\lim_{T \to \infty} \frac{1}{2\pi}\int_{-T}^T \frac{e^{-itc}(1-e^{-ith})}{ith}\phi(t)dt. \]
-    If we assume that $\phi$ is integrable (so that $\int_\R \abs{\phi(t)}dt < \infty$), then an analysis of the aboe equation can be used to show that $\mu$ has a density $f$ given by
+    If we assume that $\phi$ is integrable (so that $\int_\R \abs{\phi(t)}dt < \infty$), then an analysis of the above equation can be used to show that $\mu$ has a density $f$ given by
     \[f(c) = F'(c) = \int_\R e^{-itc}\phi(t)dt. \]
 \end{remark}
 \begin{ex}[The usual CLT]
-    The following is a typical application. Let $X_1,X_2,\ldots$ be i.i.d. with $\E[X_1]=0$, $\E[X_1^2]=1$ and characteristic function $\phi$. Let $S_n = \frac{1}{\sqrt{n}}\sum_{j=1}^n X_j$. Since the first two moments of $X_j$ exist $\phi$ is twice continuously differentiable with $\phi'(0)=1$ and $\phi''(0)=-1$. 
+    The following is a typical application. Let $X_1,X_2,\ldots$ be i.i.d. with $\E[X_1]=0$, $\E[X_1^2]=1$ and characteristic function $\phi$. Let $S_n = \frac{1}{\sqrt{n}}\sum_{j=1}^n X_j$. Since the first two moments of $X_j$ exist $\phi$ is twice continuously differentiable with $\phi'(0)=0$ and $\phi''(0)=-1$. 
 
     Since $X_1,X_2,\ldots$, are independent, we know the that
     \[\phi_{S_n}(t)=\phi(t/\sqrt{n})^n = \left(1-\frac{t^2}{2n}+o\left(1/n\right)\right)^n \to e^{-\frac{t^2}{2}} =\phi_{\Na}(t), \]
-    where $\phi_\Na$ denotes the characteristic function of the standard normal distribution.
+    where $\phi_\Na$ denotes the characteristic function of the standard normal distribution. A careful justification thus again follows from Taylor's theorem. See Billingsley 26.4 for the details (it really is just Taylor's theorem).
 \end{ex}
+\section{Fourier analysis on $C_n$}
+Fourier analysis is so nice and so useful that it is good to see it in different contexts. To ``make it our friend'', let's look at Fourier analysis on an important finite space.
+
+Let $C_n = \{0,1,\ldots,n-1\}$ denote the group of integers modulo $n$. We can think of $C_n$ as $n$ points on a circle. A probability on $C_n$ is simply a function $\mu:C_n \to \R$ such that $\mu(j) \ge 0$ and $\sum_{j=0}^{n-1} \mu(j)=1$. For example we can take $\mu(-1)=\mu(1)=\frac{1}{2}$ and $\mu(j)=0$ for all other $j$. The measure $\mu$ corresponds to a ``drunkard's walk.''
+
+The convolution of two probability $\mu$ and $\nu$ on $C_n$ is defined to be
+\[(\mu * \nu)(j) = \sum_{k=0}^{n-1} \mu(k)\nu(j-k). \]
+This corresponds to picking $k_1$ and $k_2$ from $\mu$ and $\nu$ independently and then asking what is the probability that $k_1+k_2 = j$. For a probability $\mu$ we can inductively define
+\[\mu^{*l} = \mu*\mu^{*(l-1)}. \]
+Let $U(j)=\frac{1}{n}$ be the uniform distribution on $C_n$. We wish to use Fourier analysis to prove the following.
+\begin{thrm}\label{walk}
+    Suppose that $n$ is odd and $\mu$ is the probability on $C_n$ given by $\mu(-1)=\mu(1)=\frac{1}{2}$. Then $\mu^{*l}(j) \to U(j)$ for all $j$.
+\end{thrm}
+Note that if $n$ is even, then we have a parity problem. The measure $\mu^{*(2l)}$ is supported on the even numbers in $\{0,1,\ldots,n-1\}$ and $\mu^{*(2l-1)}$ is supported on the odd numbers in $\{0,1,\ldots,n-1\}$ thus we will not get convergence. To prove Theorem \ref{walk} we will need discrete Fourier analysis.
+\begin{defn}
+    For a function $f:C_n \to \R$, define the \emph{Fourier transform of $f$} to be $\wh{f}:C_n \to \C$, given by 
+    \[\wh{f}(j) = \sum_{k=0}^{n-1}e^{2\pi i j k/n}f(k). \]
+\end{defn}
+One can check that
+\begin{enumerate}
+    \item For all $f_1,f_2:C_n \to \R$, $\wh{f_1*f_2}(j) = \wh{f_1}(j)\cdot \wh{f_2}(j)$.
+    \item If $U(j) = \frac{1}{n}$ for all $j$, then
+    \[\wh{U}(j) = \frac{1}{n}\sum_{k=0}^{n-1} e^{2\pi i j k/n} = \begin{cases}
+        1 &\text{if } j=0,\\
+        0 & \text{if } j \neq 0.
+    \end{cases} \]
+    \item If $\mu(-1)=\mu(1)=\frac{1}{2}$ and $\mu(j)=0$ otherwise, then 
+    \[\mu(j) =\frac{1}{2}e^{-2\pi i j/n}+\frac{1}{2}e^{2\pi i j/n} = \cos\left(\frac{2\pi j}{n}\right). \]
+\end{enumerate}
+We have an inversion theorem for the discrete Fourier transform, just like for characteristic functions on $\R$.
+\begin{thrm}
+    For any function $f:C_n \to \R$, we have
+    \[f(k) = \frac{1}{n}\sum_{j=0}^{n-1} e^{-2\pi i j k/n}\wh{f}(j). \]
+\end{thrm}
+\begin{proof}
+    Note that both sides of the above equation are linear in $f$. Since the space of all $f:C_n \to \R$ is a finite dimensional vector space it suffices to prove the above equation for a basis of our choice. The functions 
+    \[\delta_a(k) = \begin{cases}
+        1 & \text{if } k=a,\\
+        0 & \text{if } k\neq a.
+    \end{cases} \]
+    are the basis we will work with. Note that
+    \[\wh{\delta_a}(j) = \sum_{k=0}^{n-1} e^{2\pi i j k/n}\delta_a(k)=e^{2 \pi i j a/n}. \]
+    Thus we have
+    \begin{align*}
+        \frac{1}{n}\sum_{j=0}^{n-1}e^{-2\pi i j k/n}\wh{f}(j)&=\frac{1}{n}\sum_{j=0}^{n-1}e^{-2\pi i j k/n}e^{2\pi i j a/n}\\
+        &=\frac{1}{n}\sum_{j=0}^{n-1}e^{-2\pi i j(a-k)/n}\\
+        &=\begin{cases}
+            1 & \text{if } k=a,\\
+            0 & \text{else}.
+        \end{cases}\\
+        &=\delta_a(k).\qedhere
+    \end{align*}
+\end{proof}
+Thus we can prove Theorem \ref{walk}.
+\begin{proof}
+    Since $n$ is odd, $\abs{\cos\left(\frac{2\pi j}{n}\right)} < 1$ for $j \in C_n\setminus \{0\}$. This is because $\cos\left(\frac{2\pi j}{n}\right) = \pm1$ and $0 \le j \le n-1$ implies $j = 0$ or $j= \frac{n}{2}$.  Thus for every $j \in C_n$ we have 
+    \[\wh{\mu^{*l}}(j)=\wh{\mu}(j)^l =\cos\left(\frac{2\pi j}{k}\right)^l\to \begin{cases}
+        1 & \text{if } j=0,\\
+        0 & \text{if } j\neq 0.
+    \end{cases}=\wh{U}(j). \]
+    The discrete Fourier inversion formula thus given $\mu^{*l}(j) \to U(j)$ for all $k$.
+\end{proof}
+If one uses the approximation $\cos\left(\frac{2\pi j}{n}\right) = 1- \frac{2 \pi^2j^2}{n^2}+O(1/n^4)$, then some careful calculus gives a quantitative version of Theorem \ref{walk}.
+\begin{thrm}
+    For $n$ odd and $\mu$ and $U$ as in Theorem \ref{walk},
+    \[\frac{1}{6}e^{-\frac{\pi^2}{2}l/n^2} \le \norm{\mu^{*l}-U}_{TV} \le 6e^{-\frac{\pi^2}{2}l/n^2}. \]
+\end{thrm}
+That is, it takes order $n^2$ for the walk to get random and $n^2$ is both necessary and sufficient.
+
+This story extends to any finite or compact group $G$. If $\mu$ is a probability that is not supported on a proper coset of $G$, then $\mu^{*l}$ converges in distribution to the uniform measure on $G$. See Persi's book ``\href{https://projecteuclid.org/ebooks/institute-of-mathematical-statistics-lecture-notes-monograph-series/Group-representations-in-probability-and-statistics/toc/10.1214/lnms/1215467407#toc}{Group representations in probability and statistics}'' (freely available on his website).
+\section{Error bounds}
+Fourier analysis can be used to give error bounds in the central limit theorem. For instance, the following can be proved with Fourier analysis,
+\begin{thrm}[Berry-Esseen Theorem]
+    Let $\{X_i\}_{i=1}^\infty$ be i.i.d. with mean 0, variance $\sigma^2$ and finite third moment $\gamma = \E[\abs{X_i}^3]$. If $S_n=X_1+\ldots+X_n$, then
+    \[\sup_{x \in \R}\abs{\Pa\left(\frac{S_n}{\sigma\sqrt{n}}\le x\right)-\Phi(x)} \le \frac{C \gamma}{\sqrt{n}\sigma^3}. \]
+    Where $C$ is a constant that does not depend on $X_i$ and $C \le 0.4748\ldots$.
+\end{thrm}
+It is known that there is a choice of $X_i$ that is supported on two points for which $C > 0.40873$ is needed. 
+
+There are also multivariate versions (where the supremum is over a class of sets such as the class of all convex sets). Most of the super sharp bounds are proved by Fourier analysis although there are also Stein's method proofs with good constants. These can be used for sums of dependent random variables. The subject is still in active development. Some good references for Stein's method and the central limit theorem are:
+\begin{itemize}
+    \item ``\href{https://searchworks.stanford.edu/view/9115286}{Normal approximation by Stein's method}'' by Chen, Goldstein and Shao.
+    \item ``\href{https://arxiv.org/abs/2001.10917}{High-dimensional Central Limit Theorems by Stein's method}'' by Fang and Koike.
+    \item ``\href{https://explorecourses.stanford.edu/search?view=catalog&filter-coursestatus-Active=on&page=0&catalog=&academicYear=&q=STATS+324%3A+Stein%27s+Method&collapse=}{STATS 324: Stein's method}'' - a course running in the spring by Sourav Chatterjee on Stein's method.
+\end{itemize}
+On the other hand, a $\frac{c}{\sqrt{n}}$ error can be pretty disappointing and people often resort to simulation or correction terms to get better convergence.
+\subsection{Edgeworth corrections}
+Edgeworth corrections are corrections of the form 
+\[\Pa\left(\frac{S_n}{\sigma\sqrt{n}}\le x\right) = \Phi(x)+\frac{H_3(x)}{\sqrt{n}}+O(1/n), \]
+where $H_3$ is the $3^{rd}$ Hermite polynomial. These can make a big difference when $n$ is `small' (eg $n=100$). To get Berry-Esseen bounds for this type of approximation is hard honest work. The book ``\href{https://www.cambridge.org/us/academic/subjects/statistics-probability/probability-theory-and-stochastic-processes/normal-approximation-and-asymptotic-expansions?format=PB&isbn=9780898718973}{Normal approximation and asymptotic expansions}'' by Bhattachrya and Ranga Rao has details. Another type of corrections are ``Daniel's type aprroximations''. See ``\href{https://projecteuclid.org/ebooks/institute-of-mathematical-statistics-lecture-notes-monograph-series/Small-sample-asymptotics/toc/10.1214/lnms/1215468235}{Small sample asymptotics}'' by Chris Field. Most of all the above uses Fourier techniques.
+\section{Course summary}
+Today is the last lecture and the final exam will be on Tuesday December 7. The final will cover the entire course but will emphasize topics covered after the midterm. The post midterm topics are:
+\begin{itemize}
+    \item Covergence in probability weak convergence, almost sure convergence.
+    \item Strong law of large numbers.
+    \item Total variation distance.
+    \item Poisson heuristic, Stein's identity, Stein's method for proving Poisson convergence, dependence graphs, examples (law of small numbers, birthday problem, coupon collector and matching problem).
+    \item Central limit theorem - normal approximation, Lindeberg's condition, Lyapunov's theorem, examples.
+    \item Characteristic functions, basic properties (continuity, behaviour under convolutions, portmanteau theorem, uniqueness, inversion, basic examples).
+\end{itemize}
+There will be more or less one question from each of the dot points above. At the moment the exam has some choice. Choose 3 out of 4 ``state and prove'' type theorems, choose 3 out of 4 ``problems'' (easier than homework problems). So about half an hour per problem and six problems in total.
+
+You may bring one side $8 \frac{1}{2}\times 11$ inch sheet of notes with notes handwritten on one side -- to be handed in. The exam is intended to be straight forward.
+\subsection{Additional topics}
+There are topics which are important but weren't covered in class. \grumpy
+Three in particular are:
+\begin{itemize}
+    \item Kolmogorov's 0-1 law.
+    \item Uniform integrability (when do we have $\E[X_n]\to \E[X]$?).
+    \item Large deviations (convergence in the tails).
+\end{itemize}
+The book does a good job covering these and none of them are particularly hard but they should be in our tool kits. Persi would have also liked to have covered infinitely divisible laws. The book has a succinct and good treatment. Despite there being some topics we didn't cover, we did cover a lot and Persi is happy with where we got. Those taking 310B are in for a great course with Sourav Chatterjee. 
 \end{document}
