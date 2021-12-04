@@ -24,7 +24,7 @@ In the Poisson case we used dependency graphs. There is a version where we only 
 \begin{align*}
     b_1 &= \sum_{i \in I}\sum_{j \in N_i\setminus \{i\}} p_{ij},\\
     b_2 &=\sum_{i\in I}\sum_{j \in N_i} p_ip_j,\\
-    b_3 &= \sum_{i \in I} \E(\abs{X_i-p_i}|X_j \in N_i^c).
+    b_3 &= \sum_{i \in I} \E[\E[\abs{X_i-p_i}|X_j \in N_i^c]].
 \end{align*}
 The quantity $b_3$ measures how independent $X_i$ is of $N_i^c$. 
 \begin{thrm}
