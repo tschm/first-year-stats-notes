@@ -29,7 +29,7 @@ Today we'll do some serious probability using many of our tools from measure the
 
     Our next idea is to use \underline{truncation}. Define
     \[Y_i = X_i \delta_{\{X_i \le i\}}, \]
-    and let $T_n = \sum_{i=1}^n Y_i$. Our next idea is to look at \underline{subsequences}. Fix $\al >0$ and define $\lfloor \al^n \rfloor$. We now show that for all $\eps > 0$,
+    and let $T_n = \sum_{i=1}^n Y_i$. Our next idea is to look at \underline{subsequences}. Fix $\al >1$ and define $u_n = \lfloor \al^n \rfloor$. We now show that for all $\eps > 0$,
     \[\sum_{n=1}^\infty \Pa\left(\abs{\frac{T_{u_n}-\E[T_{u_n}]}{u_n}}>\eps \right)< \infty. \] 
     Note that by the i.i.d. assumption,
     \begin{align*}
