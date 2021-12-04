@@ -133,7 +133,8 @@ where $l_i = \E\left[S\left(\frac{X_n}{s_n}\right)\right]$. See S.D. Chatterji `
 The ``right'' convergence rate was proved in the Berry-Essen theorem.
 \begin{thrm}
     The exists a constant $C \in (0.4097,0.4748)$ such that if $X_i$ are i.i.d. with mean $\mu$, variance $\sigma^2$ and finite third moment, then 
-    \[\sup_{x \in \R} \abs{\Pa\left(\frac{S_n}{s_n} \le x\right)-\Phi(x)} \le \frac{c \E[\abs{X_1}^3]}{\sigma^3\sqrt{n}}. \]
+    \[\sup_{x \in \R} \abs{\Pa\left(\frac{S_n}{s_n} \le x\right)-\Phi(x)} \le \frac{c \E[\abs{X_1}^3]}{\sigma^3\sqrt{n}}, \]
+    where $S_n = \sum_{i=1}^n (X_i - \mu)$ and $s_n^2 = \V(S_n) = n\sigma^2$.
 \end{thrm}
 Thus when $X_i$ has a third moment, the convergence is at a rate of $\frac{1}{\sqrt{n}}$.
 \subsection{The noraml heuristic}
