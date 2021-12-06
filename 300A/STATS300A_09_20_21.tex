@@ -3,16 +3,24 @@
 \include{definitions}
 
 \title{STATS 300A - Lecture 1}
-\author{Michael Howes}
+\author{Dominik Rothenhaeusler\\ Scribed by Michael Howes}
+\date{09/20/21}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300A - Lecture 1}
+\lhead{09/20/21}
+\rfoot{Page \thepage}
 
 \begin{document}
 \maketitle
+\tableofcontents
 \section{The Big Picture}
 Sciences/engineered systems $\to$ data $\to$ statistics $\to$ inference.
 
 Core questions:
 \begin{enumerate}
-    \item Modelling: how to trnslate domain question to a statistical or mathematical question framework.
+    \item Modelling: how to translate domain question to a statistical or mathematical question framework.
     \item Methodology: what tools can I use? Which are appropriate?
     \item Analysis: how can I compare methods? How can we construct optimal methods?
 \end{enumerate}
@@ -80,7 +88,7 @@ The fact that the risk function is a function of $\theta$ means that it is diffi
 Our goal is to investigate which parts of the data can be discarded.
 
 \begin{defn}
-    A statistic $T(X)$ ($T$ is a function of the sample $X$) is sufficient for the model $\Po = \{P_\theta : \theta \in \Omega \}$ is for all $t$, the conditional distribution of $X | T = t$ does not depend on $\theta$.
+    A statistic $T(X)$ ($T$ is a function of the sample $X$) is sufficient for the model $\Po = \{P_\theta : \theta \in \Omega \}$ if for all $t$, the conditional distribution of $X | T = t$ does not depend on $\theta$.
 \end{defn}
 Consider again $X_n \sim \Be(\theta)$, $X_i$ iid. The statistic $T(X) = \sum_{i=1}^n X_i$, is sufficient. To see why, note that
 \begin{IEEEeqnarray*}{rCl}

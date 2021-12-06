@@ -124,10 +124,10 @@ We are done with unbiasedness and now we will look at restricting our estimators
 \end{defn}
 \begin{defn}
     A loss function is called \emph{location invariant} if 
-    \[l(\ta+c,d+c) = l(\ta,d), \]
+    \[L(\ta+c,d+c) = L(\ta,d), \]
     for all $\ta,d$ and $c$. 
 \end{defn}
-Note that squared error loss $l(\ta,d)= (\ta-d)^2$ is location invariant as is any other loss that is a function of $\ta - d$. In fact these are the only location invariant losses. Since if $l$ is location in variant then $l(\ta,d) = l(\ta -d,0) =: \rho(\ta - d)$.\
+Note that squared error loss $L(\ta,d)= (\ta-d)^2$ is location invariant as is any other loss that is a function of $\ta - d$. In fact these are the only location invariant losses. Since if $L$ is location in variant then $L(\ta,d) = L(\ta -d,0) =: \rho(\ta - d)$.\
 \begin{defn}
     A decision problem is \emph{location invariant} if the model and the loss function are both location invariant.
 \end{defn}
@@ -142,8 +142,8 @@ The sample mean, sample median and sample quartiles are all examples of location
 \begin{proof}
     We will prove that the risk is constant.
     \begin{IEEEeqnarray*}{rCl}
-        R(\ta, \delta) &=& \E_\ta[l(\ta,\delta(X))]\\
-        &=&\E_\ta[l(0,\delta(X)-\ta)]\\
+        R(\ta, \delta) &=& \E_\ta[L(\ta,\delta(X))]\\
+        &=&\E_\ta[L(0,\delta(X)-\ta)]\\
         &=&\E_\ta[\rho(\delta(X)-\ta)]\\
         &=&\int \rho(\delta(x)-\ta)p(x;\ta)d\mu(x)\\
         &=&\int \rho(\delta(x_1-\ta,\ldots,x_n-\ta))p(x;\ta)d\mu(x)\\

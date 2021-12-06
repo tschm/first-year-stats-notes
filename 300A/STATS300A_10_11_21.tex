@@ -34,13 +34,13 @@ where $Y=(X_1-X_n,\ldots,X_{n-1}-X_n)$, then $\delta^*(X) = \delta_0(X) - v^*(Y)
     \item UMRUES do not always exist.
     \item MREs usually do exist and we can find them via an optimisation procedure.
     \item UMRUES are often \emph{inadmissible}.
-    \item Pitman's estimator is admissible under weak regularity conditions (Stien 1959).
-    \item MREs are often biased if something other squared error loss if being used.
+    \item Pitman's estimator is admissible under weak regularity conditions (Stein 1959).
+    \item MREs are often biased if something other squared error loss is being used.
 \end{itemize}
 \subsection{Risk unbiasedness}
 \begin{defn}
-    An estimator $\delta$ for $g(\ta)$ is risk unbiased for the loss $L(\ta,d) = f(g(\ta)-d)$ if all $\ta,\ta'$
-    \[\E_\ta[L(\ta,\delta(X))] \le \E_{\ta'}[L(\ta',\delta(X))]. \]
+    An estimator $\delta$  is risk unbiased for the loss $L(\ta,d)$ if all $\ta,\ta'$
+    \[\E_\ta[L(\ta,\delta(X))] \le \E_{\ta}[L(\ta',\delta(X))]. \]
 \end{defn}
 
 Intuitively this says the true parameter $\ta$ penalises less than the false parameter $\ta'$. If $L$ is squared error loss, then this is the same as regular unbiasedness.
@@ -72,7 +72,7 @@ Note that if $X_i$ has a location-scale distribution $(\ta,\tau)$, then $X'_i = 
 \end{defn}
 
 \begin{defn}
-    A model $\Po = \{P_(\ta,\tau) : (\ta,\tau) \in \Om \}$ is \emph{loc-scale invariant} if 
+    A model $\Po = \{P_{(\ta,\tau)} : (\ta,\tau) \in \Om \}$ is \emph{loc-scale invariant} if 
     \[f_{(a\ta+b,a\tau)}(ax+b) = f_{(\ta,\tau)}(x), \]
     for all $a >0$ and $b \in \R$.
 \end{defn}
@@ -139,7 +139,7 @@ The usual interpretation is that $\Lambda$ encodes prior beliefs about $\ta$ tha
     \end{IEEEeqnarray*}
     Thus $\delta$ is the Bayes estimator.
 \end{proof}
-Note that under squared error loss the minimizer of $\E[(g(\Theta)-\delta(x)^2)|X=x]$ is the conditional expectation $\E[g(\Theta)|X=x]$ which we call the posterior mean.
+Note that under squared error loss the minimizer of $\E[(g(\Theta)-\delta(x))^2|X=x]$ is the conditional expectation $\E[g(\Theta)|X=x]$ which we call the posterior mean.
 \subsection{A binomial example}
 Suppose that $X \sim \text{Bin}(n, \ta)$ where $\ta \sim \Lambda =  \text{Beta}(a,b)$. That is the prior for $\ta$ has density
 \[\pi(\ta) = \frac{\Gamma(a+b)}{\Gamma(a)\Gamma(b)}\ta^{a-1}(1-\ta)^{b-1}. \]

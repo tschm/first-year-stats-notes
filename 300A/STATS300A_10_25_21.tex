@@ -20,7 +20,7 @@
 \section{Announcement}
 Please arrive at least 5 minutes early to the exam on Wednesday.
 
-\section{Admissibility $(d=1)$}
+\section{Admissibility $(p=1)$}
 We have seen that unique Bayes estimators are admissible. We wish to boost this result to $\bar{X}_n$ which a limit of Bayes estimators.
 
 \begin{ex}
@@ -45,7 +45,7 @@ We have seen that unique Bayes estimators are admissible. We wish to boost this 
 \end{ex}
 
 
-\section{Inadmissibility $(d \ge 3)$}
+\section{Inadmissibility $(p \ge 3)$}
 We will now look at an example of simultaneous estimation and look at the James-Stein estimator. The take away will be that minimax estimators and UMRUES need not be admissible.
 
 Suppose $X\in \R^p$ and $X \sim \Na(\ta, I_p)$ for some $\ta \in \R^p$. Our goal is to estimate $\ta$ under the loss $L(\ta,d) = \sum_{j=1}^p (\ta_j-d_j)^2 = \norm{\ta-d}_2^2$. The estimator $\delta(X) =X$ is
@@ -58,11 +58,11 @@ From many perspectives $X$ seems like the best estimator but $X$ is admissible f
 \[\left(1-\frac{p}{\sum_i X_i^2}\right)X. \]
 This came up in the setting $\ta_i \iid \Na(0,\tau^2)$ and $X_i|\ta_i \stackrel{ind}{~} \Na(\ta_1,1)$. We will see that a similar estimator will outperform $\delta(X)=X$ uniformly in $\ta$ in a frequentist setting. 
 
-For intuition one may ask what is the problem with $\delta(X)=X$? The problem is that $\norm{X}_2^2$ is normally much larger $\norm{\ta}_2^2$ since $\E[\norm{X}_2^2] =\sum_{i=1}^P \left(\ta_i^2+1\right) = \norm{\ta}_2^2+p >> \norm{\ta}_2^2$.
+For intuition one may ask what is the problem with $\delta(X)=X$? The problem is that $\norm{X}_2^2$ is normally much larger $\norm{\ta}_2^2$ since $\E[\norm{X}_2^2] =\sum_{i=1}^p \left(\ta_i^2+1\right) = \norm{\ta}_2^2+p >> \norm{\ta}_2^2$.
 \begin{thrm}
     \emph{[TPE 5.5.1]} Define the estimator $\delta^0$ by
     \[\delta_j^0(X) = \left(1-\frac{p-2}{\norm{X}_2^2}\right)X_j. \]
-    The estimaot $\delta^0$ had strictly smaller risk than $\delta(X)=X$ for all $\ta$. Thus $\delta(X)=X$ is inadmissible.
+    The estimator $\delta^0$ had strictly smaller risk than $\delta(X)=X$ for all $\ta$. Thus $\delta(X)=X$ is inadmissible.
 \end{thrm}
 We call $\delta^0$ a \emph{James-Stein estimator}.
 \begin{proof}
