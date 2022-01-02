@@ -32,7 +32,7 @@ Lebesgue proved
     \item For intervals, this agrees with ordinary length.
     \item For nice sets \[\la(A)=\sum_{i=1}^\infty \la(A_i), \]  where $A=A_1\cup A_2 \cup \ldots $ and the sets $A_i$ are disjoint.
 \end{itemize}
-What does nice mean:
+What does nice mean?
 \begin{itemize}
     \item Intervals are nice.
     \item If $A$ is nice, then $A^c$ is also nice.
@@ -46,10 +46,10 @@ One may ask ``who cares?''
     \[A = \left\{x \in [0,1] : \lim_{n \to \infty} \frac{\sum_{i=1}^n d_i(x)}{n} = \frac{1}{2}\right\}, \]
     and then try to calculate $\la^*(A)$. Note that 
     \[A = \bigcap_{k=1}^{\infty} \bigcup_{m=1}^\infty \bigcap_{n=m}^\infty \left\{x \in [0,1] : \abs{\frac{\sum_{i=1}^n d_i(x)}{n}-\frac{1}{2}} < \frac{1}{k} \right\}. \]
-    Thus the set $A$ is nice and the strong law of large numbers says $\la(A) = 1$.
+    Thus, the set $A$ is nice and the strong law of large numbers says $\la(A) = 1$.
 \end{ex}
 \section{The first monster}
-Is every set $A \subseteq [0,1]$ a Borel set? Nope - this gives us our first monster. Think of $[0,1)$ with addition $\mod 1$. This turns $[0,1)$ into a group. Let $\Q^* = \Q \cap [0,1)$ be the set of rationals in $[0,1)$. The set $\Q^*$ is a subgroup of $[0,1)$ and we can define a relation on $[0,1)$
+Is every set $A \subseteq [0,1]$ a Borel set? Nope - this gives us our first monster. Think of $[0,1)$ with addition $\mod 1$. This turns $[0,1)$ into a group. Let $\Q^* = \Q \cap [0,1)$ be the set of rationals in $[0,1)$. The set $\Q^*$ is a subgroup of $[0,1)$, and we can define a relation on $[0,1)$
 \[x \sim y \Longleftrightarrow x-y \in \Q^*. \]
 This is an equivalence relation, meaning that
 \begin{itemize}
@@ -57,7 +57,7 @@ This is an equivalence relation, meaning that
     \item $x \sim y \Longrightarrow y \sim x$.
     \item $x \sim y, y \sim z \Longrightarrow x \sim z$.
 \end{itemize}
-Thus $[0,1)$ decomposes into disjoint equivalent sets. Examples of these equivalent sets are $\Q^*$, $\Q^*+\frac{1}{\sqrt{2}}$, $\Q^*+\frac{1}{\pi}$. By the axiom of choice (spooky noise) there exists a set $X \subseteq [0,1)$ such that $\{x + \Q^*\}_{x \in X}$ are all distinct and $\{x + \Q^*\}_{x \in X}$ is the collection of all equivalent sets. 
+Thus, $[0,1)$ decomposes into disjoint equivalent sets. Examples of these equivalent sets are $\Q^*$, $\Q^*+\frac{1}{\sqrt{2}}$, $\Q^*+\frac{1}{\pi}$. By the axiom of choice (spooky noise) there exists a set $X \subseteq [0,1)$ such that $\{x + \Q^*\}_{x \in X}$ are all distinct and $\{x + \Q^*\}_{x \in X}$ is the collection of all equivalent sets. 
 
 \begin{claim}
     The set $X$ is monstrous.
@@ -67,14 +67,14 @@ Thus $[0,1)$ decomposes into disjoint equivalent sets. Examples of these equival
     \[[0,1) = \bigcup_{i=1}^\infty X+r_i. \]
     If $X$ where nice, then since length is translation invariant we would have that $X+r_i$ is nice and $\la(X+r_i) = \la(X)$. This would then imply that
     \[1=\la([0,1)) = \sum_{i=1}^\infty \la(X+r_i) = \sum_{i=1}^\infty \la(X). \]
-    If $\la(X) = 0$, this implies $1=0$. If $\la(X) > 0$, then we would have $1=\infty$. Thus $X$ cannot be nice and is thus monstrous.
+    If $\la(X) = 0$, this implies $1=0$. If $\la(X) > 0$, then we would have $1=\infty$. Thus, $X$ cannot be nice and is thus monstrous.
 \end{proof}
 This leads us to a natural question.
 
 \begin{question}
     If $G$ is a group and $H$ is a subgroup, when can we find a ``nice'' set of coset representatives of $G/H$? 
 \end{question}    
-The ``culprit'' in the above construction is the axiom of choice. Solovay showed that there are models of set theory where every set in $[0,1]$ is measurable and we still have countable choice. This model requires an inaccessible cardinal which is our second monster!
+The ``culprit'' in the above construction is the axiom of choice. Solovay showed that there are models of set theory where every set in $[0,1]$ is measurable, and we still have countable choice. This model requires an inaccessible cardinal which is our second monster!
 \section{Finite additivity}
 What if we give up countable additivity? Suppose we ask only that if $A = \bigcup_{i=1}^n A_i$ where the $A_i$'s are disjoint, then $\la(A) = \sum_{i=1}^n \la(A_i)$. 
 
@@ -83,14 +83,14 @@ One can ask does there exist a finitely additive length that is translation inva
     \item Yes if $d=1,2$.
     \item No if $d \ge 3$.
 \end{enumerate}
-The counter example in dimension 3 is called the Banach-Tarski paradox. The unit ball can be decomposed into five pieces and then these pieces can be arranged in two identical copies of the unit ball. This is our third monster!
+The counter example in dimension 3 is called the Banach - Tarski paradox. The unit ball can be decomposed into five pieces and then these pieces can be arranged in two identical copies of the unit ball. This is our third monster!
 \section{Bob and Alice}
 We now come to today's main monster. Suppose that we have countably many boxes $B_i$ and Alice puts a real number $x_i \in [0,1]$ in each box in any way of her choosing.
 
 \begin{claim}
     Bob can look in all the boxes until there is only one box left, then with probability arbitrarily close to one, he can guess the remaining number.
 \end{claim}
-For concreteness we suppose that Bob wants to be correct with probability $0.99$. He first arranges the boxes like so 
+For concreteness, we suppose that Bob wants to be correct with probability $0.99$. He first arranges the boxes like so 
 \[\begin{matrix}
     B_1&B_{101}&B_{201}&\ldots \\
     B_2&B_{102}&B_{202}&\ldots \\
@@ -100,11 +100,11 @@ For concreteness we suppose that Bob wants to be correct with probability $0.99$
 \end{matrix} \]
 Now define an equivalence relation on $[0,1]^\infty$ the space of sequences of values in $[0,1]$. 
 \[x \sim y \Longleftrightarrow \text{there exists } N \in \N \text{ such that for all } n \ge N, x_n = y_n. \]
-Thus two points are equivalent if they are eventually equal. Let $Z$ be a choice of exactly one point per equivalence class. For each $x \in [0,1]^\infty$ there exists a unique $z \in Z$ such that $x \sim z$. Thus we can define $n(x)$ to be the largest integer $n$ such that 
+Thus, two points are equivalent if they are eventually equal. Let $Z$ be a choice of exactly one point per equivalence class. For each $x \in [0,1]^\infty$ there exists a unique $z \in Z$ such that $x \sim z$. Thus, we can define $n(x)$ to be the largest integer $n$ such that 
 \[x_n \neq z_n. \]
 We are now ready to describe what Bob will do. He picks a row $j \in \{1,2,\ldots,100\}$ at random. For concreteness suppose that the row is 52. 
 
-Bob then asks to see all of the numbers in row 1. This gives him an element $x^{(1)} \in [0,1]^\infty$ and hence he can define $n_1 = n(x^{(1)})$. He can do the same thing for every row other than 52. He can then define
+Bob then asks to see all the numbers in row 1. This gives him an element $x^{(1)} \in [0,1]^\infty$ and hence he can define $n_1 = n(x^{(1)})$. He can do the same thing for every row other than 52. He can then define
 \[n^* = \max\{n_i : i \neq 52\}. \]
 Bob can then look at all the boxes in row 52 apart from $n^*+1$. By looking at all these other boxes, Bob knows which equivalence class the boxes in row 52 correspond to. This gives him a $z^* \in Z$ which is equivalent to row 52. He can then guess $z^*_{n^*+1}$ for the $n^*+1$ box in row 52. Bob's guess is correct unless
 \[n_{52} > n_i \text{ for all } i \neq 52. \]
