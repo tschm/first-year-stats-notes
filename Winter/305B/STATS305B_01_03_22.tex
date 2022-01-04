@@ -3,13 +3,13 @@
 
 
 
-\title{STATS305B - Lecture 1}
+\title{STATS305B -- Lecture 1}
 \author{Jonathon Taylor\\ Scribed by Michael Howes}
 \date{01/03/22}
 
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{STATS305B - Lecture 1}
+\rhead{STATS305B -- Lecture 1}
 \lhead{01/03/22}
 \rfoot{Page \thepage}
 
@@ -19,7 +19,7 @@
 \section{Announcements}
 \begin{itemize}
     \item The course webpage can be viewed at \href{http://web.stanford.edu/class/stats305b/intro.html}{http://web.stanford.edu/class/stats305b/intro.html}.
-    \item Jonathon's office hours are 2-4 pm on Wednesdays.
+    \item Jonathon's office hours are 2 -- 4 pm on Wednesdays.
 \end{itemize}
 \section{Course overview}
 Here are some brief descriptions of the main topics we'll cover.
@@ -27,7 +27,7 @@ Here are some brief descriptions of the main topics we'll cover.
 Suppose $X_k \iid F$ for $1 \le k \le N$.
 Let $R(X_k)$ and $C(X_k)$ be discrete random variables ($R$ for row, $C$ for column). For example, $R(X_k), C(X_k)$ may be $\{0,1\}$ valued and record the presence/absence of a trait or $R(X_k), C(X_k)$ may take more than one value and record the label of a trait.
 
-Suppose $R(X_k)$ can takes value $C_1,C_2,\ldots,C_I$ and $C(X_k)$ can take values $R_1,\ldots,R_J$. Let $Y_{i,j}$ be the number of times $R(X_k)$ takes value $R_i$ and $C(X_k)$ takes value  $C_j$. We can record these counts in a table
+Suppose $R(X_k)$ can take values $R_1,R_2,\ldots,R_I$ and $C(X_k)$ can take values $C_1,\ldots,C_J$. Let $Y_{i,j}$ be the number of times $R(X_k)$ takes value $R_i$ and $C(X_k)$ takes value  $C_j$. We can record these counts in a table
 \[\begin{array}{c|cccc|c}
     &C_1&C_2&\ldots&C_J&\text{Row total}\\
     \hline
@@ -42,18 +42,18 @@ We will often write $i$ for $C_i$ and $j$ for $R_j$. The notation $Y_{i\cdot}$ a
 \[\pi_{ij} = P_F(R=i, C=j), \text{ for } 1 \le i \le I \text{ and } 1 \le j \le J. \]
 Some common questions we might ask about the distribution are:
 \begin{enumerate}
-    \item Independence $\pi_{ij} = \pi_{i \cdot}\pi_{\cdot j}$ for all $1 \le i \le I$, $1 \le j \le J$.
-    \item Homogeneity (I) If we didn't sample the rows randomly but instead took multiple samples of $C$ from different populations, then $\pi_{ij}$ doesn't make sense since $R$ is not random. We instead have $I$ different distributions for $\pi_{\cdot j}$. We could ask if they are all the same.
-    \item Homogeneity (II) suppose $I=J$ and the values $R_i,C_i$ are common. We could then ask if $\pi_{i \cdot} = \pi_{\cdot i}$ for $1 \le i \le n$. \textcolor{red}{Q: In what sorts of applications would we ask this question?}
+    \item Independence: $\pi_{ij} = \pi_{i \cdot}\pi_{\cdot j}$ for all $1 \le i \le I$, $1 \le j \le J$.
+    \item Homogeneity (I): If we didn't sample the rows randomly but instead took multiple samples of $C$ from different populations, then $\pi_{ij}$ doesn't make sense since $R$ is not random. We instead have $I$ different distributions for $\pi_{\cdot j}$. We could ask if they are all the same.
+    \item Homogeneity (II): suppose $I=J$ and the values $R_i,C_i$ are common. We could then ask if $\pi_{i \cdot} = \pi_{\cdot i}$ for $1 \le i \le n$. \textcolor{red}{Q: In what sorts of applications would we ask this question?}
 \end{enumerate}
-Some common models for this sort of data and the multinomial model and the Poisson model. We will see that these models are interconnected.
+Some common models for this sort of data are the multinomial model and the Poisson model. We will see that the multinomial and Poisson models are connected.
 \subsection{Regression}
 In standard linear regression from 305A we have $Y \in \R^{n \times q}$ and $X \in \R^{n \times p}$, and we modelled $(X_i,Y_i)$ as independent draws with $Y_i |X_i \sim \normal(X_i^T\beta)$. We estimated $\beta$ with $\wh{\beta} = \amin_b \norm{Xb-y}_2^2$. In this course we will consider extensions of this  where the response $Y$ is not real valued.
 \begin{enumerate}
     \item Binary response $Y \in \{0,1\}^n$. $Y_i|X_i \sim \bern(F(X_i^T\beta))$ where $F$ is a CDF. For example,
     \begin{itemize}
-        \item $F \sim \normal(0,1)$ - probit.
-        \item $F(x) = \frac{e^x}{1+e^x}$ - logit.
+        \item Probit: $F \sim \normal(0,1)$.
+        \item Logit: $F(x) = \frac{e^x}{1+e^x}$.
     \end{itemize}
     Once $F$ is fixed we can work with the likelihood function to choose $\beta$. We can either do maximum likelihood or we can include some sort of penalty term. The maximum likelihood estimator is
     \[\wh{\beta} = \amin_\beta -2\log(L(\beta|X,Y)) = \amin_\beta \DEV(\beta | X,Y), \]
@@ -74,36 +74,50 @@ We will consider some complications like censoring and truncation. Censoring can
 \subsection{Multinomial and Poisson}
 Some distributions that we will use in this class are:
 \begin{itemize}
-    \item Binomial (2 clases): $Y \sim \bin(n,\pi)$, $\pi \in (0,1)$, $n=1,2,\ldots$. Then $Y \in \{0,1,\ldots,n\}$ and $\Pa\pi(Y=j) = \binom{n}{j} \pi^j(1-\pi)^{n-j}$. 
-    \item Multinomial (2 classes): $Y \sim \multi(n,\pi)$, $\pi = (\pi_1,\ldots, \pi_k)$, $\pi_i \ge 0$ and $\sum_{i=1}^k \pi_i = 1$, then $Y \in \{(Y_1,\ldots,Y_k) \in \Z^{+,k}: \sum_{i=1}^k Y_i = n\}$ and 
+    \item Binomial (2 clases): $Y \sim \bin(n,\pi)$, $\pi \in (0,1)$, $n=1,2,\ldots$. Then $Y \in \{0,1,\ldots,n\}$ and $\Pa(Y=j) = \binom{n}{j} \pi^j(1-\pi)^{n-j}$. 
+    \item Multinomial ($k$ classes): $Y \sim \multi(n,\pi)$, $\pi = (\pi_1,\ldots, \pi_k)$, $\pi_i \ge 0$ and $\sum_{i=1}^k \pi_i = 1$, then $Y \in \{(Y_1,\ldots,Y_k) \in \Z^{k,+}: \sum_{i=1}^k Y_i = n\}$ and 
     \[\Pa(Y=(y_1,\ldots,y_k)) = \binom{n}{(y_1,\ldots,y_k)} \prod_{i=1}^k \pi_i^{y_i} = \frac{n!}{\prod_{i=1}^k y_i!}\prod_{i=1}^k \pi_i^{y_i}.\]
     \item Poisson (unbounded count): $Y \sim \poi(\la) $ $\la > 0$, then $Y \in \Z^+ =\{0,1,2,\ldots\}$, $\Pa(Y=j) = \frac{e^{-\la}\la^j}{j!}$.
 \end{itemize}
 The multinomial and Poisson distributions have the following relationship. Suppose $Y_1,\ldots,Y_k$ are independent and $Y_i \sim \poi(\la_i)$. Then $\sum_{i=1}^k Y_i \sim \poi(\sum_{i=1}^k \la_i)$ and 
-\[(Y_1,\ldots, Y_k)|\sum_{i=1}^k Y_i = N \sim \multi(N,\pi), \]
-where $\pi_i = \frac{\la_i}{\sum_{j=1}^k \la_j}$.
+\[(Y_1,\ldots, Y_k)|\sum_{i=1}^k Y_i \sim \multi(N,\pi), \]
+where $N=\sum_{i=1}^k Y_i$ and $\pi_i = \frac{\la_i}{\sum_{j=1}^k \la_j}$.
 \subsection{Exponential families}
 A family of distribution $P_\eta$ are said to be an \emph{exponential family} if 
 \[\frac{dP_\eta(y)}{dm} = e^{\eta^T S(y) - \La(\eta)}, \]
 where,
 \begin{itemize}
-    \item $m$ is measure called the \emph{carrier} or \emph{reference}.
+    \item $m$ is a measure called the \emph{carrier} or \emph{reference}.
     \item $\eta$ are called the \emph{natural parameters}.
     \item $S(y)$ are called the \emph{sufficient statistics}.
     \item $\La(\eta)$ is called the \emph{cummulant generating function} of $S$,
     \[\La(\eta) = \log\left(\int e^{\eta^T S(y)}dm\right) \]
 \end{itemize}
 \begin{remark}
-    Often we will have $\{\eta : \La(\eta) < \infty\} = \R^{\dim(\eta)}$ which makes optimizing the natural parameters $\eta$ easier than optimizing some other parameters which may have to satisfy some constraints.
+    Often we will have $\{\eta : \La(\eta) < \infty\} = \R^{\dim(\eta)}$ which makes optimizing the natural parameters $\eta$ easier than optimizing some other parameters which may be constrained.
 \end{remark}
 \begin{examples}
     We have already seen examples of exponential families:
     \begin{itemize}
         \item Binomial:
         \[P_\pi(j) = \binom{n}{j}\pi^j (1-\pi)^{n-j} =\binom{n}{j}\left(\frac{\pi}{1-\pi}\right)(1-\pi)^{n}. \]
-        To turn this into an exponential family, let $m = \binom{n}{j}$ with respect to counting mass on $\{0,1,\ldots,n\}$ and let $\eta = \log(\pi/(1-\pi))$, so $\pi = \frac{e^\eta}{1+e^{\eta}}$. Also let $S(j)=j$ and $e^{-\La(\eta)} =(1-\pi)^n$ so 
+        To turn this into an exponential family, let $m = \binom{n}{j}$ with respect to counting measure on $\{0,1,\ldots,n\}$ and let $\eta = \log(\pi/(1-\pi))$, so $\pi = \frac{e^\eta}{1+e^{\eta}}$. Also let $S(j)=j$ and $e^{-\La(\eta)} =(1-\pi)^n$ so 
         \[\La(\eta) = -n\log(1-\pi)=-n\log\left(\frac{1}{1+e^{\eta}}\right)=n\log(1+e^{\eta}).\]
-        Now rather than $\pi \in [0,1]$ we have $\eta \in \R$. This makes it easy to do optimization once we have a model. The exponential family also leads to an immediate choice of model. Suppose we have $(Y_i,X_i)$ and we want 
+        Now rather than $\pi \in (0,1)$ we have $\eta \in \R$. This makes it easy to do optimization once we have a model. The exponential family automatically suggests a model. Suppose we have $(Y_i,X_i)$ and we want $Y_i |X_i \sim \bern(\pi(X_i))$. We can use the natural parameters $\eta$ and make a model $Y_i |X_i \sim \bern(\eta(X_i))$. Since $\eta$ is unconstrained we can take $\eta(X_i) = X_i^T\beta$, giving us a linear model. Under this model we have
+        \[\Pa(Y_i=1|X_i) = \frac{e^{X_i^T\beta}}{1+e^{X_i^T\beta}} = F(X_i^T\beta), \]
+        where $F$ is the logisistic distribution function. Thus, one way to derive \emph{logisitic regression} is by working with the Bernouli distribution after writting it as an exponential family.
+        \item Poisson:
+        \[\Pa(Y = j) = \frac{\la^j e^{-\la}}{j!}.\] 
+        This is an exponential family with $m= \frac{1}{j!}$ with respect to counting measure on $\Z^+=\{0,1,\ldots \}$, $S(j)=j$, $\eta = \log(\la)$ and $\La(\eta)=\la = e^{\eta}$. As before, we can use this to make model. Suppose we want $Y_i|X_i \sim \poi(\la(X_i))$. We could again try $\eta(X_i)=X_i^T\beta$ in which can we would have $\la(X_i) = e^{X_i^T\beta}$. This is the \emph{log-linear model}. Both logisitc regression and the log linear model are canonical examples of generalized linear models. They are aso canonical generalized linear models in a technical sense which we will discuss later in the course.
+        \item Multinomial: 
+        \[\Pa(Y=y) = \frac{n}{(y_1,\ldots,y_k)}\prod_{i=1}^k \pi_i^{y_i}.\] To write this as an exponential family take $m=\binom{n}{(y_1,\ldots,y_k)}$ with respect to counting measure on $\{y \in \Z^{k,+}, \sum_{i=1}^k y_i = n\}$. Let $S(y)=y \in \Z^{k,+}$, $\eta = (\log(\pi_1),\ldots,\log(\pi_k)) \in \R^k$ and so $\pi_i = e^{\eta_i}$ and 
+        \[e^{-\La(\eta)} = \left(\frac{1}{\pi_1+\ldots+\pi_k}\right)^n = \left(\frac{1}{e^{\eta_1}+\ldots+e^{\eta_k}}\right)^n. \]
+        Note that if $\eta' = \eta + \delta \one$, then $\eta'$ and $\eta$ give the same probability distribution. Thus, the model is unidentifiable. We really only have $k-1$ natural parameters. One work around is to look at the law of $(y_1,\ldots, y_{k-1})$ (this is what we do with the binomial distribution). In this case, $m$ is $\binom{n}{(y_1,\ldots,y_{k-1},n-y_{1}-\ldots-y_{k-1})}$ with respect to counting measure on $\{y \in \Z^{k-1,+}: \sum_{i=1}^{k-1} y_i \le n \}$. The sufficient statistic is $S(y)=y$ and $\eta_i = \log(\pi_i/\pi_k)$ for $i=1,\ldots,k-1$ and so 
+        \[\pi_i = \begin{cases}
+            \frac{e^{\eta_i}}{1+\sum_{j=1}^{k-1}e^{\eta_j}}& \text{if } i < k,\\
+            \frac{1}{1+\sum_{j=1}^{k-1}e^{\eta_j}} & \text{if } i=k.
+        \end{cases} \]
+        The model is then $Y_s |X_s \sim \multi(1,\pi(X_s))$ where $\pi(X_s)$ can be described by $\eta_s = \eta(X_s)$ where $\eta_s \in \R^{k-1}$ and $\eta_{s,i}= X_s^T\beta_i$ and so $(\eta)_{N \times (k-1)} = X_{N \times p}\beta_{p \times (k-1)}$ where $N$ is the number of subjects, $p$ is the number of features and $k$ is the number of classes. This model is called \emph{baseline logisitic regression}. \textcolor{red}{Question: In applications, does it matter which class is chosen to be the baseline (class $k$)?}.
     \end{itemize}
 \end{examples}
 \end{document}
