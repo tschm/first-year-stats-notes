@@ -1,0 +1,109 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305B - Lecture 1}
+\author{Jonathon Taylor\\ Scribed by Michael Howes}
+\date{01/03/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305B - Lecture 1}
+\lhead{01/03/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+\begin{itemize}
+    \item The course webpage can be viewed at \href{http://web.stanford.edu/class/stats305b/intro.html}{http://web.stanford.edu/class/stats305b/intro.html}.
+    \item Jonathon's office hours are 2-4 pm on Wednesdays.
+\end{itemize}
+\section{Course overview}
+Here are some brief descriptions of the main topics we'll cover.
+\subsection{Models for discrete data}
+Suppose $X_k \iid F$ for $1 \le k \le N$.
+Let $R(X_k)$ and $C(X_k)$ be discrete random variables ($R$ for row, $C$ for column). For example, $R(X_k), C(X_k)$ may be $\{0,1\}$ valued and record the presence/absence of a trait or $R(X_k), C(X_k)$ may take more than one value and record the label of a trait.
+
+Suppose $R(X_k)$ can takes value $C_1,C_2,\ldots,C_I$ and $C(X_k)$ can take values $R_1,\ldots,R_J$. Let $Y_{i,j}$ be the number of times $R(X_k)$ takes value $R_i$ and $C(X_k)$ takes value  $C_j$. We can record these counts in a table
+\[\begin{array}{c|cccc|c}
+    &C_1&C_2&\ldots&C_J&\text{Row total}\\
+    \hline
+R_1 &Y_{11}&Y_{12}&\ldots&Y_{1J}&Y_{1\cdot}\\
+R_2&Y_{21}&Y_{22}&\ldots&Y_{2J}&Y_{2\cdot}\\
+\vdots&\vdots&\vdots&\ddots&\vdots&\vdots \\
+R_I&Y_{I1}&Y_{I2}&\ldots&Y_{IJ}&Y_{I\cdot}\\
+\hline 
+\text{Column total}& Y_{\cdot 1}&Y_{\cdot 2}&\ldots &Y_{\cdot J} & Y_{\cdot\cdot}=\text{Grand total}=N
+\end{array} \]
+We will often write $i$ for $C_i$ and $j$ for $R_j$. The notation $Y_{i\cdot}$ and $Y_{\cdot j}$ is useful shorthand to mean the variable replaced with $\cdot$ has been marginalized. The distribution of the above table is described by 
+\[\pi_{ij} = P_F(R=i, C=j), \text{ for } 1 \le i \le I \text{ and } 1 \le j \le J. \]
+Some common questions we might ask about the distribution are:
+\begin{enumerate}
+    \item Independence $\pi_{ij} = \pi_{i \cdot}\pi_{\cdot j}$ for all $1 \le i \le I$, $1 \le j \le J$.
+    \item Homogeneity (I) If we didn't sample the rows randomly but instead took multiple samples of $C$ from different populations, then $\pi_{ij}$ doesn't make sense since $R$ is not random. We instead have $I$ different distributions for $\pi_{\cdot j}$. We could ask if they are all the same.
+    \item Homogeneity (II) suppose $I=J$ and the values $R_i,C_i$ are common. We could then ask if $\pi_{i \cdot} = \pi_{\cdot i}$ for $1 \le i \le n$. \textcolor{red}{Q: In what sorts of applications would we ask this question?}
+\end{enumerate}
+Some common models for this sort of data and the multinomial model and the Poisson model. We will see that these models are interconnected.
+\subsection{Regression}
+In standard linear regression from 305A we have $Y \in \R^{n \times q}$ and $X \in \R^{n \times p}$, and we modelled $(X_i,Y_i)$ as independent draws with $Y_i |X_i \sim \normal(X_i^T\beta)$. We estimated $\beta$ with $\wh{\beta} = \amin_b \norm{Xb-y}_2^2$. In this course we will consider extensions of this  where the response $Y$ is not real valued.
+\begin{enumerate}
+    \item Binary response $Y \in \{0,1\}^n$. $Y_i|X_i \sim \bern(F(X_i^T\beta))$ where $F$ is a CDF. For example,
+    \begin{itemize}
+        \item $F \sim \normal(0,1)$ - probit.
+        \item $F(x) = \frac{e^x}{1+e^x}$ - logit.
+    \end{itemize}
+    Once $F$ is fixed we can work with the likelihood function to choose $\beta$. We can either do maximum likelihood or we can include some sort of penalty term. The maximum likelihood estimator is
+    \[\wh{\beta} = \amin_\beta -2\log(L(\beta|X,Y)) = \amin_\beta \DEV(\beta | X,Y), \]
+    where $L$ is the likelihood function and $\DEV$ is the deviance (to be defined later). Some natural questions to ask are
+    \begin{itemize}
+        \item What is the (asymptotic) distribution of $\wh{\beta}$?
+        \item Can we  use this asymptotic distribution to do inference?
+    \end{itemize}
+    \item Multinomial $Y \in \{1,\ldots, k\}^n$. Some models we'll use are baseline logistic and order logistic.
+\end{enumerate}
+\subsection{Survival analysis}
+Let $T$ be a survival time (simply a non-negative random variable). We will model $T$ via it's survival function $P(T > t) = 1-\text{CDF}$. One model is via hazard functions where we have
+\[P_\beta(T > t |X) = \exp\left(-\int_0^t h_\beta(s;X)ds)\right). \]
+There are non-parametric methods and also the \emph{Cox proportional hazards model} where
+\[\frac{h_\beta(s;X_1)}{h_\beta(s;X_0)} = \exp\left((X_1-X_0)^T\beta\right) = \frac{\exp(X_1^T\beta)}{\exp(X_0^T\beta)}. \]
+We will consider some complications like censoring and truncation. Censoring can occur when conducting a study with an end date. The end date may pass before we have viewed the surival time of some subjects. We have partial information (the survival time is greater than the end date of the study) but we do not have full information (the exact survival time). How can we use the partial information?
+\section{Distributions}
+\subsection{Multinomial and Poisson}
+Some distributions that we will use in this class are:
+\begin{itemize}
+    \item Binomial (2 clases): $Y \sim \bin(n,\pi)$, $\pi \in (0,1)$, $n=1,2,\ldots$. Then $Y \in \{0,1,\ldots,n\}$ and $\Pa\pi(Y=j) = \binom{n}{j} \pi^j(1-\pi)^{n-j}$. 
+    \item Multinomial (2 classes): $Y \sim \multi(n,\pi)$, $\pi = (\pi_1,\ldots, \pi_k)$, $\pi_i \ge 0$ and $\sum_{i=1}^k \pi_i = 1$, then $Y \in \{(Y_1,\ldots,Y_k) \in \Z^{+,k}: \sum_{i=1}^k Y_i = n\}$ and 
+    \[\Pa(Y=(y_1,\ldots,y_k)) = \binom{n}{(y_1,\ldots,y_k)} \prod_{i=1}^k \pi_i^{y_i} = \frac{n!}{\prod_{i=1}^k y_i!}\prod_{i=1}^k \pi_i^{y_i}.\]
+    \item Poisson (unbounded count): $Y \sim \poi(\la) $ $\la > 0$, then $Y \in \Z^+ =\{0,1,2,\ldots\}$, $\Pa(Y=j) = \frac{e^{-\la}\la^j}{j!}$.
+\end{itemize}
+The multinomial and Poisson distributions have the following relationship. Suppose $Y_1,\ldots,Y_k$ are independent and $Y_i \sim \poi(\la_i)$. Then $\sum_{i=1}^k Y_i \sim \poi(\sum_{i=1}^k \la_i)$ and 
+\[(Y_1,\ldots, Y_k)|\sum_{i=1}^k Y_i = N \sim \multi(N,\pi), \]
+where $\pi_i = \frac{\la_i}{\sum_{j=1}^k \la_j}$.
+\subsection{Exponential families}
+A family of distribution $P_\eta$ are said to be an \emph{exponential family} if 
+\[\frac{dP_\eta(y)}{dm} = e^{\eta^T S(y) - \La(\eta)}, \]
+where,
+\begin{itemize}
+    \item $m$ is measure called the \emph{carrier} or \emph{reference}.
+    \item $\eta$ are called the \emph{natural parameters}.
+    \item $S(y)$ are called the \emph{sufficient statistics}.
+    \item $\La(\eta)$ is called the \emph{cummulant generating function} of $S$,
+    \[\La(\eta) = \log\left(\int e^{\eta^T S(y)}dm\right) \]
+\end{itemize}
+\begin{remark}
+    Often we will have $\{\eta : \La(\eta) < \infty\} = \R^{\dim(\eta)}$ which makes optimizing the natural parameters $\eta$ easier than optimizing some other parameters which may have to satisfy some constraints.
+\end{remark}
+\begin{examples}
+    We have already seen examples of exponential families:
+    \begin{itemize}
+        \item Binomial:
+        \[P_\pi(j) = \binom{n}{j}\pi^j (1-\pi)^{n-j} =\binom{n}{j}\left(\frac{\pi}{1-\pi}\right)(1-\pi)^{n}. \]
+        To turn this into an exponential family, let $m = \binom{n}{j}$ with respect to counting mass on $\{0,1,\ldots,n\}$ and let $\eta = \log(\pi/(1-\pi))$, so $\pi = \frac{e^\eta}{1+e^{\eta}}$. Also let $S(j)=j$ and $e^{-\La(\eta)} =(1-\pi)^n$ so 
+        \[\La(\eta) = -n\log(1-\pi)=-n\log\left(\frac{1}{1+e^{\eta}}\right)=n\log(1+e^{\eta}).\]
+        Now rather than $\pi \in [0,1]$ we have $\eta \in \R$. This makes it easy to do optimization once we have a model. The exponential family also leads to an immediate choice of model. Suppose we have $(Y_i,X_i)$ and we want 
+    \end{itemize}
+\end{examples}
+\end{document}
