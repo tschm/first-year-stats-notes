@@ -1,0 +1,214 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305B -- Lecture 2}
+\author{Jonathon Taylor\\ Scribed by Michael Howes}
+\date{01/05/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305B -- Lecture 2}
+\lhead{01/05/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Announcements}
+HW will be up soon (probably today). It will be due in $\approx 1.5$ weeks.
+\section{Inference (Agresti 1.3,1.4)}
+\subsection{Binomial}
+Consider the null $H_0 : \pi = \pi_0$ where $Y \sim \bin(n,\pi)$. The MLE estimate of $\pi$ is $\wh{\pi}= \frac{y}{n}$. The \emph{Wald test statistic} is
+\[z = \frac{\wh{\pi}-\pi_0}{\sqrt{\wh{\pi}(1-\wh{pi})/n}} = \frac{MLE-\ta_0}{\sqrt{\V_{\wh{\ta}}(MLE)}}.\]
+The statistic $z$ is asymptotically standard normal under $H_0$. To get a confidence interval we can use $\wh{\pi} \pm 1.96\sqrt{\wh{\pi}(1-\wh{\pi})/n}$. There is also the \emph{score test}
+\[z = \frac{\wh{\pi}-\pi_0}{\sqrt{\pi_0(1-\pi_0)/n}} = \frac{MLE-\ta_0}{\sqrt{\V_{\ta_0}(MLE)}}. \]
+This statistic is also asymptotically standard normal under $H_0$ and it better behaved for values of $\pi$ close to 0 or 1. The resulting confidence interval is
+\[CI = \left\{\pi : \abs{\frac{\wh{\pi}-\pi}{\sqrt{\pi(1-\pi)/n}}} < 1.96\right\}.\]
+The end points can be calculated by solving a quadratic. The \emph{likelihood ratio test} is
+\[-2\log L_0 - (-2 \log L_1), \]
+where $L_0$ is the maximum log likelihood under $H_0$ and $L_1$ is the maximum log likelihood under $H_0 \cup H_1$. For the binomial model the likelihood ratio test becomes 
+\[LR(\pi_0) = 2\left[y\log(\wh{\pi}/\pi_0)+(n-y)\log((1-\wh{\pi})/(1-\pi_0))\right], \]
+and, asymptotically, $LR(\pi_0) \sim \chi_1^2$ under $H_0 : \pi = \pi_0$. The resulting confidence interval is $CI:$  $\{\pi : LR(\pi_0) \le 1.96^2\}$ which can be calculated numerically.
+\subsection{Multinomial}
+Suppose $Y \sim \multi(n,\pi)$ with $k$ classes and $H_0:\pi=\pi_0$. In this case the likelihood ratio test statistic is
+\[G(\pi_0) := 2\sum_{i=1}^k y_i \log\left(\frac{\wh{\pi}_i}{\pi_{i,0}}\right),\]
+under the null $G(\pi_0)$ has an asymptotic $\chi^2_{k-1}$ distribution. We also have the Pearson's $\chi^2$ statistic which is essentially a score test
+\[\sum_{i=1}^k \frac{(y_i-n\pi_{i,0})^2}{n\pi_{i,0}} \stackrel{n \to \infty}{\sim} \chi^2_{k-1}.\]
+The score in this model is $y - n \pi_0$ and a score test statistic would be \[(y-n\pi_0)^T\V_{\pi_0}(y-n\pi_0)^{-1}(y-n\pi_0) =(y-n\pi_0)^T\V_{\pi_0}(y)^{-1}(y-n\pi_0) \] although in this model the covariance matrix is rank deficient, and so we can't actually invert $\V_{\pi_0}(y)$. 
+\subsection{Poisson}
+Suppose $Y_1,\ldots,Y_k \stackrel{\text{ind}}{\sim} \poi(\la_i)$ and our null is $H_0:(\la_1,\ldots,\la_k)=(\la_{1,0},\ldots,\la_{k,0})$. The likelihood ratio test statistic is
+\[-2\sum_{i=1}^k y_i\left[\log\left(\frac{y_i}{\la_{0,i}}\right)-\left[1-\frac{\la_{0,i}}{y_i}\right]\right] \stackrel{n \to \infty}{\sim} \chi^2_k, \]
+and the score test statistic is
+\[\sum_{i=1}^k \frac{(y_i-\la_{0,i})^2}{\la_{0,i}}  \stackrel{n \to \infty}{\sim}\chi^2_k.  \]
+\section{Bayesian inference (Agresti 1.6)}
+\subsection{Beta-binomial}
+Suppose we have a beta prior $g(\pi) = \pi^{\al_1-1}(1-\pi)^{\al_2-1}$ and $f(y|\pi) = \binom{n}{y}\pi^y(1-\pi)^{n-y}$. Then the posterior for $\pi$ is
+\begin{align*}
+    g(\pi|y) &\propto g(\pi)f(y|\pi)\\
+    &\propto \pi^{\al_1-1}(1-\pi)^{\al_2-1}\pi^y(1-\pi)^{n-y}\\
+    &\propto \pi^{y+\al_1-1}(1-\pi)^{n-y+\al_2-1}.
+\end{align*}
+So the posterior is again a beta distribution with parameters $(y+\al_1, n-y+\al_2)$. Thus, the beta family is conjugate to the binomial family. Note that the prior mean is $\E[\pi] = \frac{\al_1}{\al_1+\al_2}$ and so the posterior mean is $\E[\pi|y] = \frac{\al_1+y}{\al_1+\al_2+n}$. The posterior mean shrinks the MLE towards to the prior mean.
+\subsection{Multinomial-Dirichlet}
+Suppose that we have a Dirichlet prior $g(\pi) \propto \prod_{j=1}^k \pi_j^{\al_j-1}$ where $\pi_j \ge 0$ and $\sum_{j=1}^k \pi_j = 1$ and our data has a multinomial distribution $f(y|\pi) = \binom{n}{y_1,\ldots,y_k}\prod_{j=1}^k \pi_j^{y_j}$. Our posterior is thus
+\begin{align*}
+    g(\pi|y) &\propto g(\pi)f(y|\pi)\\
+    &\propto \prod_{j=1}^k \pi_j^{y_j+\al_j-1}.
+\end{align*} 
+Thus, the Dirichlet family is conjugate to the multinomial family.
+\subsection{Poisson-Gamma}
+Suppose we have a Gamma prior $g(\la) = \frac{\beta^\al}{\Gamma(\al)}\la^{\al-1} e^{-\beta \la}$, where $\la > 0$. The parameter $\al>0$ is a shape parameter and the parameter $\beta>0$ is a scale parameter in $\frac{1}{\la}$ units. If $f(y|\la) = \frac{1}{y!} \la^y e^{-\la}$, then our posterior is
+\[g(\la|y) \propto \la^{y+\al-1}e^{-(\beta+1)\la}. \]
+So the Gamma family is conjugate to the Poisson family.
+\section{Contingency tables (Agresti 2)}
+Consider the following contingency table
+\begin{center}
+    \begin{tabular}{c|ccc|c}
+        &Fatal attack&Non--fatal attack&No attack&\\
+        \hline
+        Placebo&$18=N_{11}$&171&10545&$11034=N_{1+}$\\
+        Aspirin&5&99&10933&11037\\
+        \hline
+        &$23=N_{+1}$&270&21778&$22071=N_{++}$
+    \end{tabular}
+\end{center}
+We will use $Y$ for the column value and $1,\ldots,J$ for the possible values $Y$ can take. We will use $X$ for the row value and $1,\ldots,I$ for the possible values $X$ can take. We can describe the distribution of the above counts with a table
+\[\begin{array}{c|ccc|c}
+    &F&NF&NA&\\
+    \hline
+    P&\pi_{11}&\pi_{12}&\pi_{13}&\pi_{1+}\\
+    A&\pi_{21}&\pi_{22}&\pi_{23}&\pi_{2+}\\
+    \hline
+    &\pi_{+1}&\pi_{+2}&\pi_{+3}&1    
+\end{array}\]
+As with $\cdot$, the symbol $i+$ means that the variable replaced with $+$ has been marginalized. There are multiple ways in which the data in the table could have been gathered. Equivalently, there are different descriptions of the sampling process.
+\begin{enumerate}
+    \item If both the rows and columns are random, then we could have $N_{ij} \sim \poi(\la\pi_{ij})$ and hence $N_{++} \sim \poi(\la)$. In the case we randomly assign either a placebo or aspirin with equal probability we will have $\pi_{ij} = \frac{1}{2}\times \Pa(Y=j|X=i) = \frac{1}{2}\pi_{j|i}$.
+    \item For clinical trails/prospective studies we fix the row values and model the column as random. For example, we could select 10 000 people and assign them the placebo and select 10 000 different people and assign them the aspirin. In this case for each row we will have a different distribution for $N_{+|i} \sim \multi(10000, \pi_{+|i})$ where $\pi_{+|i}$ are different parameters for each row.
+    \item For case control sampling. We fix the column values and treat the row values as random. For example, we could sample 100 people who had fatal heart attacks and 100 people who had non-fatal heart attacks and then compare the frequency of aspirin taking. In this case each column will be a distributed according to $\multi(100, \pi_{+|j})$ for different column parameters $\pi_{\cdot|j}$. This isn't very realistic in this example.
+\end{enumerate}
+\subsection{Case control}
+Consider the following table where the data was gathered in a case-control experiment:
+\begin{center}
+    \begin{tabular}{c|cc}
+        &\multicolumn{2}{c}{lung cancer}\\
+        \hline 
+        &Yes&No\\
+        \hline 
+        Smoker&688 &650\\
+        Non-smoker&21&59\\
+        \hline 
+        &709&709
+        
+    \end{tabular}
+\end{center}
+Since this is case-control study the data is given in the form of $P(\text{smoker}|\text{cancer})$ and $P(\text{smoker}|\text{no cancer})$. What we want is $P(\text{cancer}|\text{smoker})$ and $P(\text{cancer}|\text{non smoker})$ but to calculate these we need $P(\text{cancer})$ which is not available due to the structure of the study. The probabilities we do have are
+\begin{align*}
+    P(\text{smoker}|\text{cancer})&= \frac{688}{709},\\
+    P(\text{smoker}|\text{no cancer}) &=\frac{650}{709}.
+\end{align*}
+We can use the \emph{odds ratio} to get an idea of the increase in cancer risk due to smoking. 
+\subsection{2 by 2 tables (Agresti 2.2)}
+Suppose we have the data
+\[\begin{array}{c|cc}
+    &\multicolumn{2}{c}{Y}\\
+    \hline
+    X&1&2\\
+    \hline
+    1&N_{11}&N_{12}\\
+    2&N_{21}&N_{22}
+\end{array} \]
+Define $\pi_i =\pi_{1|i} = P(Y=1|X+i) = \frac{\pi_{i1}}{\sum_{j=1}^J \pi_{ij}}$. In our example we would have $\pi_i$ is the probability of cancer given $i$. The main quantity of interest is the \emph{relative risk} (RR) which is 
+\[\frac{\pi_1}{\pi_2} = \frac{P(Y=1|X=1)}{P(Y=1|X=2)}. \]
+We cannot directly estimate RR in case control studies since $Y$ is not random. We can estimate the \emph{odds ratio} (OR) 
+\[\Ta = \frac{\pi_1/(1-\pi_1)}{\pi_2/(1-\pi_2)} = \frac{\pi_{11}/\pi_{12}}{\pi_{21}/\pi_{22}} = \frac{\pi_{11}\pi_{22}}{\pi_{12}\pi_{21}}. \]
+Note that $\Ta=1$ if and only if $\pi_{1|1}=\pi_{1|2}$ (i.e. $X$ and $Y$ are independent). If the roles of $X$ and $Y$ are switched then,
+\[\Ta' = \frac{\pi_{11}/\pi_{21}}{\pi_{12}/\pi_{22}} = \frac{\pi_{11}\pi_{22}}{\pi_{12}\pi_{21}}=\Ta.\]
+Thus, we can estimate the OR in both case-control studies and clinical trials. The smoking table is a case-control study and the OR is estimated to be:
+\[\Ta = \frac{688/21}{650/59} \approx 3. \]
+Note that OR and RR are related in the following way,
+\[OR = RR \times \frac{1-\pi_1}{1-\pi_2}. \]
+If $1-\pi_1\approx 1-\pi_2 \approx 1$, then $OR \approx RR$. Thus, if we expect lung cancer to be rare in both smokers and non-smokers, then we would have $RR \approx 3$ and so 
+\[P(\text{cancer}|\text{smoker}) \approx 3 \times P(\text{cancer}|\text{non smoker}). \]
+The assumption that $1-\pi_1\approx 1-\pi_2 \approx 1$ is called the ``rare disease hypothesis''.
+\subsection{Multiway tables}
+The following example comes from sentencing data for convicted murders. There are three variables of interest
+\begin{align*}
+    X &=DR = \text{defendent's race},\\
+    Y&=DP = \text{death sentence},\\
+    Z &=VR = \text{victim's race}.
+\end{align*}
+We can represent the counts like so.
+
+$VR=W$
+\begin{center}
+    \begin{tabular}{c|cc|c}
+        &\multicolumn{2}{c|}{$DP$}&\\
+        \hline
+        DR&Y&N&\\
+        \hline
+        W&53&414&10\%\\
+        B&11&37&20\%
+        
+    \end{tabular}
+\end{center}
+$VR=B$
+\begin{center}
+    \begin{tabular}{c|cc|c}
+        &\multicolumn{2}{c|}{$DP$}&\\
+        \hline
+        DR&Y&N&\\
+        \hline
+        W&0&16&0\%\\
+        B&4&139&3\%     
+    \end{tabular}
+\end{center}
+The percentage are the approximate probability of defendant getting a death sentence given the defendant's and victim's race. We can also create a table where we marginalize over the victim's race
+\begin{center}
+    \begin{tabular}{c|cc|c}
+        &\multicolumn{2}{c|}{$DP$}&\\
+        \hline
+        DR&Y&N&\\
+        \hline
+        W&53&430&11\%\\
+        B&15&176&8\%     
+    \end{tabular}
+\end{center}
+We see that marginally, white defendants are more likely to receive the death penalty, but this is reversed if we condition on the victim's race. This is a discrete version of Simpson's paradox. In multiway tables we can calculate the \emph{conditional odds ratio} $\Ta_{XY(k)} = \frac{\pi_{11k}\pi_{22k}}{\pi_{12k}\pi_{21k}}$. Typically, as in the above example, $\Ta_{XY(k)}\neq \Ta_{XY+}$.
+
+Like the odds ratio, the condition OR measures independence conditioned on $Z$. In particular $X \ind Y|Z$ if and only if $\Ta_{XY(k)}=1$ for all $k$. Conditional independence is not the same as marginal independence. For example,
+\begin{center}
+    \begin{tabular}{c|cc|c}
+        &Y&N\\
+        \hline 
+        A&18&12&\multirow{2}{3.5em}{Clinic 1}\\
+        B&12&8\\
+        \hline 
+        A&2&8&\multirow{2}{3.5em}{Clinic 2}\\
+        B&8&32\\
+        \hline
+        A&20&20&\multirow{2}{3.5em}{Marginal}\\
+        B&20&40\\
+    \end{tabular}
+\end{center}
+In the above example, the columns and rows are conditionally but not marginally independent since
+\[\Ta_{XY(1)} = \frac{18\times 8}{12\times }=1,~~\Ta_{XY(2)} = \frac{2\times 32}{8\times 8}=1,~~ \Ta_{XY+}= \frac{20\times 40}{20\times 20}=2. \]
+A weaker property than conditional independence is \text{homogenous association} (HA). HA means that the conditional OR is constant. That is,
+\[\Ta_{XY(1)}=\Ta_{XY(2)} =\ldots = \Ta_{XY(K)}.\]
+As with condition independence,  HA does not imply $\Ta_{XY(k)}= \Ta_{XY+}$. HA does mean that are no higher order interactions between $X$ and $Y$. That is, if we use a log-linear model for our counts $N_{ijk} \sim \poi(\la_{ijk})$ where
+\begin{align*}
+    \log(\la_{ijk}) =&~ \al_{\cdot\cdot\cdot}\\
+    &+\al_{i\cdot\cdot}+\al_{\cdot j \cdot} + \al_{\cdot\cdot k}\\
+    &+\al_{ij\cdot} + \al_{i\cdot k}+\al_{\cdot jk}\\
+    &+\al_{ijk},
+\end{align*}
+then we would have HA if and only if $\al_{ijk} =0$. We will see this in more details when we study generalized linear models in more detail. The main idea is that HA holds if all interactions beyond second order are zero.
+\subsection{$I \times J$ tables}
+For $I \times J$ tables we can define the local odds ratios, these are 
+\[\Ta_{ij} = \frac{\frac{\pi_{ij}}{\pi_{i,j+1}}}{\frac{\pi_{i+1,j}}{\pi_{i+1,j+1}}} = \frac{\pi_{ij}\pi_{i+1,j+1}}{\pi_{i+1,j}\pi_{j,i+1}}, \]
+where $1 \le i \le I-1$ and $1 \le j \le J-1$. The number of local ORs is $(I-1)\times (J-1)$. The local ORs are less interpretable than the OR, but they do determine the associations between $X$ and $Y$ as can be seen by counting the number of free parameters. In the full model there are $IJ-1$ total parameters. For the row marginals there are $I-1$ free parameters and for the column marginals there are $J-1$ free parameters. Thus, the number of free parameters needed to describe the associations is
+\[IJ-1 - (I-1)-(J-1) = IJ-I-J+1=(I-1)\times(J-1), \]
+which is the number of local ORs. Note that when $I=J=2$ as before, there is just a single OR and a single parameter needed to describe the association between $X$ and $Y$.
+\end{document}

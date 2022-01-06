@@ -1,0 +1,103 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 1}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/04/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture 1}
+\lhead{01/04/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Overview}
+This course is about asymptotic statistics and what happens when the number of samples goes to infinity. We'll cover three main topics
+\begin{enumerate}
+    \item Finite dimensional problems and models.
+    \item Optimality and comparisons.
+    \item Infinite dimensional and uniform problems.
+\end{enumerate}
+This course is useful for statistics, machine learning, computer science and data science. The marks for the course will be calculated as follows:
+\begin{itemize}
+    \item Weekly homework (40\%),
+    \item Midterm exam (30\%),
+    \item Final exam (25\%),
+    \item Participation (5\%).
+\end{itemize}
+The midterm will take place on February 8 and will be in class. There are three textbooks for the class
+\begin{itemize}
+    \item \href{https://www.cambridge.org/core/books/asymptotic-statistics/A3C7DAD3F7E66A1FA60E9C8FE132EE1D}{Asymptotic statistics} by van der Vaart (this will be the main text).
+    \item \href{https://www.cambridge.org/core/books/highdimensional-probability/797C466DA29743D2C8213493BD2D2102}{High -- dimensional probability} by Vershynin (this will be used towards the end of the course).
+    \item \href{https://link.springer.com/book/10.1007/978-0-387-93839-4}{Theoretical statistics} by Keener (this will be used a bit at the start of the course).
+\end{itemize}
+\section{Convergence of random variables}
+See van der Vaart Ch 2,3 and Keener Ch 8.
+
+In STATS 300A we studied properties of estimators that held in an \emph{exact} sense (for example unbiased, MRE, UMRUE, etc.). In this course we will study properties that hold ``approximately'' or ``in the limit.'' To make this precise we have to discuss what we mean by taking limits of estimators and limits of random variables.
+\begin{definition}
+    Let $X_1,X_2,\ldots$ and $X$ be random vectors. We say that \emph{$X_n$ converges to $X$ in probability} and write $X_n \topp X$ if for every $\eps > 0$,
+    \[\Pa(\norm{X_n - X} > \eps) \to 0,\]
+    as $n \to \infty$.
+\end{definition}
+Note that be replacing $\norm{X_n - X}$ with $d(X_n,X)$ we can generalize convergence in probability to arbitrary metric spaces.
+\begin{theorem}[Chebyshev's inequality]
+    For any random variable $X$ and any constant $a > 0$, 
+    \[ \Pa(\abs{X} \ge a ) \le \frac{\E[X^2]}{a^2}.\]
+\end{theorem}
+\begin{proof}
+    Note that $\one_{\abs{X} \ge a} \le \frac{X^2}{a^2}$. Thus, by monotonicity and linearity of expectation we have
+    \[\Pa(\abs{X} \ge a) = \E[\one_{\abs{X} \ge a}] \le \E\left[\frac{X^2}{a^2}\right]=\frac{\E[X^2]}{a^2}.\qedhere\] 
+\end{proof}
+Chebyshev's inequality is a powerful tool for proving convergence in probability.
+\begin{proposition}
+    If $\E(Y_n-Y)^2 \to 0$ and $n \to \infty$, then $Y_n \topp Y$.
+\end{proposition}
+\begin{proof}
+    Note that for all $\eps > 0$,
+    \[0 \le \Pa(\abs{Y_n-Y} \ge \eps) \le \frac{\E(Y_n-Y)^2}{\eps^2}. \]
+    Thus, $\lim\limits_{n \to \infty} \Pa(\abs{Y_n-Y} \ge \eps) \to 0$. 
+\end{proof}
+\begin{example}
+    Suppose $X_1,X_2,\ldots$ are i.i.d. with mean $\mu$ and variance $\sigma^2$, then $\bar{X}_n \topp \mu$.
+    \begin{proof}
+        Note that,
+        \[\E(\bar{X}_n-\mu)^2 = \V(\bar{X}_n) = \frac{\V(X_1)}{n} = \frac{\sigma^2}{n}.   \]
+        So $\E(\bar{X}_n - \mu)^2 \to 0$.
+    \end{proof}
+\end{example}
+The next definition relates convergence in probability to estimation.
+\begin{definition}
+    A sequence of estimators $\delta_n$ is consistent for $g(\ta)$ if for all $\ta \in \Om$, $\delta_n \topp g(\ta)$ as $n \to \infty$.
+\end{definition}
+\begin{remark}
+    When using squared error loss, we consider the MSE $R(\ta,\delta_n) = \E_\ta(\delta_n-g(\ta))^2$. By Proposition 1, if the MSE goes to 0 for all $\ta$, then $\delta_n$ is consistent. Recall that we have the decomposition
+    \[R(\ta,\delta_n) = b_n^2(\ta) + \V_\ta(\delta_n),\]
+    where $b_n(\ta)$ is the bias of $\delta_n$. Thus, if the bias and variance of a sequence of estimators go to zero, then the estimators are consistent.
+\end{remark}
+\begin{exercise}
+    If $X_n \topp X$ and $Y_n \topp Y$, then $X_n+Y_n \topp X+Y$.
+    \begin{proof}
+        Recall that
+        \[\norm{X_n+Y_n-(X+Y)} \le \norm{X_n-X}+\norm{Y_n-Y}.\]
+        Thus,
+        \[\Pa(\norm{X_n+Y_n - (X+Y)}\ge\eps) \le \Pa( \norm{X_n-X}+\norm{Y_n-Y} \ge \eps). \]
+        Also, if $\norm{X_n-X}+\norm{Y_n-Y} \ge \eps$, then $\norm{X_n -X} \ge \eps/2$ or $\norm{Y_n-Y} \ge \eps/2$. Thus,
+        \[\Pa(\norm{X_n+Y_n - (X+Y)}\ge\eps) \le \Pa(\norm{X_n-X} \ge \eps/2 )+\Pa(\norm{Y_n-Y} \ge \eps/2) \to 0, \]
+        as $n \to \infty$.
+    \end{proof}
+\end{exercise}
+\begin{exercise}
+    If $X_n \topp a$ where $a$ is a constant and $g$ is a function that is continuous at $a$, then $g(X_n) \topp g(a)$.
+    \begin{proof}
+        Let $\eps > 0$. There exists $\delta > 0$ such that $\norm{x-a} < \delta$ implies $\norm{g(x)-g(a)} < \eps$. Thus,
+        \[\Pa(\norm{g(X_n)-g(a)} \ge \eps) \le \Pa(\norm{X_n-a} \ge \delta) \to 0, \]
+        as $n \to \infty$. 
+    \end{proof}
+\end{exercise}
+\end{document}
