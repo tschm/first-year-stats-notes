@@ -16,5 +16,104 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\section{Big picture}
+Suppose we have a model where $X_1,X_2,\ldots, X_n \iid f_\ta(x)$ where $\ta$ is a parameter of interest. Our data $x_1,\ldots,x_n$ is modelled as a realization of $X_1,\ldots,X_n$. We can take this data and compute statistics $t_n$. By a statistic we just mean any function of the data. Some examples are 
+\[t_n = \frac{1}{n}\sum_{i=1}^n x_i, ~~ t_n = \min\{x_i:1\le i \le n\}, ~~ t_n = \frac{1}{n}\sum_{i=1}^nx_i^i.  \]
+We want to understand the properties of our statistics. For example, for estimating $g(\ta)$ we would like to know the bias of a statistic which is defined to be 
+\[\text{Bias}(T_n) = \E[T_n]-g(\ta). \]
+We would also be interested in the asymptotic bias which is $\lim_n \text{Bias}(T_n)$. Similarly, we could ask if our statistics are consistent for $g(\ta)$. That is does $T_n \topp g(\ta)$ for all $\ta$. Consistency means that $T_n - \ta \topp 0$, but consistency does not tell us about the rate at which this convergence happens. To understand the rate, we need to talk about convergence in distribution. We will see that another desirable property of a sequence of statistics is that the sequence asymptotically normal. That is, for some $\sigma^2$,
+\[\sqrt{n}(T_n-g(\ta)) \todd \normal(0,\sigma^2). \]
+\section{An example}
+Before we discuss convergence in distribution, let's look at an example. Suppose $X_1,\ldots, X_n$ i.i.d. random variables with mean $\mu$ and variance $\sigma^2$. Suppose both $\mu$ and $\sigma^2$ are unknown, and we are interested in estimating $\sigma^2$. Consider
+\[S_n^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X})^2. \]
+Note that $S_n^2 = \frac{n}{n-1}\left(\frac{1}{n}\sum_{i=1}^n X_i^2 -\bar{X}_n^2\right)$. By the weak law of large numbers we know that 
+\[\frac{1}{n}\sum_{i=1}^n X_i^2 \topp \E[X^2] = \mu^2+\sigma^2, \]
+and 
+\[\bar{X}_n \topp \E[X] =\mu. \]
+Thus, by the continuity theorem $\bar{X}_n^2 \topp \mu^2$ and thus
+\[S_n^2 = \frac{n}{n-1}\left(\frac{1}{n}\sum_{i=1}^n X_i^2 -\bar{X}_n^2\right)\topp\sigma^2.\]
+But, does $\sqrt{n}(S_n^2-\sigma^2)$ have a ``limiting distribution.''
+\section{Convergence in distribution}
+\begin{definition}
+    A sequence of random vectors $X_n$ \emph{converge in distribution} to $X$ if for all $x$ such that $x \mapsto \Pa(X \le x)$ is continuous at $x$,
+    \[\Pa(X_n \le x) \to \Pa(X \le x). \]
+    We will denote convergence in distribution by $X_n \todd X$.
+\end{definition} 
+\begin{remark}
+    For vectors $x,y \in \R^d$, $x \le y$ means that $x_j \le y_j$ for all $1 \le j \le d$. 
+\end{remark}
+\begin{example}
+    Suppose $X_n \sim \Exp(\la_n)$ where $\la_n = \frac{n}{n+1}$. Then 
+    \[\Pa(X_n \le t) =\begin{cases}
+        0 & \text{if } t \le 0,\\
+        1-e^{-\frac{n}{n+1}t}& \text{if } t > 0.\\
+    \end{cases} \]
+    Which converges to 
+    \[F(t) =\begin{cases}
+        0 & \text{if } t \le 0,\\
+        1-e^{-t}& \text{if } t > 0.\\
+    \end{cases} \]
+    Thus, $X_n \todd X$ where $X \sim \Exp(1)$.
+\end{example}
+\begin{example}
+    The condition that $x$ is a point of continuity of $x \mapsto \Pa(X \le x)$ is important. Consider $Y_n \sim \normal(0,1/n)$. Then, by a change of variables,
+    \[F_n(x) = \int_{-\infty}^x \frac{1}{\sqrt{2\pi n}}e^{-n\w^2/2}d\w = \int_{-\infty}^{x\sqrt{n}} \frac{1}{\sqrt{2\pi}}e^{-u^2/2}du. \]
+    Thus, as $n \to \infty$, $F_n(x)$ converges to $G(x)$ where
+    \[G(x) = \begin{cases}
+        0 & \text{if } x < 0,\\
+        \frac{1}{2} & \text{if } x=0,\\
+        1 & \text{if } x > 0.
+    \end{cases} \]
+    The CDF of $X \equiv 0$ is $F(x)=\one_{[0,\infty)}(x)$ which is discontinuous at 0 and agrees with $G(x)$ at all other points. Thus, $X_n \todd X$ even thought $\lim_n F_n(x) \neq F(0)$.
+\end{example}
+\begin{remark}
+    The dominated convergence theorem is an important result about exchanging integrals and limits. It should be reviewed if you are not familiar with it.
+\end{remark}
+There are multiple characterizations of convergence in distribution. One if the Helly--Brag Theorem.
+\begin{lemma}
+    A sequence of random vectors $X_n$ converges in distribution to $X$ if and only if for all bounded and continuous $f$, $\E[f(X_n)]\to \E[f(x)]$.
+\end{lemma}
+The above condition is sometimes taken as the definition of convergence in distribution. The above condition generalizes more easily to arbitrary metric spaces. One can also replace the collection of all bounded and continuous functions with a smaller class of functions such as the Lipschitz functions or the characteristic functions $f(x) = e^{itx}$ for $t \in \R$. A class of functions with the above property is called a class of convergence determining functions. 
 
+The main result about convergence in distribution is the central limit theorem.
+\begin{theorem}
+    Suppose $X_1,X_2,\ldots $ are i.i.d. with mean $\mu$ and variance $\sigma^2 < \infty$, then 
+    \[\sqrt{n}(\bar{X}_n - \mu) \todd \normal(0,\sigma^2).\]
+\end{theorem}
+The central limit theorem is more informative than the weak law of large numbers (but it has stronger assumptions). There is also a multivariate version of the central limit theorem.
+\begin{theorem}
+    Suppose $X_1,X_2,\ldots$ are i.i.d. random vectors in $\R^d$ with mean $\E[X_1]=\mu$ and covariance matrix $\Sigma = \E(X_1-\mu)(X_1-\mu)^T$ with finite entries. Then
+    \[\sqrt{n}(\bar{X}_n-\mu)\todd \normal_d(0,\Sigma).\]
+\end{theorem}
+
+Two other versions of the central limit theorem are:
+\begin{theorem}[Lyapunov's CLT]
+    Fix $\delta > 0$. Suppose that for each $n$, $X_{n,1},\ldots,X_{n,n}$ are independent random variables with means $\mu_{n,i} = \E[X_{n,i}]$ and variance $\sigma_{n,i}^2 = \V(X_{n,i})$. Suppose also that the moments $\gamma_{n,i} = \E\abs{X_{n,i}-\mu_{n,i}}^{2+\delta}$ are all finite. Let $\mu_n = \sum_{i=1}^n \mu_{n,i}$ and $\sigma_n^2 = \sum_{i=1}^n \sigma_{n,i}^2$ and let $\gamma_n = \sum_{i=1}^n \gamma_{n,i}$. If $\frac{\gamma_n}{\sigma_n^{2+\delta}} \to 0$, then 
+    \[\frac{1}{\sigma_n}\sum_{i=1}^n X_{n,i}-\mu_{n,i} \to \normal(0,1). \]
+\end{theorem}
+The version of the CLT proved in Persi's STATS 310A:
+
+\begin{theorem}[Lindeberg--Feller CLT]
+    Fix $\delta > 0$. Suppose that for each $n$, $X_{n,1},\ldots,X_{n,n}$ are independent random variables with mean $0$ and variance $\sigma_{n,i}^2 = \V(X_{n,i})$. Let $\sigma_n^2 = \sum_{i=1}^n \sigma_{n,i}^2$ and $S_n = \sum_{i=1}^n X_{n,i}$. Then both $\frac{S_n}{\sigma} \todd \normal(0,1)$ and $\max\{\sigma_{n,i}^2/\sigma_n^2: 1 \le i \le n \} \to 0$, if and only if $X_{n,i}$ satisfy \emph{Lindeberg's condition}. That is for all $\eps > 0$,
+    \[\frac{1}{\sigma_n^2}\sum_{i=1}^n \E[X_{n,i}^2 \one_{\abs{X_n,i} > \eps \sigma_n}] \to 0. \]
+\end{theorem}
+Another type of convergence is convergence in $L^p$.
+\begin{definition}
+    For $p \in [1,\infty]$, A sequence of random vectors $X_n$ is said to \emph{converge in $L^p$} to the random vector $X$ if $\E[\norm{X_n-X}^p] \to 0$, where $\norm{\cdot}$ is any norm on $\R^d$. We denote convergence in $L^p$ by $X_n \stackrel{L^p}{\to} X$. 
+\end{definition}
+Note that by Markov's inequality, convergence in $L^p$ for any $p$ implies convergence in probability. Convergence in $L^p$ also implies convergence in $L^{p'}$ for any $p' \le p$.
+
+As stated before there are many equivalent ways to describe convergence in distribution. Some of them are summarized by the bellow theorem which is called the Portmantaeu theorem.
+\begin{theorem}
+    Let $X_n$ and $X$ be a random vectors. The following are equivalent.
+    \begin{enumerate}
+        \item $X_n \todd X$.
+        \item $\E[f(X_n)] \to \E[f(X)]$ for all bounded and continuous $f$.
+        \item $\E[f(X_n)] \to \E[f(X)]$ for all Lipschitz $f$ with $f(x) \in [0,1]$ for all $x$.
+        \item $\lim\inf_n \E[f(X_n)] \ge \E[f(X)]$ for all continuous non-negative $f$.
+        \item $\liminf_n \Pa(X_n \in O) \ge \Pa(X\in O)$ for all open sets $O$.
+        \item $\limsup_n \Pa(X_n \in C) \le \Pa(X \in C)$ for all closed sets $C$.
+        \item $\lim_n \Pa(X_n \in B) = \Pa(X\in B)$ for all measurable sets $B$ such that $\Pa(X \in \delta B) = 0$ where $\delta B$ denotes the boundary of $B$. 
+    \end{enumerate}
+\end{theorem}
 \end{document}
