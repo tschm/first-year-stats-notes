@@ -21,5 +21,192 @@ Recall that for an integrable $X$ and a sub $\sigma$-algebra $\G$, an integrable
 
 Last time we saw that conditional expectations are unique and they exist if $X$ is square integrable. Today we will prove that conditional expectations exist for all integrable $X$. We will also derive some properties of conditional expectations.
 \section{Existence}
-
+Note that if $X$ is a simple random variable, then $X$ is bounded and hence square integrable. Thus, the conditional expectation of a simple random variable always exists. Like the unconditional expectation, we will use to prove the existence of conditional expectations for arbitrary integrable random variables. 
+\begin{lemma}
+    Let $X_1$ and $X_2$ be simple random variable and let $a,b \in \R$. Then 
+    \[\E(aX_1+bX_2|\G) = a\E(X_1|\G)+b\E(X_2|\G).\]
+\end{lemma}
+\begin{proof}
+    Let $Y_i = \E(X_i | \G)$ for $i=1,2$. The random variable $aY_1+bY_2$ is $\G$--measurable since $Y_1$ and $Y_2$ are both $\G$--measurable. Furthermore, for $B \in \G$,
+    \[\E[(aY_1+bY_2)\one_B]=a\E[Y_1\one_B]+b\E[Y_2\one_B]=a\E[X_1\one_B]+b\E[X_2\one_B]=\E[(aX_1+bX_2)\one_B].\]
+    Thus, by uniqueness
+    \[\E(aX_1+bX_2|\G) = a\E(X_1|\G)+b\E(X_2|\G).\qedhere\]
+\end{proof}
+\begin{lemma}
+If $X$ is a non-negative simple random variable, then $\E(X|\G)$ is non-negative almost surely.
+\end{lemma}
+\begin{proof}
+    Let $Y = \E(X|\G)$ and let $B = \{Y<0\} \in \G$. Thus,
+    \[\E[Y\one_B]=\E[X\one_B] \ge 0, \]
+    since $X\one_B \ge 0$. The random variable $Y\one_B$ is non-positive and thus $Y\one_B = 0$ almost surely. Thus, $Y \ge 0$ almost surely.
+\end{proof}
+Note that $\E(X|\G)$ need not be simple even if $X$ is simple. For instance consider $(U,V) \sim \text{Uniform}([0,1]^2)$ and $X = \one_{(U,V) \in D}$ where $D$ is the unit disk and $\G = \sigma(U)$.
+\begin{lemma}
+    If $X$ is a $[0,\infty]$-valued random variable. Then $\E(X|\G)$ exists and is unique almost surely. More linearity holds in the following sense. If $X_1, X_2$ are $[0,\infty]$-valued random variables and $a,b \ge 0$, then 
+    \[\E(aX_1+bX_2|\G) = a\E(X_1|\G)+b\E(X_2|\G). \]
+\end{lemma}
+\begin{proof}
+    Recall that for a $[0,\infty]$-valued random variable $X$, there exists a sequence of non-negative simple random variables $\{X_n\}_{n \ge 1}$ that increase to $X$. Fix such a sequence and let $Y_n = \E(X_n|\G)$. For any $n$, $X_{n}-X_{n-1}$ is a non-negative simple random variable and thus 
+    \[Y_n - Y_{n-1} = \E(X_n-X_{n-1}|\G) \ge 0 ~\text{a.s.}. \]
+    Let $A_n = \{\w: Y_n(\w) \ge Y_{n-1}(\w)\}$ and $A = \bigcap_{n=1}^\infty A_n$. Since $\Pa(A_n)=1$ for all $n$, we can conclude that $\Pa(A)=1$. Furthermore, since each $Y_n$ is $\G$ measurable, the set $A$ is in $\G$. Define 
+    \[Y(\w) = \begin{cases}
+        \lim\limits_{n \to \infty} Y_n(\w) & \text{if } \w \in A,\\
+        0 & \text{if } \w \notin A.
+    \end{cases} \]
+    Since each $Y_n$ is $\G$ measurable and $A$ is in $\G$, the random variable $Y$ is $\G$ measurable. Furthermore, if $B \in \G$, then $A \cap B \in \G$ and by the monotone convergence theorem,
+    \begin{align*}
+        \E[Y\one_B]&=\E[Y\one_{B \cap A}]\\
+        &=\lim_{n \to \infty} \E[Y_n\one_{B \cap A}]\\
+        &=\lim_{n \to \infty} \E[X_n\one_{B \cap A}]\\
+        &=\lim_{n \to \infty} \E[X_n\one_B]\\
+        &=\E[X\one_B].
+    \end{align*}
+    Thus, $Y = \E(X|\G)$. Uniqueness and linearity follow from the same argument as before.
+\end{proof}
+We are now ready to prove that an arbitrary integrable random variable has a conditional expectation.
+\begin{proof}
+    Take any integrable $X$ and any sub-$\sigma$-algebra $\G$. Let $X^+$ and $X^-$ be the positive and negative parts of $X$. Thus, $\abs{X} = X^++X^-$ and so $\E[X^+], \E[X^-] < \infty$. The random variables $X^+$ and $X^-$ are both $[0,\infty]$-valued. Thus, let $Y_1 = \E[X^+|\G]$ and $Y_2 = \E[X^-|\G]$. Note that,
+    \[\E[Y_1] = \E[Y_1 \one_\Om] = \E[X^+\one_\Om] = \E[X^+] < \infty.\]
+    Thus, $Y_1$ is integrable and  $Y_1 < \infty$ almost surely. An analogous argument gives that $Y_2$ is integrable and $Y_2 < \infty$ almost surely. Let $Y=Y_1-Y_2$ on the set where $\abs{Y_1},\abs{Y_2}< \infty$ and the $Y=0$ otherwise. We claim that $Y = \E(X|\G)$. First note that $Y$ is integrable and $\G$ measurable since both $Y_1$ and $Y_2$ are integrable and $\G$ measurable. Furthermore, if $B \in \G$, then
+    \begin{align*}
+        \E[Y\one_B] &=\E[Y_1\one_B]-\E[Y_2 \one_B]\\
+        &=\E[X^+\one_B]-\E[X^-\one_B]\\
+        &=\E[X\one_B].\qedhere 
+    \end{align*}
+\end{proof}
+\section{Properties of conditional expectation}
+In the previous section we established the existence of conditional expectations for arbitrary integrable random variables. We will now study some properties of conditional expectations. We will begin by showing that many of the theorems proved for integrals have conditional versions. First we have a conditional version of the triangle inequality.
+\begin{proposition}
+    If $X$ is integrable, then $\E[X|\G]$ is integrable and furthermore 
+    \[\abs{\E(X|\G)}\le \E(\abs{X}|\G). \]
+\end{proposition}
+\begin{proof}
+    Note that
+    \begin{align*}
+        \abs{\E(X|\G)} &\le \abs{\E(X^+|\G)}+\abs{\E(X^-|\G)}\\
+        &=\E(X^+|\G)+\E(X^-|\G)\\
+        &=\E(\abs{X}|\G).
+    \end{align*}
+    Thus,
+    \[\E[\abs{\E(X|\G)}] \le \E[\E(\abs{X}|\G)]=\E[\abs{X}]. \qedhere \]
+\end{proof}
+Linearity also holds for general random variables.
+\begin{proposition}
+    If $X_1,X_2$ are integrable random variables, then for all $a,b \in \R$,
+    \[\E(aX_1+bX_2|\G)=a\E(X_1|\G)+b\E(X_2|\G).\]
+\end{proposition}
+\begin{proof}
+    As before.
+\end{proof}
+Under independence, the conditional expectation of a random variable is constant.
+\begin{proposition}
+    If $X$ is independent of $\G$, then $\E(X|\G)=X$. In particular if $X$ is a constant, then $\E(X|\G)=X$ for all $\G$.
+\end{proposition}
+\begin{proof}
+    Take any $B \in \G$, then by independence
+    \[\E[X\one_B] = \E[X]\E[\one_B]=\E[\E[X]\one_B].\]
+    Thus, $X=\E[X]$ almost surely.
+\end{proof}
+On the other extreme, there is the case when $X$ is $\G$-measurable.
+\begin{proposition}
+    If $X$ is $\G$-measurable, then $\E(X|\G)=X$.
+\end{proposition}
+\begin{proof}
+    By assumption $X$ is $\G$-measurable and $\E[X\one_B]=\E[X\one_B]$ for all $B \in \G$.
+\end{proof}
+The familiar integral convergence theorems all have conditional analogs. 
+\begin{proposition}[Monotone convergence theorem]
+    Suppose $\{X_n\}$ is an increasing sequence of $[0,\infty]$ values random variables such that $X_n \nearrow X$. Then $\E(X_n|\G) \nearrow \E(X|\G)$, almost surely.
+\end{proposition}
+\begin{proof}
+    Let $Y_n = \E(X_n|\G)$. Since $X_n$ is increasing, $Y_n$ is increasing almost surely. Thus, define $Y$ to be the almost sure limit of $Y_n$. Let $B \in \G$, we thus have $X_n \one_B \nearrow X \one_B$ and $Y_n \one_B \nearrow Y\one_B$ almost surely. By the standard monotone convergence theorem, we have
+    \[\E[X\one_B] = \lim_n \E[X_n \one_B] = \lim_n \E[Y_n \one_B] = \E[Y\one_B].  \]
+    Furthermore, $Y$ is $\G$-measurable since each $Y_n$ is $\G$-measurable.
+\end{proof}
+\begin{proposition}[Fatou's lemma]
+    If $\{X_n\}$ is a sequence of non-negative random variables, then 
+    \[\E(\liminf_n X_n |\G) \le \liminf_n \E(X_n|\G), \]
+    almost surely.
+\end{proposition}
+\begin{proof}
+    For each $n$,  let $Y_n = \inf\limits_{k \ge n}X_k$. The sequence $Y_n$ is increasing and each $Y_n$ is non-negative. Thus, by the monotone convergence theorem
+    \begin{align*}
+        \E(\liminf_n X_n|\G)&=\E(\lim_n Y_n|\G)\\
+        &=\lim_n \E(Y_n|\G).
+    \end{align*}
+    Furthermore, for each $n$ we have $X_n \ge Y_n$ and so $\E(Y_n|\G) \le \E(X_n|\G)$ almost surely. This implies
+    \[\lim_n \E(Y_n|\G) \le \liminf_n \E(X_n |\G).\qedhere  \]
+\end{proof}
+We next state and prove the dominated convergence theorem for conditional expectations. For integrals, the conclusion of the dominated convergence theorem is a statement about the convergence of numbers. The conclusion of a conditional dominated convergence theorem would be a statement about convergence of random variables. There are multiple types of convergence of random variables. The conditional dominated convergence theorem guarantees both almost sure convergence and $L^1$ convergence.
+\begin{proposition}
+    Let $\{X_n\}$ be a sequence of random variables converges to $X$ almost surely. Suppose that there exists an integrable random variable $Z$ such that $\abs{X_n} \le Z$ almost surely for all $n$. Then the following hold
+    \begin{enumerate}
+        \item (Almost sure convergence) $\E(X_n|\G) \to \E(X|G)$ almost surely.
+        \item (Almost sure convergence of the difference) $\E(\abs{X_n-X}|\G) \to 0$ almost surely.
+        \item ($L^1$ convergence) $\E(\abs{\E(X_n|\G)-\E(X|\G)}) \to 0$. 
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    We first prove 1. Note that $X_n+Z$ is a non-negative random variable for all $n$. Thus, by Fatou's lemma we have, almost surely,
+    \begin{align*}
+        \E(X|\G)+\E(Z|\G)&=\E(X+Z|\G)\\
+         &=\E(\lim_n(X_n+Z)|\G)\\
+        &\le \liminf_n \E(X_n+Z|\G)\\
+        &= \liminf_n\E(X_n|\G)+\E(Z|\G).
+    \end{align*}
+    And so
+    \[\E(X|\G) \le \liminf_n \E(X_n|\G). \]
+    Likewise, $Z-X_n$ is non-negative for every $n$ and Fatou's implies that, almost surely,
+    \[\E(Z-X|\G) \le \liminf_n(\E(Z|\G)-\E(X_n|\G))=\E(Z|\G)-\limsup_n \E(X_n|\G).  \]
+    Thus, almost surely,
+    \[\limsup_n \E(X_n|\G) \le \E(X|\G) \le \liminf_n \E(X_n|\G),  \]
+    giving 1. Next note that $\abs{X_n-X} \to 0$ almost surely and $\abs{X_n-X} \le 2Z$. Thus, 1. implies 2. Finally, for 3.,
+    \begin{align*}
+        \E\abs{\E(X_n|\G)-\E(X|\G)} &=\E\abs{\E(X_n-X|\G)}\\
+        &\le \E[\E(\abs{X_n-X}|\G)]\\
+        &=\E[\abs{X_n-X}],
+    \end{align*}
+    and $\E[\abs{X_n-X}]\to 0$ by the unconditional dominated convergence theorem.
+\end{proof}
+We now turn to two properties that do not have unconditional analogs. The first is the \emph{tower property}.
+\begin{proposition}
+    Suppose $X$ is integrable and $\G' \subseteq \G \subseteq \F$ are both sub-$\sigma$-algebra, then 
+    \[\E(\E(X|\G)|\G') = \E(X|\G'). \]
+\end{proposition}
+\begin{proof}
+    Let $Y=\E(X|\G)$ and $Z =  \E(X|\G')$. Let $B \in \G'$ be given and note that $B \in \G$. Thus,
+    \[\E[Z\one_B]=\E[X\one_B] =\E[Y\one_B]. \]
+    Since $Z$ is $\G'$-measurable, this implies that $Z = \E(Y|\G')=\E(\E(X|\G)|\G')$.
+\end{proof}
+The next property is called \emph{taking out what is known}. It shows that $\G$-measurable functions can be treated as constants when calculating conditional expectations with respect to $\G$. The assumptions of the proposition are a little subtle but it is a very powerful result.
+\begin{proposition}
+    Suppose that $X$ and $Y$ are two random variables such that 
+    \begin{enumerate}
+        \item The random variable $Y$ is $\G$-measurable.
+        \item The random variable $X$ is integrable.
+        \item The product $XY$ is also integrable.
+    \end{enumerate}
+    Then 
+    \[\E(XY|\G) = Y\E(X|\G). \]
+\end{proposition}
+\begin{proof}
+    We will fist show that 
+    \begin{equation}\label{E}
+        \E[XY] = \E[Y\E(X|\G)],
+    \end{equation} for every $(X,Y)$ satisfying the above three conditions. Note that if $Y = \one_B$ for some $B \in \G$, then equation \eqref{E} holds by definition of the conditional expectation. By linearity, it follows that equation \eqref{E} holds for all $\G$-measurable simple functions. Now suppose that $X,Y  \ge 0$ and let $Y_n$ be a sequence of $\G$-measurable, non-negative simple random variables such that $Y_n \nearrow Y$. It follows that $XY_n \nearrow XY$ and $Y_n\E(X_n|\G)\nearrow Y\E(X|\G)$. The monotone convergence theorem then gives 
+    \[\E(XY)=\lim_n \E(XY_n) = \lim_n \E(Y_n\E(X|\G)) = \E(Y\E(X|\G)). \]
+    Thus, equation \eqref{E} is satisfied if $X$ and $Y$ are both non-negative. For general $X,Y$ note that 
+    \[\abs{XY} = (X^++X^-)(Y^++Y^-) =X^+Y^++X^+Y^-+X^-Y^++X^-Y^-. \]
+    Since $\E\abs{XY}<\infty$, each of the random variables $X^+Y^+, X^+Y^-, X^-Y^+$ and $X^-Y^-$ are also integrable. It follows that
+    \begin{align*}
+        \E[XY]&=\E[X^+Y^+]-\E[X^+Y^-]-\E[X^-Y^+]+\E[X^-Y^-]\\
+        &=\E[\E(X^+|\G)Y^+]-\E[\E(X^+|\G)Y^-]-\E[\E(X^-|\G)Y^+]+\E[\E(X^-|\G)Y^-]\\
+        &=\E[Y\E(X|\G)].
+    \end{align*}
+    Thus, equation \eqref{E} holds for arbitrary $(X,Y)$ the above three conditions. We will now see that this implies the theorem. Let $X,Y$ be random variables satisfying 1., 2. and 3. Since $Y$ is $\G$-measurable, $Y\E(X|\G)$ is also $\G$-measurable. Let $B \in \G$, the pair $(X,Y\one_B)$ also satisfy the three conditions and so equation \eqref{E} also holds. Thus,
+    \begin{align*}
+        \E[XY\one_B] = \E[Y\E(X|\G)\one_B].
+    \end{align*}
+    Thus, $\E(XY|\G) = Y\E(X|\G)$.
+\end{proof}
 \end{document}
