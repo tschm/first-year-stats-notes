@@ -21,7 +21,7 @@ Last lecture we defined the odds ratio
 \[\ta = \frac{\pi_{11}\pi_{22}}{\pi_{12}\pi_{21}},\]
 which measured association in a $2\times 2$ table. For $I \times J$ tables, we also defined the local odds ratios
 \[\ta_{ij} =  \frac{\pi_{ij}\pi_{i+1,j+1}}{\pi_{i,j+1}\pi_{i+1,j}}, \]
-for $i = 1,\ldots,I-1$ and $j=1,\ldots,J-1$. The local odds ratios are a collection of $(I-1)(J-1)$ parameters that describe the associations in a $I \times J$ table. If $X$ or $Y$ are ordinal variables rather than categorical variables, then we can use fewer parameters to describe the association. Consider the following table:
+for $i = 1,\ldots,I-1$ and $j=1,\ldots,J-1$. The local odds ratios are a collection of $(I-1)(J-1)$ parameters that describe the associations in an $I \times J$ table. If $X$ or $Y$ are ordinal variables rather than categorical variables, then we can use fewer parameters to describe the association. Consider the following table:
 \begin{center}
     \begin{tabular}{c|ccc}
         &\multicolumn{3}{c}{Career satisfaction}\\
@@ -33,11 +33,11 @@ for $i = 1,\ldots,I-1$ and $j=1,\ldots,J-1$. The local odds ratios are a collect
         $>50$&29&75&172
     \end{tabular}
 \end{center}
-In this example both $X$ and $Y$ are ordinal and we would like to know does a higher $X$ (age) result in a higher $Y$ (career satisfaction). To answer this question we can use a single parameter of interested instead of analyzing the four local odd ratios. This is done by studying the probabilities of concordance and discordance. 
+In this example both $X$ and $Y$ are ordinal, and we would like to know if a higher $X$ (age) results in a higher $Y$ (career satisfaction). To answer this question we can use a single parameter of interested instead of analyzing the four local odd ratios. This is done by studying the probabilities of concordance and discordance. 
 
 Note that we can put a partial order on the values $(i,j)$ where $(i,j) \succ (h,k)$ if $i < h$ and $j < k$. In the previous table we would have 
 \[(>50,3) \succ (30-50, 2), (30-50, 1), (<30, 2), (<30, 1). \]
-We would not have $(>50,3) \succ (>50,2)$ or $(>50,3) \succ (<30,3)$ since we do not allow for either $X$ or $Y$ to tie. A pair of observations $(X_1,Y_1)$ and $(X_2,Y_2)$ are said to be \emph{concordant} if $(X_1,Y_1) \succ (X_2,Y_2)$ or $(X_2, Y_2) \succ (X_1,Y_1)$. In our example a concordant pair is a pair of individuals where one individual is strictly old, and the older one has strictly higher career satisfaction. A pair $(X_1,Y_1)$ and $(X_2,Y_2)$ are \emph{discordant} if $(X_1,Y_2) \succ (X_2, Y_1)$  or $(X_2, Y_1) \succ (X_1,Y_1)$. Thus, a discordant pair is again a pair where one individual is strictly older, but now the older individual has strictly lower career satisfaction. We can then define
+We would not have $(>50,3) \succ (>50,2)$ or $(>50,3) \succ (<30,3)$ since we do not allow for either $X$ or $Y$ to tie. A pair of observations $(X_1,Y_1)$ and $(X_2,Y_2)$ are said to be \emph{concordant} if $(X_1,Y_1) \succ (X_2,Y_2)$ or $(X_2, Y_2) \succ (X_1,Y_1)$. In our example, a concordant pair is a pair of individuals where one individual is strictly older, and the older individual has strictly higher career satisfaction. A pair $(X_1,Y_1)$ and $(X_2,Y_2)$ are \emph{discordant} if $(X_1,Y_2) \succ (X_2, Y_1)$  or $(X_2, Y_1) \succ (X_1,Y_1)$. Thus, a discordant pair is again a pair where one individual is strictly older, but now the older individual has strictly lower career satisfaction. We can then define
 \[\pi_c = \Pa(\text{drawing a concordant pair}) = 2\sum_{ij}\pi_{ij} \sum_{h>i,k>j}\pi_{hk},\]
 and 
 \[\pi_d = \Pa(\text{drawing a discordant pair}) = 2\sum_{ij}\pi_{ij} \sum_{h > i, k<j} \pi_{hk}. \]
@@ -46,6 +46,143 @@ The parameter
 is a measure of the ordinal association between $X$ and $Y$. Under the null that there is no ordinal association, $\gamma = 0$. We can estimate $\gamma$ by 
 \[\wh{\gamma} = \frac{C-D}{C+D}, \]
 where
-\[C = 2\sum_{ij}n_{ij} \sum_{h>i,k>j}n_{hk} \text{ and } D = 2\sum_{ij}n_{ij} \sum_{h > i, k<j} n_{hk}.  \]
+\[C = 2\sum_{ij}n_{ij} \sum_{h>i,k>j}n_{hk} ~~\text{ and }~~ D = 2\sum_{ij}n_{ij} \sum_{h > i, k<j} n_{hk}.  \]
 In our example,
+\[\frac{1}{2}C = 34\cdot(174+304+75+172)+53\cdot(304+172)+80\cdot(75+172)+174\cdot 172 = 99,568,\]
+and
+\[\frac{1}{2}D = 88\cdot(80+174+29+75)+53\cdot(80+29)+304\cdot(29+75)+174\cdot29 = 73,943. \]
+Thus,
+\[\wh{\gamma} = \frac{99568-73943}{99568+73943}\approx 0.178.  \]
+Thus, $\wh{\gamma} \neq 0$ but is this result statistically significant? To answer this we need to know the (approximate) distribution of $\wh{\gamma}$ under $H_0$. This leads us to the next topic.
+\section{Inference for 2-way tables (Agresti, Ch 3)}
+\subsection{Wald confidence intervals}
+Consider the following table documenting car crashes 
+\begin{center}
+    \begin{tabular}{l|cc|c}
+        &\multicolumn{2}{|c|}{Injury ($Y$)}&\\
+        \hline 
+        Seatbelts ($X$) & Fatal & Non-Fatal & $\Pa(\text{Fatal}|X)$\\
+        \hline 
+        No & 54 & 10 325 & $\approx 0.5\%$\\
+        Yes & 25 & 51790 & $\approx 0.05\%$.
+        
+    \end{tabular}
+\end{center}
+We would thus estimate the relative risk to be around 10. Since the rare-disease hypothesis seems to hold, we would estimate the odds ratio is also around 10. Our estimator for the odds ratio is
+\[\wh{\ta} = \frac{n_{11}n_{22}}{n_{12}n_{21}} = \frac{54\times 51790}{25\times 10325} \approx 10. \]
+We wish to understand the standard error of this estimate. To do this, we will consider a number of different models
+\subsubsection{Poisson sampling}
+Suppose we have the model $N_{ij} \indep \poi(\la_{ij})$. This model corresponds to when we record all the crashes in a particular place and period. Suppose we wish to test the null $H_0:X \ind Y$ which is equivalent to $\ta = 1$ where $\ta$ is the odds ratio. We know that $\wh{\ta} \approx 10$, but we wish to calculate the variance of $\wh{\ta}$. Since $\wh{\ta} = \frac{N_{11}N_{22}}{N_{12}N_{21}}$, it is easier to work with \[\log(\wh{\ta}) = \log(N_{11})+\log(N_{22})-\log(N_{12})-\log(N_{21}).\] By the independence assumption we have 
+\[\V(\log(\wh{\ta})) = \sum_{i,j=1}^2 \V(\log(n_{ij})). \]
+To approximate $\V(\log(N_{ij}))$ we will use the \emph{delta-method}. The delta-method states 
+\[\V(f(\wh{\ta})) \approx \V(f'(\ta_0)(\wh{\ta}-\ta_0)) = f'(\ta_0)^2\V(\wh{\ta}). \]
+Thus, $\V(\log(N_{ij})) \approx \frac{\V(N_{ij})}{\la_{ij}^2} = \frac{1}{\la_{ij}}$. And hence
+\[\V(\log(\wh{\ta})) \approx \sum_{i,j=1}^2 \frac{1}{\la_{ij}}. \]
+We do not know $\la_{ij}$, but we can estimate $\la_{ij}$ with $n_{ij}$ thus our 95\% confidence interval for $\log(\ta)$ is 
+\[\log(\wh{\ta})\pm 1.96\sqrt{\sum_{i,j=1}^2 \frac{1}{N_{i,j}}}. \]
+By applying the exponential function to the end points we can get a confidence interval for $\ta$. In the seat belt example, the 95\% confidence interval for $\ta$ is
+\[CI = [6.74, 17.42]. \]
+Thus, with 95\% confidence we can reject the null $\ta = 1$. 
+\subsubsection{Multinomial sampling}
+Instead of using Poisson random variables, we could model our sample using a multinomial distribution 
+
+\[(N_{11},N_{12}, N_{21}, N_{22}) \sim \multi(n,(\pi_{11},\pi_{12},\pi_{21}, \pi_{22})).\] 
+This model would apply if we decided in advance that we would record a random sample of size $n=60,000$. We again wish to approximate $\V(\log(\wh{\ta}))$. Note that \[\log(\wh{\ta}) = \log(\wh{\pi}_{11})+\log(\wh{\pi}_{22}) - \log(\wh{\pi}_{12})-\log(\wh{\pi}_{21}) = f(\wh{\pi}_{11},\wh{\pi}_{22},\wh{\pi}_{12},\wh{\pi}_{12}).\] The estimates $\wh{\pi}_{ij}$ are correlated, and so we have to use the multidimensional version of the delta-method:
+\[\V(f(\wh{\pi})) \approx \nabla f(\pi)^T \V(\wh{\pi}) \nabla f(\pi). \]
+For us, $\nabla f(\pi) = \left[\frac{1}{\pi_{11}}, \frac{1}{\pi_{22}}, -\frac{1}{\pi_{12}}, -\frac{1}{\pi_{21}}\right]^T$ and 
+\[\V(\wh{\pi}) = \frac{1}{n}\left(\diag(\pi)-\pi\pi^T\right). \]
+Note that $\diag(\pi)\nabla f(\pi) = [1,1,-1,-1]^T$ and $\pi^T \nabla f(\pi))=0$. Thus,
+\[\V(\log(\wh{\ta})) \approx \frac{1}{n}\left(f(\pi)^T \begin{bmatrix}
+    1\\1\\-1\\-1
+\end{bmatrix}\right)= \frac{1}{n\pi_{11}}+\frac{1}{n\pi_{22}}+\frac{1}{n\pi_{12}}+\frac{1}{n\pi_{21}}. \]
+We do not know $\pi_{ij}$,but we can estimate $n\pi_{ij}$ with $n_{ij}$. This gives us the same variance estimate as the Poisson sampling
+\[\wh{\V(\log(\wh{\ta}))} = \sum_{i,j=1}^2 \frac{1}{n_{ij}}. \]
+\subsubsection{Independent binomial rows}
+Suppose finally that we have the model
+\[N_{11} \sim \bin(n_1, \pi_1) ~~ \text{ and } N_{21} \sim \bin(n_2, \pi_2), \]
+and $N_{11} \ind N_{21}$. In this model we take a sample of size $n_1$ of crashes where seatbelts were worn and a sample of size $n_2$ where seatbelts were not worn. For clinical trials, this type of model is natural. In this case our estimate of $\ta$ is 
+\[\wh{\ta} = \frac{N_{11}(n_2-N_{21})}{(n_1-N_{11})N_{21}} = \frac{\wh{\pi}_1(1-\wh{\pi}_2)}{(1-\wh{\pi}_1)\wh{\pi}_2}, \]
+and 
+\[\log(\wh{\ta}) = \log(\wh{\pi}_{1})+\log(1-\wh{\pi}_{2}) - \log(1-\wh{\pi}_{1})-\log(\wh{\pi}_{2}). \]
+By independence,
+\[\V(\log(\wh{\ta})) = \V(\log(\wh{\pi}_{1})-\log(1-\wh{\pi}_{1}))+\V(\log(\wh{\pi}_{2})-\log(1-\wh{\pi}_{2})). \]
+Let $f(\pi_i) = \log(\pi_i)-\log(1-\pi_i)$. Then $f'(\pi_i) = \frac{1}{\pi_i}+\frac{1}{1-\pi_i}=\frac{1}{\pi_i(1-\pi_i)}$. Also, $\V(\wh{\pi}_i) = \frac{\pi_i(1-\pi_i)}{n_i}$. Thus, by the delta-method
+\[\V(\log(\wh{\pi}_{1})-\log(1-\wh{\pi}_{1})) \approx \frac{1}{(\pi_i(1-\pi_i))^2} \cdot \frac{\pi_i(1-\pi_i)}{n_i} = \frac{1}{n_i\pi_i(1-\pi_i)}. \]
+Thus,
+\[\V(\wh{\ta}) \approx \frac{1}{n_1\pi_1(1-\pi_1)}+\frac{1}{n_2\pi_2(1-\pi_2)}.\]
+We estimate $\pi_i$ with $\frac{n_{i1}}{n_i}$
+\begin{align*}
+    \wh{\V(\wh{\ta})} &= \frac{1}{n_{11}(1-n_{11}/n_1)}+\frac{1}{n_{21}(1-n_{21}/n_2)} \\
+    &= \frac{n_1}{n_{11}n_{12}}+\frac{n_2}{n_{21}n_{22}}\\
+    &=\frac{n_{11}+n_{12}}{n_{11}n_{12}}+\frac{n_{21}+n_{22}}{n_{21}n_{22}}\\
+    &=\sum_{i,j=1}^2 \frac{1}{n_{i,j}}.
+\end{align*}
+Thus, we get the same estimate as before. Each of these calculations are example of ``Wald confidence intervals/significance tests''. In each case we estimate the standard errors by plugging in the MLE. This is different to likelihood ratio tests and score tests. For likelihood ratio tests and score tests we estimate the standard errors by plugging the MLE under the null.
+\subsection{Profile likelihood}
+Suppose we are interested in a parameter $\ta = f(\pi)$, and we wish to do maximum likelihood estimation. There may be multiple parameters $\pi$ that give the same value of $\ta$. This means that we have to work with the \emph{profile likelihood}. For a fixed $\ta_0$, consider the set 
+\[A(\ta_0) = \{ \pi : f(\pi)=\ta_0\}.\]
+And define 
+\[\psi(\ta_0|Y) = \amax_{\pi \in A(\ta_0)} L(\pi|Y), \]
+where $Y$ is our data and $L$ is the likelihood. The value $\psi(\ta_0|Y)$ is the MLE under the null $H_0 : \ta = \ta_0$. The \emph{profile likelihood} is the function 
+\[\ta \mapsto L(\psi(\ta | Y)|Y) = \max_{\pi : f(\pi) = \ta} L(\pi | Y). \]
+Maximizing the profile likelihood is equivalent to maximizing the original likelihood in that
+\[\wh{\ta} = \amax_{\ta} L(\psi(\ta|Y)|Y) = f(\amax_\pi L(\ta|Y))=f(\wh{\pi}). \]
+We can use the profile likelihood to define confidence intervals for $\ta$. In particular 
+\[CI=\{\ta : -2\log(L(\psi(\ta|Y)|Y)) +2\log(L(\wh{\pi}|Y)) \le \chi^2_{1,1-\al}\}, \]
+is a $100(1-\al)\%$ confidence set for $\ta$.
+\subsection{Relative risk}
+Suppose we have a $2\times 2$ table and we wish to estimate the relative risk = $\frac{\pi_1}{\pi_2} = \frac{\Pa(Y=1|X=1)}{\Pa(Y=1|X=2)}$. We can use the estimator
+\[\wh{r} = \frac{\wh{\pi}_1}{\wh{\pi}_2} = \frac{n_{11}/n_{1+}}{n_{21}/n_{2+}}. \]
+Thus,
+\[ \log(\wh{r}) = \log(\wh{\pi}_1)-\log(\wh{\pi}_2).\]
+Suppose we have a clinical trial and so $N_{1i} \indep \bin(n_i,\pi_i)$. Then
+\[\V(\log(\wh{r})) = \V(\log(\wh{\pi}_1))+\V(\log(\wh{\pi}_2)). \]
+By the delta method we would have, 
+\[\V(\log(\wh{\pi}_i)) \approx \frac{1}{\pi_i^2}\frac{\pi_i(1-\pi_i)}{n_i} = \frac{1-\pi_i}{\pi_i n_i}. \]
+We can estimate the approximate variance by plugging in the MLE
+\[\wh{\V(\log(\wh{r}))} = \frac{1-\wh{\pi}_1}{n_{11}}+\frac{1-\wh{\pi}_2}{n_{22}}. \]
+The Poisson model can also be used to estimate the standard error of the relative risk and the result using the delta-method is the same.
+\section{Inference for $I\times J$ tables (Agresti 3.2)}
+Suppose we have a table
+\begin{center}
+    \begin{tabular}{cc|cccc}
+        &&\multicolumn{4}{c}{$Y$}\\
+        &&1&2&\ldots&$J$\\
+        \hline 
+        \multirow{4}{*}{$X$}&1\\
+        &2\\
+        &\vdots \\
+        &$I$
+    \end{tabular}
+\end{center}
+where we have counts $N_{ij} \sim \poi(\la_{ij})$ and thus $\pi_{ij}=\Pa(X=i,Y=j) = \frac{\la_{ij}}{\sum_{h,k}\la_{h,k}}$. Let $\pi_{i+} =\Pa(X=i)=\sum_{j=1}^J \pi_{ij}$ and $\pi_{+j} =\Pa(Y=j)=\sum_{i=1}^I \pi_{ij}$. Suppose we want to test for independence of $X$ and $Y$. Our null is thus $H_0 :\pi_{ij} =\pi_{i+}\pi_{+j}$ for all $i$ and $j$ and our alternative is that $\pi_{ij}$ are unconstrained. We can do a likelihood ratio test or Pearson's $\chi^2$ test.
+\subsection{Likelihood ratio test}
+Let $L_0 = \max\limits_{\la \in H_0}L(\la|N)$ and let $L_1 = \max\limits_{\la \in H_0 \cup H_1}L(\la |N)$. Under the null, the statistic
+\[G^2 = -2\log L_0-(-2\log L_1 ),\]
+has asymptotic distribution $\chi^2_{(I-1)(J-1)}$. This is because $H_0 \cup H_1$ has $IJ$ free parameters and $H_0$ has $(I-1)+(J-1)+1$ free parameters. We know that the MLE under $H_0 \cup H_1$ is $\wh{\pi}_{ij} = \frac{n_{ij}}{N_{++}}$ and $\wh{\sum_{h,k}\la_{hk}}=N_{++}$. We will see that the MLEs under $H_0$ are $\pi_{i+} = \frac{N_{i+}}{N_{++}}$, $\pi_{+j} = \frac{N_{+j}}{N_++}$ and $\wh{\sum_{h,k} \la_{hk}}=N_{++}$. Thus,
+\begin{align*}
+    -2\log(L_0)& =2\left[\sum_{ij} -N_{ij}\log(\wh{\la}_{ij})+\wh{\la}_{ij}\right] \\
+    -2\log(L_1) &=2\left[\sum_{ij} -N_{ij}\log(N_{ij})+N_{ij}\right]
+\end{align*}
+Since $\sum_{ij} N_{ij} = \sum_{ij}\wh{\la}_{ij}$, we have
+\[G^2 = 2\sum_{ij} N_{ij}\log\left(\frac{N_{ij}}{\wh{\la}_{ij}}\right).\]
+We now verify our MLE estimates under $H_0$. We begin by re-parametrizing, if $(\la_{ij}) \in H_0$, then we have 
+\[\la_{ij} = e^\mu \pi_{i+}\pi_{+j} =e^\mu e^{\al_i} e^{\beta_j}.\]
+Thus, we will optimize $\mu,\al_i$ and $\beta_j$. Note that 
+\[ -\log(L(\mu,\al,\beta|N)) = \sum_{ij}(-N_{ij}(\mu+\al_i+\beta_j)+e^{\mu+\al_i+\beta_j}).\]
+Thus,
+\[\frac{\partial}{\partial \al_i} -\log(L(\mu,\al,\beta|N)) = -\sum_{ij} N_{ij}+e^{\mu+\al_i+\beta_j}.\] 
+Setting the partials equal to zero gives
+\[e^{\wh{\al}_i}\left(\sum_{j} e^{\wh{\beta}_j}\right)e^{\wh{\mu}} = \sum_{j=1}^J N_{ij} = N_{i+}.\]
+And similarly for $\wh{\beta}_j$. One can then check that 
+\[e^{\wh{\al}_i} = \frac{N_{i+}}{N_{++}}, ~~e^{\wh{\beta}_j} =\frac{N_{+j}}{N_{++}} ~~\text{ and } ~~ e^{\wh{\mu}} = N_{++},\]
+solve the first order equations and thus are MLEs.
+\subsection{Pearson's test}
+Pearson's $\chi^2$ test is a type of score test with statistic 
+\[(\wh{\ta}-\ta_0)^T \V(\ta_0)^{-1}(\wh{\ta}-\ta_0). \]
+For the test of independence, Pearson's test statistic is 
+\begin{align*}
+    X^2 = \sum_{ij}\frac{(N_{ij}-\wh{\la}_{ij})^2}{\wh{\la}_{ij}} = \sum_{ij} \frac{(O_{ij}-E_{ij})^2}{E_{ij}},
+\end{align*}
+where $E_{ij}=\wh{\la}_{ij} = \frac{n_{i+}n_{+j}}{n_{++}}$ are the MLE estimates under $H_0$ (also called the expected values) and $O_{ij}=N_{ij}$ are the observed values. Under $H_0$, $X^2 \sim \chi^2_{(I-1)(J-1)}$, asymptotically. 
 \end{document}
