@@ -1,0 +1,183 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 3}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/11/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture 3}
+\lhead{01/11/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Portmanteau theorem}
+Last time we stated the Portmanteau theorem.
+\begin{theorem}
+    Let $X_n$ and $X$ be a random vectors. The following are equivalent.
+    \begin{enumerate}
+        \item $X_n \todd X$.
+        \item $\E[f(X_n)] \to \E[f(X)]$ for all bounded and continuous $f$.
+        \item $\E[f(X_n)] \to \E[f(X)]$ for all Lipschitz $f$ with $f(x) \in [0,1]$ for all $x$.
+        \item $\lim\inf_n \E[f(X_n)] \ge \E[f(X)]$ for all continuous non-negative $f$.
+        \item $\liminf_n \Pa(X_n \in O) \ge \Pa(X\in O)$ for all open sets $O$.
+        \item $\limsup_n \Pa(X_n \in C) \le \Pa(X \in C)$ for all closed sets $C$.
+        \item $\lim_n \Pa(X_n \in B) = \Pa(X\in B)$ for all measurable sets $B$ such that $\Pa(X \in \delta B) = 0$ where $\delta B$ denotes the boundary of $B$. 
+    \end{enumerate}
+\end{theorem}
+We will not prove the full theorem, but we will prove some parts to give the flavor of the arguments. Today we will prove that if $\E[f(X_n)] \to \E[f(X)]$ for all bounded and continuous $f$, then $\limsup_n \Pa(X_n \in C) \le \Pa(X \in C)$.
+\begin{proof}
+    Assume $\E[f(X_n)] \to \E[f(X)]$ for all bounded and continuous $f:\R^d\to \R$ and let $C\subseteq \R^d$ be a closed set. Consider the function $h_C: \R^d \to [0,\infty)$ given by 
+    \[h_C(x) = \inf\{\norm{x-y}: y \in C\}.\]
+    Since $C$ is closed, we have $h_C(x) = 0$ if and only if $x \in C$. The function $h_C$ is continuous. For each $J \in \N$ define $\phi_J : \R \to \R$ by 
+    \[\phi_J(t) = \begin{cases}
+        1 & \text{if } t \le 0,\\
+        1-Jt & \text{if } 0 < t<\frac{1}{J},\\
+        0 & \text{if } t \ge \frac{1}{J}.
+    \end{cases} \]
+    Also define $f_J(x) = \phi_J(h_C(x))$. The functions $f_J$ are continuous and bounded. Furthermore, $f_J(x)\to \one_C(x)$ and $f_J(x) \ge \one_C(x)$ for all $x \in \R^d$. Thus, for all $J$,
+    \begin{align*}
+        \Pa(X_n \in C) &= \E[\one_C(X_n)]\\
+        &\le \E[f_J(X_n)].
+    \end{align*}
+    By taking $n$ to infinity, we have $\limsup_n \Pa(X_n \in C) \le \E[f_J(X)]$. But $\abs{f_J(x)} \le 1$ and $f_J(X)$ converges to $\one_C(X)$. By the dominated convergence theorem we therefore have 
+    \[\lim_{J \to \infty} \E[f_J(X)] = \E[\one_C(X)] = \Pa(X \in C). \]
+    Therefore,
+    \[\limsup_{n \to \infty} \Pa(X_n \in C) \ge \Pa(X \in C) \qedhere \]
+\end{proof}
+\begin{definition}
+    A collection of functions $\F$ is a \emph{convergence determining class} if for all random vectors $(X_n)_{n \ge 1}$ and $X$,  $\E[f(X_n)] \to \E[f(X)]$ if and only if $X_n \todd X$.
+\end{definition}
+The Portmanteau Theorem show that all bounded and continuous functions is a convergence determining class. As is the class of Lipschitz functions taking values in $[0,1]$. Another important class of convergence determining functions are the functions 
+\[f_t(x) = e^{it\cdot x}, \]
+which is a class indexed by $t$. The function 
+\[\phi_X(t) = \E[f_t(X)] = \E[e^{it\cdot X}], \]
+is called the characteristic function of $X$. Since $\{f_t\}_{t \in \R^d}$ is a convergence determining class, we know that $X_n \todd X$ if and only if $\phi_{X_n}(t) \to \phi_X(t)$ for all $t$.
+
+Note that the assumption that $f$ is bounded is important. A sequence $X_n$ may converge in distribution to $X$, but this does not imply that $\E[f(X_n)] \to \E[f(X)]$ for continuous unbounded $f$. Indeed, we may not have $\E[X_n] \to \E[X]$. 
+\section{Tightness}
+\begin{definition}
+    A collection of random vectors $\{X_a\}_{a \in \A}$ is \emph{uniformly tight} if for all $\eps > 0$, there exists $M < \infty$ such that 
+    \[\sup_{a \in \A} \Pa(\norm{X_a}> M) \le \eps.\]
+\end{definition}
+A uniformly tight collection of random vectors is sometimes said to be \emph{bounded in probability}. This is because if $\{X_a\}_{a \in \A}$ is uniformly tight, then with probability at least $1-\eps$, $\norm{X_a} \le M$ for every $a$.
+
+We can also define uniform tightness for probability measures instead of random variables.
+\begin{definition}
+    A collection of probability measures $\{\Pa_a\}_{a \in \A}$ on $\R^d$ is \emph{uniformly tight} if for all $\eps > 0$, there exists a compact set $C$ such that 
+    \[\sup_{a \in \A} \Pa_a(C) \ge 1-\eps.\]
+\end{definition}
+\begin{remark} 
+    The following are examples of uniformly tight collections.
+    \begin{enumerate}
+        \item A single random vector $X$ is uniformly tight since \[\lim_{n \to \infty} \Pa(\norm{X} \le n) = \Pa(\norm{X} < \infty) =1.\]
+        \item If $\{X_a\}_{a \in \A_1},\{X_a\}_{a \in \A_2},\ldots \{X_a\}_{a \in \A_m}$ are all uniformly tight, then $\{X_a\}_{a \in \bigcup_{i=1}^m \A_i}$ is also uniformly tight.
+        \item If $X_n \todd X$, then $\{X_n\}_{n \ge 1}$ is uniformly tight.
+    \end{enumerate}
+    The converse of the last remark is almost true. A uniformly tight collection of random vectors need not converge in distribution, but there must be a subsequence which does.
+\end{remark}
+\begin{theorem}
+    If $\{X_n\}_{n \ge 1}$ is uniformly tight, then there exists a random vector $X$ and a subsequence $n_j$ such that $X_{n_j} \todd X$.
+\end{theorem}
+Note that the original sequence $\{X_n\}$ need not converge to anything as the following example shows.
+\[X_n = \begin{cases}
+    1+\frac{1}{n} & \text{if $n$ is odd},\\
+    2+\frac{1}{n} & \text{if $n$ is even}.
+\end{cases} \]
+\section{Convergence in $L^p$}
+Recall that $X_n \toL{p} X$ if $\E[\norm{X_n-X}_p^p] \to 0$. The following links convergence in $L^p$ to convergence in distribution and convergence in probability.
+\begin{definition}
+    A sequence $\{X_n\}_{n \ge 1}$ is \emph{uniformly integrable} if
+    \[\lim_{\la \to \infty} \limsup_{n \to \infty} \E[\abs{X_n}\one_{\abs{X_n}\ge \la}] = 0. \]
+\end{definition}
+If $X_n \todd X$, then for every $r > 0$, $\E[\norm{X_n}_r^r] \to \E[\norm{X}_r^r]$ if and only if $\{\norm{X_n}_r^r\}_{n \ge 1}$ is uniformly integrable.
+\begin{theorem}[Vitalli]
+    Suppose $X_n \in L^r$ for some $r \in(0,\infty)$ and that $X_n \topp X$. Then the following are equivalent,
+    \begin{enumerate}
+        \item $\{\norm{X_n}_r^r\}$ are uniformly integrable.
+        \item $X_n \toL{r} X$
+        \item $\limsup_n \E\norm{X_n}_r^r \le \E \norm{X}_r^r$.
+    \end{enumerate}
+\end{theorem}
+\section{Almost sure convergence}
+\begin{definition}
+    A sequence of random variables $\{X_n\}$ \emph{converge almost surely} to $X$ if 
+    \[\Pa\left(\lim_{n \to \infty}X_n \neq X\right) =0. \]
+    We denote almost sure convergence by $X_n \toas X$.
+\end{definition}
+The following are equivalent
+\begin{enumerate}
+    \item $X_n \toas X$.
+    \item For all $\eps > 0$, \[\Pa(\norm{X_n-X}>\eps, \text{ infinitely often})=\Pa\left(\bigcap_{n=1}^\infty \bigcup_{m=n}^\infty \norm{X_m-X} > \eps \right)=0.\]
+    \item For all $\eps > 0$, \[\lim\limits_{n \to \infty} \Pa\left(\bigcup_{m=n}^\infty \norm{X_m -X} > \eps\right) = 0.\]
+    \item For all $\eps > 0$,
+    \[\lim_{n \to \infty}\Pa\left(
+    \sup_{m \ge n} \norm{X_m-X} \ge \eps\right) = 0.\]
+\end{enumerate}
+The following theorem is called the strong law of large numbers.
+\begin{theorem}
+    Suppose $X_1,\ldots$ are i.i.d. with $\E\abs{X_i} < \infty $ and $\E[X_i] = \mu$. Then $\bar{X}_n \toas \mu$.
+\end{theorem}
+The Borel--Cantelli lemmas are the main tools for proving almost sure convergence.
+\begin{proposition}
+    \begin{enumerate}
+        \item Let $\{A_n\}_{n \ge 1}$ be any sequence of events. If $\sum_{n=1}^\infty \Pa(A_n) < \infty$, then 
+        \[\Pa(A_n \text{ infinitely often}) = \Pa\left(\bigcap_{n=1}^\infty \bigcup_{m=1}^\infty A_m\right)=0.\]
+        \item If $\{A_n\}_{n \ge 1}$ is a sequence of independent events and $\sum_{n=1}^\infty \Pa(A_n) = \infty$, then
+        \[\Pa(A_n \text{ infinitely often}) = 1.\]
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    We will only prove 1. Note that, for all $n \in \N$,
+    \[\Pa(A_n \text{ infinitely often}) \le \Pa\left(\bigcup_{m=n}^\infty A_m\right)\le \sum_{m=n}^\infty \Pa(A_m).\]
+    Since $\sum_{n=1}^\infty \Pa(A_n) < \infty$, the sum $\sum_{m=n}^\infty \Pa(A_m)$ goes to zero as $n$ goes to infinity. Thus, \[\Pa(A_n \text{ infinitely often}) = 0. \qedhere\]
+\end{proof}
+\section{Standard implications}
+We have the following implications
+\[X_n \toas X \Longrightarrow X_n \topp X \Longrightarrow X_n \todd X, \]
+and for any $p > 0$, 
+\[X_n \toL{p} X \Longrightarrow X_n \topp X \Longrightarrow X_n \todd X.\]
+The converse implications do not hold in general, but partial converses do hold. For instance if $b$ is a constant, then
+\[ X_n \todd b \Longrightarrow X_n \topp b.\]
+Also, if $X_n \topp X$, then there exists a subsequence $X_{n_j}$ such that $X_{n_j} \toas X$. Likewise, if $X_n \toL{p} X$, then there exists a subsequence $X_{n_j}$ such that $X_{n_j} \toas X$. Also, if $X_n \toas X$ and $\{\norm{X_n}_p^p\}$ are uniformly integrable, then $X_n \toL{p} X$. But in general, almost sure convergence does not imply convergence in $L^p$ and convergence in $L^p$ does not imply convergence almost surely.
+
+We have already proven some of these implications are others are given as homework. We will prove a few more now. Firstly we will show 
+\[ X_n \toas X \Longrightarrow X_n \topp X.\]
+\begin{proof}
+    Suppose $X_n \toas X$ and let $\eps > 0$. Then 
+    \[\Pa(\norm{X_n-X} >\eps) \le \Pa\left(\bigcup_{m=n}^\infty \norm{X_m-X} > \eps\right).\]
+    By almost sure convergence, the term on the right goes to 0. Thus, $\Pa(\norm{X_n-X} > \eps) \to 0$ and so $X_n \topp X$.
+\end{proof}
+We will also prove
+\[X_n \topp X \Longrightarrow X_n \todd X. \]
+\begin{proof}
+    Suppose $X_n \topp X$ and let $t$ be a continuity point of $F$, the cumulative distribution function of $X$. Let $F_n$ be the cumulative distribution function of $X_n$. Fixing $\eps >0$, we have
+    \begin{align*}
+        F_n(t)&=\Pa(X_n \le t)\\
+         &= \Pa(X_n \le t, X \le t+\eps) + \Pa(X_n \le t, X > t+\eps)\\
+        &\le \Pa(X \le t+\eps) + \Pa(\abs{X_n -X}>\eps)\\
+        &=F(t+\eps) +\Pa(\abs{X_n -X}>\eps)
+    \end{align*}
+    Since $X_n \topp X$, $\Pa(\abs{X_n-X}>\eps) \to 0$. Thus,
+    \[ \limsup_{n \to \infty} F_n(t) \le F(t+\eps).\]
+    Similarly,
+    \begin{align*}
+        F(t-\eps) &= \Pa(X \le t-\eps)\\
+        &=\Pa(X \le t-\eps, X_n \le t)+\Pa(X \le t-\eps, X_n \ge t)\\
+        &\le \Pa(X_n \le t) + \Pa(\abs{X_n-X}\ge \eps)\\
+        &=F_n(t)+\Pa(\abs{X_n-X}\ge \eps).
+    \end{align*}
+    Thus,
+    \[F_n(t) \ge F(t-\eps) - \Pa(\abs{X_n-X} \ge \eps). \]
+    Which implies,
+    \[\liminf_{n \to \infty} F_n(t) \ge F(t-\eps). \]
+    Since $F$ is continuous at $t$, both $F(t-\eps)$ and $F(t+\eps)$ can be made arbitrarily close to $F(t)$ and hence 
+    \[\limsup_{n \to \infty} F_n(t) \le F(t) \le \liminf_{n \to \infty}F_n(t). \]
+    Thus $\lim\limits_{n \to \infty} F_n(t) = F(t)$. 
+\end{proof}
+\end{document}
