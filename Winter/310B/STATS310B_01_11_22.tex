@@ -1,0 +1,154 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310B -- Lecture 3}
+\author{Sourav Chatterjee\\ Scribed by Michael Howes}
+\date{01/11/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310B -- Lecture 3}
+\lhead{01/11/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Jensen's inequality}
+Jensen's inequality is an important result about conditional expectations and convex functions. It states:
+\begin{theorem}[Jensen's inquality]
+    Let $X$ be an integrable random variable taking values in some interval $I$. Let $\phi : I \to \R$ be a convex function such that $\phi(X)$ is integrable. Then for any sub-$\sigma$-algebra $\G$, we have
+    \[\phi(\E(X|\G)) \le \E(\phi(X)|\G), \]
+    almost surely.
+\end{theorem}
+To prove Jensen's inequality, we will first prove some lemmas  about convex functions.
+\begin{lemma}
+    Let $\A$ be a collection of convex functions $f:I\to \R$. The function 
+    \[g(x) = \sup_{f \in \A} f(x), \]
+    is also convex.
+\end{lemma}
+\begin{proof}
+    Let $x,y \in I$ and let $t \in [0,1]$. For each $f \in \A$ we have
+    \[f(tx+(1-t)y) \le tf(x)+(1-t)f(y) \le tg(x)+(1-t)g(y). \]
+    Thus,
+    \[g(tx+(1-t)y) = \sup_{f \in \A} f(tx+(1-t)y) \le tg(x) + (1-t)g(y) \qedhere \]
+\end{proof}
+This lemma has the immediate corollary,
+\begin{corollary}
+    The supremum of a collection of affine functions is a convex function.
+\end{corollary}
+We will next see that above corollary has a converse.
+\begin{lemma}
+    Let $\phi :I \to \R$ be a convex function on some interval $I$. The there exists sequences $a_n,b_n \in \R$ such that 
+    \[\phi(x) = \sup_{n \in \N}a_nx+b_n. \]
+\end{lemma}
+\begin{proof}
+    We first will state and prove a fact. If $\phi$ is convex and $y \in I$, then there exists a line $x \mapsto a_yx+b_y$ such that $\phi(y) = a_yy+b_y$ and $\phi(x) \ge a_y x+b_y$ for all $x \in I$. That is, there exists a line through $(y,\phi(y))$ that sits below the graph of $\phi$. The justification is as follows. By convexity, the function $\frac{\phi(y+t)-\phi(y)}{t}$ is a decreasing function of $t$. Thus, the limits 
+    \[c = \lim_{t \nearrow 0} \frac{\phi(y+t)-\phi(y)}{t}, ~~ \text{ and } ~~ d = \lim_{t \searrow 0} \frac{\phi(y+t)-\phi(y)}{t},\]
+    both exist and $c \le d$. Thus, we can take $a_y$ to be any value in $[c,d]$ and let $b_y = \phi(y)-a_yy$. The line $x \mapsto a_yx+b_y$ sits below the graph $\phi$ by the convexity of $\phi$. 
+
+    Now define $g:I \to \R$ by
+    \[g(x) = \sup_{y \in \Q \cap I} a_yx+b_y. \]
+    The function $g$ is the supremum of a countable collection of affine functions and thus $g$ is convex. In particular $g$ and $\phi$ are both continuous. Furthermore, $\phi(x)=g(x)$ on $\Q \cap I$ and so $\phi = g$ which completes the proof.
+\end{proof}
+We are now ready to prove Jensen's inequality.
+\begin{proof}[Proof of Jensen's inequality]
+    By Lemma 2, we have 
+    \[\phi(x) = \sup_{n \in \N}a_nx+b_n. \]
+    Thus, for every $n$,
+    \[\E(\phi(X)|\G) \ge \E(a_n X + b_n|\G) =a_n\E(X|\G)+b_n, \]
+    almost surely. One can show that $\E(X|\G) \in I$ almost surely since $I$ is an interval. Thus, by taking a supremum over $n$, we have
+    \[\E(\phi(X)|\G) \ge \sup_{n \in \N} a_n\E(X|\G)+b_n = \phi(\E(X|\G)), \]
+    almost surely.
+\end{proof}
+\section{Martingales}
+\begin{definition}
+    Let $(\Om,\F,\Pa)$ be a probability space. A \emph{filtration} is a monotone sequence of sub-$\sigma$-algebras,
+    \[\F_0 \subseteq \F_1 \subseteq F_2 \subseteq \ldots \subseteq \F.\]
+\end{definition}
+\begin{example}
+    If we have a sequence of random variables $(X_n)_{n=1}^\infty$, then the sequence $\F_n = \sigma(X_1,X_2,\ldots, X_n)$ is a filtration.
+\end{example}
+\begin{definition}
+    A sequence of random variables $(X_n)_{n \ge 0}$ is \emph{adapted} to a filtration $(F_n)_{n \ge 0}$ if for every $n \ge 0$, $X_n$ is $\F_n$-measurable.
+\end{definition}
+\begin{example}
+   Given any sequence $(X_n)_{n \ge 0}$. The sequence $(X_n)_{n \ge 0}$ is adapted to the filtration $\F_n = \sigma(X_0,X_1,\ldots,X_n)$. 
+\end{example}
+\begin{definition}
+    Let $(\F_n)_{n \ge 0}$ be a filtration. A \emph{martingale} is a sequence of random variables $(X_n)_{n \ge 0}$ adapted to $(\F_n)_{n \ge 0}$, such that
+    \begin{enumerate}
+        \item For every $n$, $\E\abs{X_n} < \infty$.
+        \item For every $n$, $\E(X_{n+1}|\F_n) = X_n$, almost surely.
+    \end{enumerate}
+\end{definition}
+\begin{example}
+    Let $X_1,X_2,\ldots$ be independent with $\E[X_i]=0$. Let $S_0=0$ and $S_n = \sum_{i=1}^nX_i$ for $n \ge 1$. Then $(S_n)_{n \ge 0}$ is a martingale with respect to the filtration $\F_n = \sigma(X_i, 1\le i \le n)$. Note that 
+    \[\abs{S_n} \le \sum_{i=1}^n \abs{X_i}. \]
+    Thus, $S_n$ is integrable for each $n$. The random variable $S_n$ is also $\F_n$ measurable. Furthermore,
+    \begin{align*}
+        \E(S_{n+1}|\F_n) &=\E(X_{n+1}+S_n|\F_n)\\
+        &=\E(X_{n+1}|\F_n)+\E(S_n|\F_n)\\
+        &=\E[X_{n+1}]+S_n\\
+        &=S_n.
+    \end{align*}
+    More generally is $X_i$ is integrable with mean $\mu_i$, then $S_n = \sum_{i=1}^n X_i-\mu_i$ is a martingale.
+\end{example}
+\begin{example}
+    Let $X_1,\ldots, X_n$ be independent with $\E\abs{X_i}^2 < \infty$. Suppose that $\E[X_i]=0$ and $\E[X_i^2]=\sigma^2$ for all $i$. Let,
+    \[Z_n = \left(\sum_{i=1}^n X_i\right)^2-n\sigma^2 = S_n^2-n\sigma^2,\]
+    and $Z_0=0$. Then $Z_n$ is a martingale with respect to $\F_n = \sigma(X_1,\ldots, X_n)$.
+
+    Note first that $\E[\abs{Z_n}] \le \E[S_n^2]+n =2n$ and so each $Z_n$ is integrable. Also,
+    \begin{align*}
+        \E(Z_{n+1}|\F_n)&=\E((S_n+X_{n+1})^2|\F_n) - (n+1)\sigma^2\\
+        &=\E(S_n^2|\F_n) + 2\E(S_nX_{n+1}|\F_n)+\E(X_{n+1}^2|\F_n)-(n+1)\sigma^2\\
+        &=S_n^2+2S_n\E(X_{n+1}|\F_n)+\E(X_{n+1}^2|\F_n)-(n+1)\sigma^2\\
+        &=S_n^2+2S_n\E[X_{n+1}]+\E[X_{n+1}^2]-(n+1)\sigma^2\\
+        &=S_n^2-n\sigma^2.
+    \end{align*}
+\end{example}
+\begin{example}
+    Let $X_1,X_2,\ldots$ be i.i.d. random variables such that for some $\ta \in \R$, $m(\ta) =\E[e^{\ta X_i}] < \infty$. Then 
+    \[M_n = \frac{e^{\ta S_n}}{m(\ta)^2},\]
+    is a martingale with respect to $\F_n = \sigma(X_1,\ldots,X_n)$. Note that 
+    \[\E[\abs{M_n}] = \frac{1}{m(\ta)^n}\E[e^{\ta S_n}]=\frac{1}{m(\ta)^n}\prod_{i=1}^n \E[e^{\ta X_i}]=1.\]
+    Furthermore,
+    \begin{align*}
+        \E(M_{n+1}|\F_{n+1}) &=\E\left(\frac{e^{\ta X_{n+1}}}{m(\ta)}M_n|\F_n\right)\\
+        &=M_n\E\left(\frac{e^{\ta X_{n+1}}}{m(\ta)}|\F_n\right)\\
+        &=M_n\E\left[\frac{e^{\ta X_{n+1}}}{m(\ta)}\right]\\
+        &=M_n.
+    \end{align*}
+\end{example}
+\section{Stopping times}
+\begin{definition}
+    Let $\{F_n\}$ be a filtration. A \emph{stopping time} is a random variable $T$ such that $T$ takes values in $\{0,1,\ldots\} \cup\{\infty\}$ and for every $n \in \{0,1,\ldots\}$, then event $\{T = n\} \in \F_n$.
+\end{definition}
+For a filtration $\{F_n\}$, we can think of each $\sigma$-algebra $\F_n$ as the information available at time $n$. The condition $\F_n \subseteq \F_{n+1}$ means that we gain more information over a time. A stopping time is then a procedure where the decision to stop at time $n$ depends only on the information available at time $n$.
+\begin{example}
+    Let $\{X_n\}_{n \ge 0}$ be a sequence of random variables adapted to a filtration $\{\F_n\}_{n \ge 0}$. Take any Borel set $A\subseteq \R$, let $T= \inf \{n \ge 0 : X_n \in A\}$ where $\int \emptyset = \infty$. Then $T$ is a stopping time since 
+    \[ \{T=n\} = \{X_n\in A\} \cap \left(\bigcap_{i=1}^{n-1} \{X_i \notin A\}\right)\in \F.\]
+\end{example}
+\begin{example}
+    Let $\{S_n\}_{n \ge 0}$ be a simply symmetric random walk (SSRW). That is, $S_0 =0$ and $S_n = X_1+\ldots+X_n$ where $X_i$ are i.i.d. and $\Pa(X_i=1)=\Pa(X_i=-1)=\frac{1}{2}$. Take any integers $a< 0<b$ and define $T=\inf\{n : S_n = a \text{ or } S_n = b\}$. By the previous example, $T$ is a stopping time.
+\end{example}
+Related to stopping times, is the concept of a stopped $\sigma$-algebra.
+\begin{definition}
+    Given a filtration $\{\F_n\}_{n \ge 0}$ and a stopping time $T$. The \emph{stopped $\sigma$-algebra} is defined to be
+    \[\F_T = \{A \in \F : A \cap \{T=n\} \in \F_n \text{ for all } n \}.\]
+\end{definition}
+\begin{remark}
+    The stopped $\sigma$-algebra is indeed a $\sigma$-algebra. Since
+    \begin{enumerate}
+        \item $\emptyset \in \F_T$ trivially.
+        \item If $A \in \F_T$, then $A^c \cap \{T=n\} = \{T=n\} \setminus (A \cap \{T=n\})$ and $\{T = n \} \in \F_n$ since $T$ is a stopping time.
+        \item If $A_i \in \F_T$, then $\bigcup_{i=1}^\infty A_i \in \F_T$ since $\left(\bigcup_{i=1}^\infty A_i\right)\cap \{T=n\} = \bigcup_{i=1}^\infty A_i \cap \{T=n\}$.
+    \end{enumerate}
+\end{remark}
+\begin{example}
+    Consider the SSRW from the previous example with $T=\min\{n : S_n = a \text{ or } S_n =b\}$. The event $A = \{S_n \ge 0, \text{ for all } n \le T\}$ is in $\F_T$.
+\end{example}
+\end{document}
