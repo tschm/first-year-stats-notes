@@ -1,0 +1,201 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 4}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/13/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture }
+\lhead{01/13/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Relationships between the modes of convergence}
+We ended last lecture with the statement of the following implications,
+\[X_n \toas X \Longrightarrow X_n \topp X \Longrightarrow X_n \todd X, \]
+and for any $r>0$,
+\[X_n \toL{r} X \Longrightarrow X_n \topp X \Longrightarrow X_n \todd X. \]
+None of the converse are true in generality, but today we will see some partial converses. Starting with the following,
+\begin{proposition}
+    Suppose that $X_n \topp X$, then there exists a subsequence $X_{n_k}$ such that $X_{n_k} \toas X$ as $k \to \infty$.
+\end{proposition}
+\begin{proof}
+    Suppose that $X_n \topp X$. Then for every $k \in\N$, there exists $n_k$ such that,
+    \[\Pa(\norm{X_{n_k} -X}\ge 1/k) \le 2^{-k}. \]
+    We may choose the integers $n_k$ so that they are strictly increasing in $k$. We will now show that $X_{n_k} \toas X$. Let $B$ be the set on which $X_{n_k} \to X$. Note that 
+    \[A_m = \bigcap_{k=m}^\infty \{\norm{X_{n_k}-X} < 1/k\} \subseteq B. \]
+    Furthermore,
+    \[\Pa(A_m^C) \le \sum_{k=m}^\infty \Pa(\norm{X_{n_k}-X} \ge 1/k) \le \sum_{k=m}^\infty \frac{1}{2^k}.\]
+    Thus, $\Pa(A_m^C) \to 0$ as $m \to \infty$ and hence $\Pa(A_m) \to 1$ as $m \to \infty$. Since $\Pa(B) \ge \Pa(A_m)$ for every $m$ we have $\Pa(B)=1$. 
+\end{proof}
+\section{Scales of magnitude}
+Recall the following definitions for describing the asymptotic relationship between sequences of numbers.
+\begin{definition}
+    Let $\{a_n\}_{n \ge 1}$ and $\{b_n\}_{n \ge 1}$ be sequences of constants. Then,
+    \begin{enumerate}
+        \item $a_n = o(b_n)$ means that $\frac{a_n}{b_n} \to 0$ as $n \to \infty$.
+        \item $a_n = O(b_n)$  means that $\limsup\limits_{n \to \infty} \abs{\frac{a_n}{b_n}} < \infty$.
+        \item $a_n \sim b_n$ means that $\frac{a_n}{b_n} \to 1$ as $n \to \infty$.
+    \end{enumerate}
+\end{definition}
+These definitions all have probabilistic analogs for sequences of random variables.
+\begin{definition}
+    Let $\{X_n\}_{n \ge 1}$  be a sequence of random variables and let $\{b_n\}_{n \ge 0}$ be a sequence of constants. Then,
+    \begin{enumerate}
+        \item $X_n = o_p(b_n)$ means that $\frac{X_n}{a_n} \topp 0$ as $n \to \infty$.
+        \item $X_n = O_p(1)$ means that \[\lim_{K \to \infty} \sup_{n}\Pa(\abs{X_n} \ge K) = 0.\]
+        \item $X_n = O_p(b_n)$ means that $\frac{X_n}{b_n} = O_p(1)$.
+    \end{enumerate}
+\end{definition}
+The following arithmetic rules are useful and simple to prove.
+\begin{lemma}
+    We have
+    \begin{align*}
+        o_p(1)+o_p(1)&=o_p(1)\\
+        O_p(1)+O_p(1) &=O_p(1)\\
+        O_p(a_n)O_P(b_n)&=O_P(a_nb_n)\\
+        O_p(a_n)o_p(b_n)&=o_p(a_nb_n).
+    \end{align*}
+\end{lemma}
+\section{Inequalities for the $L^r$ space}
+We will now state and prove some important inequalities and facts about random variables in $L^r$. 
+\begin{proposition}
+    If $\E\abs{X}^r < \infty$, then $\E\abs{X}^{r'} < \infty$ for all $r' \le r$.
+\end{proposition}
+\begin{proof}
+    If $r'\le r$, then $\abs{X}^{r'} \le 1+\abs{X}^r$. Thus, if $\E\abs{X}^r < \infty$, then
+    \[\E\abs{X}^{r'} \le 1+\E\abs{X}^r < \infty \qedhere  \]
+\end{proof}
+\begin{proposition}
+    For any random variable $X$, $\V(X) < \infty$ if and only if $\E[X^2] < \infty$. 
+\end{proposition}
+\begin{proof}
+    If $\E[X^2] < \infty$, then $\E[X] \le \E[\abs{X}] < \infty$. And thus 
+    \[\V(X) = \E[X^2]-\E[X]^2 < \infty. \]
+    If $\V(X)<\infty$, then $\E[(X-\E[X])^2] < \infty$ in particular $\E[X] \in \R$. Thus, $\E[X^2] = \E[X]^2+\V(X) < \infty$. 
+\end{proof}
+\begin{proposition}
+    For every $r > 0$, $\E\abs{X+Y}^r \le c_r\E\abs{X}^r + c_r \E\abs{X}^r$ where $c_r = 1$ if $0 < r \le 1$ and $c_r=2^{r-1}$ for $r \ge 1$.
+\end{proposition}
+\begin{proof}
+    First suppose that $r > 1$. The function $f(x) = \abs{x}^r$ is convex and thus,
+    \[\abs{\frac{X+Y}{2}}^r \le \frac{1}{2}\abs{X}^2+\frac{1}{2}\abs{Y}^r.\]
+    Thus, $\abs{X+Y}^r \le 2^{r-1}\abs{X}^r+2^{r-1}\abs{Y}^r$.
+
+    Now suppose $0 < r\le 1$. If $\abs{X+Y}^r \le \abs{X}^r$, then we are done. If $\abs{X+Y}^r > \abs{X}^r$, then 
+    \begin{align*}
+        \abs{X+Y}^r - \abs{X}^r &= \int_{\abs{X}}^{\abs{X+Y}} rt^{r-1}dt\\
+        &\le \int_\abs{X}^{\abs{X}+\abs{Y}} rt^{r-1}dt\\
+        &=\int_0^\abs{Y} r(t+\abs{Y})^{r-1}dt\\
+        &\le \int_0^\abs{y} rt^{r-1}dt\\
+        &= \abs{Y}^r.
+    \end{align*}
+    Thus, $\abs{X+Y}^r \le \abs{X}^r+\abs{Y}^r$. 
+\end{proof}
+We next prove H\"{o}lder's inequality.
+\begin{proposition}
+    Let $r,s \ge 1$ be such that $\frac{1}{r}+\frac{1}{s} = 1$, then 
+    \[\E\abs{XY} \le \left(\E\abs{X}^r\right)^{1/r}\left(\E^{1/s}\abs{Y}^s\right)^{1/s}. \]
+\end{proposition}
+\begin{proof}
+    If $\E\abs{X}^r = 0$ or $\E\abs{Y}^s = 0$, then $X=0$ almost surely or $Y=0$ almost surely. Hence, $XY = 0$ almost surely and thus $\E\abs{XY} = 0$. Thus, we may assume $\E\abs{X}^r,\E\abs{Y}^s > 0$. If $\E\abs{X}^r=\infty$ or $\E\abs{Y}^s = \infty$, then we are done. Thus, we will assume that $\E\abs{X}^r, \E\abs{Y}^s \in (0,\infty)$. We will first prove Young's inequality which states for all $a,b \ge 0$,
+    \[ab \le \frac{a^r}{r}+\frac{b^s}{s}. \]
+    Note that if $a=0$ or $b=0$, then Young's inequality is an equality. Thus assume that $a,b > 0$. We know that the function $x \mapsto e^x$ is convex. Since $\frac{1}{r}+\frac{1}{s} =1$, we thus have
+    \begin{align*}
+        ab &= e^{\log(ab)}\\
+        &= e^{\log(a)+\log(b)}\\
+        &=e^{\frac{1}{r}\log(a^r)+\frac{1}{s}\log(b^r)}\\
+        &\le \frac{1}{r}e^{\log(a^r)}+\frac{1}{s}e^{\log(b^s)}\\
+        &= \frac{a^r}{r}+\frac{b^s}{s},
+    \end{align*}
+    as claimed. We will now apply Young's inequality point-wise to prove H\"{o}lder's inequality,
+    \begin{align*}
+        \frac{\E[\abs{XY}]}{\left(\E\abs{X}^r\right)^{1/r}\left(\E^{1/s}\abs{Y}^s\right)^{1/s}} &= \int_\Om \frac{\abs{X}\abs{Y}}{\left(\E\abs{X}^r\right)^{1/r}\left(\E^{1/s}\abs{Y}^s\right)^{1/s}}d\Pa\\
+        &\le \int_\Om \frac{1}{r}\frac{\abs{X}^r}{\E\abs{X}^r}+\frac{1}{s}\frac{\abs{Y}^s}{\E\abs{Y}^s}d\Pa\\
+        &= \frac{1}{r\E\abs{X}^r}\int_\Om \abs{X}^rd\Pa +\frac{1}{s\E\abs{Y}^s}\int_\Om \abs{Y}^sd\Pa\\
+        &=\frac{1}{r}+\frac{1}{s}\\
+        &=1. 
+    \end{align*}
+    Thus ,$\E\abs{XY} \le \left(\E\abs{X}^r\right)^{1/r}\left(\E^{1/s}\abs{Y}^s\right)^{1/s}$.
+\end{proof}
+\section{Convergence in distribution}
+The following theorem shows that we can study convergence in distribution of random vectors by projecting onto one dimensional subspaces.
+\begin{theorem}[Cram\'{e}r--Wold device]
+    Let $X_n$ and $X$ be random vectors in $\R^d$, then $X_n \todd X$ if and only if $a^T X_n \todd a^T X$ for all constants $a \in \R^d$.
+\end{theorem} 
+We also have a version of the continuous mapping theorem for convergence in distribution and almost sure convergence. The version for convergence in probability was stated in the first lecture.
+\begin{theorem}[Continuous mapping theorem]
+    Let $g$ be a continuous function on a set $B$ such that $\Pa(X \in B) =1$. Then 
+    \begin{enumerate}
+        \item If $X_n \topp X$, then $g(X_n) \topp g(X)$.
+        \item If $X_n \todd X$, then $g(X_n) \todd g(X)$.
+        \item If $X_n \toas X$, then $g(X_n) \todd g(X)$.
+    \end{enumerate}
+\end{theorem}
+We have already proved 1. For now, we will only prove 3. Once we have Skorokhod's theorem we will see that 3 implies 2. 
+\begin{proof}
+    Let $A$ be the set on which $X_n \to X$. Since $g$ is continuous on $B$, we have $g(X_n) \to g(X)$ on $A \cap B$. Since $A$ and $B$ both have probability 1, $\Pa(A \cap B) =1 $ and thus $\Pa(g(X_n) \to g(X)) =1$. 
+\end{proof}
+\begin{definition}
+    Given a cumulative distribution function $F$ on $\R$, define $F^{-1}:(0,1)\to \R$ to be the function
+    \[F^{-1}(t) = \inf\{x : F(x) \ge t\}. \]
+    The function $F^{-1}$ is called the \emph{quantile function} of $F$. 
+\end{definition}
+\begin{proposition}
+    The function $F^{-1}$ is non-decreasing and left-continuous. And for all $t \in (0,1)$ and $x \in \R$,
+    \[F^{-1}(t) \le x \Longleftrightarrow t \le F(x).\]
+\end{proposition}
+\begin{proof}
+    The set $\{x: F(x) \ge t\}$ are non-increasing with $t$ and thus if $t\le t'$, then
+    \[F^{-1}(t) = \inf\{x : F(x) \ge t\}\le \inf\{x : F(x) \ge t'\} = F^{-1}(t'). \]
+    Showing that $F^{-1}$ is non-increasing. Continuity can be proved by considered first the points $t$ such that $F$ is continuous at $F^{-1}(t)$ and then the points $t$ where $F$ is discontinuous at $F^{-1}(t)$. A picture helps.
+    
+    
+    Finally, if $F^{-1}(t) \le x$, then $\inf\{z : F(z) \ge t\} \le x$. Thus, for any $\eps > 0$, there exists $z < x+\eps$ such that $F(z) \le t$. Since $F$ is right-continuous, this implies that 
+    \[F(x) = \lim_{z \searrow x} F(z) \le t. \]
+    Conversely, if $t \le F(x)$, then $x \in \{z : F(z) \ge t\}$ and so $F^{-1}(t) \le x$. 
+\end{proof}
+The function $F^{-1}$ also have the following properties.
+\begin{proposition}
+    Let $X$ be random variable with CDF $F$. Then for all $t \in (0,1)$,
+    \[\Pa(F(X) \le t) \le t, \]
+    and we have equality if and only if $t$ is in the range of $F$. In particular if $F$ is continuous, then the above holds for all $t \in (0,1)$ and thus $F(X) \sim U(0,1)$. We can also write the above inequality as for all $t \in (0,1)$
+    \[F(F^{-1}(t)) \ge t. \]
+    We also have $F^{-1}(F(x)) \le x$ for all $x \in \R$ with strict inequality if and only if $F(x-\eps)=F(x)$ for some $\eps > 0$. Thus, $\Pa(F^{-1}(F(X)) \neq X)=0$.
+\end{proposition}
+We also have
+\begin{proposition}
+    Let $U \sim U(0,1)$ and let $F$ be some CDF function. Let $X = F^{-1}(U)$. Then $\{X \le x\} = \{U \le F(x)\}$ and so $X \sim F$.
+\end{proposition}
+
+We will now state and prove \emph{Skorokhod's representation theorem}.
+\begin{theorem}
+    Suppose that $X_n \todd X$, then there exist random variables $X_n^*$ and $X^*$ such that $X_n^* \toas X^*$, $X_n^* \dist X_n$ and $X^* \dist X$. 
+\end{theorem}
+\begin{proof}[Proof]
+    Let $F_n$ be the CDF of $X_n$ and let $F$ be the CDF of $X$. Define $X_n^* = F_n^{-1}(U)$ and $X^* = F^{-1}(U)$. We will show that for all but a countable number of $t \in (0,1)$ we have $F_n^{-1}(t) \to F^{-1}(t)$. This will imply that $X_n^* \to X^*$ with probability 1.
+
+    Since $F^{-1}$ is increasing, $F^{-1}$ has at most countably many discontinuities. Let $t \in (0,1)$ be a point such that $F^{-1}$ is continuous at $t$ and let $\eps > 0$. We can find a value $x$ such that $F$ is continuous at $x$ and 
+    \[F^{-1}(t)-\eps < x<F^{-1}(t). \]
+    It follows that $F(x) < t$. Since $F$ is continuous at $x$ we know that $F_n(x) \to F(x)$. Thus, for large enough $n$, $F_n(x) < t$ which implies $x \le F_n^{-1}(t)$ and so 
+    \[\liminf\limits_n F_n^{-1}(t) \ge x \ge F^{-1}(t)-\eps.\] 
+    Which implies $\liminf\limits_n F_n^{-1}(t) \ge F^{-1}(t)$. Now consider $s > t$ and choose $y$ such that $F^{-1}(s) < y < F^{-1}(s)+\eps$ and $F$ is continuous at $y$. Thus, $t < s \le F(y)$. Thus, for large enough $n$, $t < F_n(y)$ which implies $F_n^{-1}(t) \le y \le F^{-1}(s)+\eps$. This implies that 
+    \[\limsup_{n}F_n^{-1}(t) \le F^{-1}(s)+\eps, \]
+    for all $s>t$ and $\eps > 0$ since $F^{-1}$ is continuous at $t$ this implies that 
+    \[\limsup_{n}F_n^{-1}(t) \le F^{-1}(t). \]
+    Thus, $F_n^{-1}(t) \to F^{-1}(t)$ as required. 
+\end{proof}
+As a corollary of Skorokhod's theorem we can prove the continuous mapping theorem for convergence in distribution.
+\begin{corollary}
+    Suppose that $X_n \todd X$ and $g$ is continuous on a set $B$ with $\Pa(X_0 \in B) =1$, then $g(X_n) \todd g(X)$
+\end{corollary}
+\begin{proof}
+    Let $X_n^*$ and $X^*$ be as in Skorokhod's theorem. Then $g(X_n^*) \toas g(X^*)$ be the continuous mapping theorem for almost sure convergence. Thus, $g(X_n^*) \todd g(X^*)$. But $g(X_n^*) \dist g(X_n)$ and $g(X^*) \dist g(X)$ and thus $g(X_n) \todd g(X)$.
+\end{proof}
+\end{document}
