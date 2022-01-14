@@ -1,0 +1,165 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310B -- Lecture 4}
+\author{Sourav Chatterjee\\ Scribed by Michael Howes}
+\date{01/13/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310B -- Lecture 4}
+\lhead{01/13/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Stopped $\sigma$-algebras}
+Recall the following definition from the previous lecture.
+\begin{definition}
+    Given a filtration $\{\F_n\}_{n \ge 0}$ and a stopping time $T$. The \emph{stopped $\sigma$-algebra} is defined to be
+    \[\F_T = \{A \in \F : A \cap \{T=n\} \in \F_n \text{ for all } n \}.\]
+\end{definition}
+We saw that $\F_T$ is indeed a $\sigma$-algebra. Informally, a typical event in $\F_T$ is one that depends on $\F_n$ for $n \le T$. 
+\begin{example}
+    Let $S_n$ be a simple symmetric random walk on $\Z$ with $S_0=0$. Let $\F_n = \sigma(S_0,S_1,\ldots, S_n)$. We saw previously that for $a,b \in \Z$ with $a < 0 < b$, the random variable $T = \inf\{n : S_n = a \text{ or } S_n = b\}$ is a stopping time with respect to $\{F_n\}_{n \ge 0}$. We also claimed that the event $A = \{S_k \ge 0, \text{ for } k\le T\}$ was in $\F_T$. To see why this is true, take any $n$. Then,
+    \begin{align*}
+        A \cap \{T=n\} = \left(\bigcap_{k=0}^n \{S_k \ge 0\} \right)\cap \{T=n\}.
+    \end{align*}
+    Since $S_k$ is $\F_n$ measurable for $n \le k$ and since $T$ is a stopping time, both of the above events are in $\F_n$. Thus, the above intersection is in $\F_n$ and so $A \in \F_T$. 
+\end{example}
+\begin{proposition}
+    If $S$ and $T$ are stopping times with respect to $\{F_n\}_{n \ge 0}$ and $S \le T$ always, then $\F_S \subseteq \F_T$.
+\end{proposition}
+\begin{proof}
+    Let $A \in \F_S$ and take any $n \in \N$. Then 
+    \begin{align*}
+        A \cap \{T = n\} &= A \cap \{S \le n \} \cap \{T =n\}\\
+        &=\left(\bigcup_{k=0}^n A \cap \{S = k\}\right) \cap \{T=n\}.
+    \end{align*}
+    For each $k$ we have $A \cap \{S=k\} \in \F_k \subseteq \F_n$ and so $\bigcup_{k=0}^n A \cap \{S=k\} \in \F_n$. Also, $\{T=n\} \in \F_n$ and thus $A \cap \{T=n\} \in \F_n$ and so $A \in \F_T$.
+\end{proof}
+Note that for the above argument, we need $S \le T$ always. The result may not be true if $S \le T$ almost surely.
+\begin{example}
+    Suppose that $N \in \{0,1,\ldots\}$. Then the constant random variable $T=N$ is a stopping time with respect to any filtration $\{\F_n\}_{n \ge 0}$. The stopped $\sigma$-algebra is $\F_N$. 
+\end{example}
+\begin{definition}
+    A stopping time $T$ is \emph{bounded} if there is an integer $N$ such that $T \le N$ always.
+\end{definition}
+Note that if $T \le N$ always, then by proposition 1 and example 2, we have $\F_T \subseteq \F_N$. We will also define stopped random variables.
+\begin{definition}
+    Let $\{X_n\}_{n \ge 0}$ be a sequence of random variables adapted to $\{\F_n\}_{n \ge 0}$. Let $T$ be a stopping time with respect to $\{\F_n\}_{n \ge 0}$ such that $\Pa(T < \infty) = 1$. The random variables $X_T$ is defined on the set where $T < \infty$ by
+    \[X_T(\w)=X_{T(\w)}(\w).\]
+\end{definition}
+Note that we can define $X_T$ on all of $\Om$ by taking $X_T(\w)$ equal to any value on the set $\{T=\infty\}$ which has probability zero. Note that the random variable $X_T$ may be very different to each of the random variables $X_n$. For example if $S_n$ is the SSRW on $\Z$ with $S_0 = 0$, then the support of $S_n$ is the set of integers in $\{-n,-n+1,\ldots, n-1,n\}$ with the same parity as $n$. However, if $T = \inf\{n : S_n = a \text{ or } S_n =b\}$, then $S_T \in \{a,b\}$ almost surely (we will see shortly that $\Pa(T < \infty))=1$. 
+
+We will now state a useful theorem.
+
+\begin{theorem}[Optional stopping theorem]
+    Let $\{X_n\}_{n \ge 0}$ be a martingale adapted to a filtration $\{\F_n\}_{n \ge 0}$. Let $S$ and $T$ be bounded stopping times with respect to $\{F_n\}$ such that $S \le T$ always. Then $X_S$ and $X_T$ are integrable and $\E(X_T|\F_S) = X_S$ almost surely. In particular $\E[X_T]=\E[X_0]$.
+\end{theorem}
+Note that when $T$ and $S$ are both constant this reduces to the result that for all $n,k$ such that $k \le n$,
+\[\E(X_n|\F_k) =X_k ~~\text{ and }~~\E[X_n]=\E[X_0].\]
+The above results can be proved directly by using induction and the tower property. We will now prove the optional stopping theorem.
+
+\begin{proof}
+    Let $N$ be an integer such that $S \le T \le N$ always. Note that
+    \[\abs{X_S},\abs{X_T} \le \abs{X_0}+\abs{X_1}+\ldots+\abs{X_N}. \]
+    Thus, $X_S$ and $X_T$ are both integrable. We will next show that $X_S$ is $\F_S$ measurable. Fix any $c \in \R$, we wish to show that $\{X_S \le c \} \in \F_S$ which requires $\{X_S \le c\} \cap\{S =n\} \in \F_n$ for every $n$.
+    \begin{align*}
+        \{X_S \le c\} \cap \{S = n\} &= \{X_n \le c\} \cap\{ S=n\}.
+    \end{align*}
+    Both $\{S=n\}$ and $\{X_n \le c\}$ are in $\F_n$ and so $\{X_S \le c\} \in \F_S$. Now let $A \in \F_S$. We wish to show
+    \[\E[X_T \one_A] = \E[X_S \one_A]. \]
+    Note that
+    \begin{align*}
+        \E[X_N \one_A]&=\E\left[X_N \sum_{n=0}^N \one_{\{T=n\}}\one_A\right]\\
+        &=\sum_{n=0}^N \E[X_N \one_{\{T=n\}}\one_A]\\
+        &=\sum_{n=0}^N \E[X_N \one_{\{T=n\}\cap A}].
+    \end{align*}
+    We know that $\{T=n\} \cap A \in \F_n$ since $A \in \F_S \subseteq \F_T$. Thus 
+    \begin{align*}
+        \sum_{n=0}^N \E[X_N \one_{\{T=n\}\cap A}]&=\sum_{n=0}^N \E[\E(X_N|\F_n) \one_{\{T=n\}\cap A}]\\
+        &=\sum_{n=0}^N \E[X_n \one_{\{T=n\}\cap A}]\\
+        &=\E\left[\sum_{n=0}^N X_n \one_{\{T=n\}}  \one_A\right]\\
+        &=\E[X_T\one_A].
+    \end{align*}
+    By the same argument we have $\E[X_N \one_A] = \E[X_S \one_A]$. Thus, $\E[X_T \one_A]=\E[X_S \one_A]$ and thus 
+    \[\E(X_T|\F_S)= X_S. \]
+    If we take $S=0$, then we get 
+    \[\E[X_T] = \E[\E(X_T|\F_0)]=\E[X_0].\qedhere  \]
+\end{proof}
+The requirement that $S$ and $T$ are bounded stopping times may seem restrictive, but the result is not true if we do not have this assumption. Fortunately we can often approximate an unbounded stopping time by a sequence of stopping times.
+\begin{proposition}
+    Let $T$ be a stopping time with respect to a filtration $\{F_k\}_{k \ge 0}$. Then for every $n \in \N$, the random variable
+    \[T \land n = \min\{T,n\}, \]
+    is a stopping time bounded by $n$. Furthermore, $T \land n \to T$ on the set where $T < \infty$. 
+\end{proposition}
+\begin{proposition}
+    To see that $T \land n$ is a stopping time, note that
+    \[\{T\land n = k\} =\begin{cases}
+        \{T=k\} & \text{if } k < n,\\
+        \{T \ge k\} & \text{if } k = n,\\
+        \emptyset & \text{if } k  > n.
+    \end{cases} \]
+    Thus, we immediately see that $\{T \land n = k \} \in \F_k$ when $k \neq n$. When $k = n$, note that
+    \[\{T \ge k \} = \{T < k\}^C = \left(\bigcup_{j=1}^{k-1}\{T =j\}\right)^C. \]
+    We know that $\{T=j\} \in \F_j \subseteq \F_k$ for all $j < k$ and so $\{T \ge k \} \in \F_k$. 
+\end{proposition}
+\section{Gambler's ruin}
+We will now study an example which shows the usefulness of the optional stopping theorem. Let $\{S_n\}_{n \ge 0}$ be a SSRW with $S_0 = 0$ and as before let $T=\inf \{n : S_n = a \text{ or } S_n = b\}$. We are interested in 
+\[\Pa(T < \infty, S_T = b). \]
+We will soon see that $\Pa(T < \infty) =1$. Thus, the probability we are interested in is
+\[\Pa(S_T = b). \]
+\begin{remark}
+    This question is related to the \emph{gambler's ruin}. Consider a gambler with $x \in \{1,2,\ldots\}$ dollars. The gambler repeatedly makes bets where they can either win or lose $\$1$. They continue playing until they make $y > x$ dollars, or they go broke. The probability that they don't go broke is equal to the probability that they end with $y$ dollars. This is equal to $\Pa(S_T = b)$ when $a = -x$ and $b = y-x$.
+\end{remark}
+Note that $S_T$ only takes the values $a$ and $b$. Thus,
+\[\E[S_T] = a\Pa(S_T=a)+b\Pa(S_T=b)=a(1-\Pa(S_T=b)) + b\Pa(S_T=b)= a+(b-a)\Pa(S_T=b). \]
+Thus, if we can calculate $\E[S_T]$, then we will know $\Pa(S_T=b)$ since 
+\[\Pa(S_T=b) = \frac{\E[S_T]-a}{b-a}.\]
+We wish to use the optional stopping theorem to conclude that $\E[S_T]=\E[S_0]=0$. The stopping time $T \land n$ is bounded for each $n$, and so we know that $\E[S_{T \land n}] = 0$. We also have $\abs{S_{T \land n}}\le \max\{-a,b\}$. Thus, it suffices to show that $T\land n \to T$ almost surely. To do this, we need to show that $\Pa(T < \infty) = 1$.
+\begin{proposition}
+    With $S_n$ and $T$ as above, $\Pa(T < \infty) =1$.
+\end{proposition}
+\begin{proof}
+    We can divide the set $\{1,2,3,\ldots\}$ into infinitely many blocks $B_j$ of consecutive integers such that $B_j$ contains $\abs{a}+b$ integers. Let $A_j$ be the event that $S_k-S_{k-1} = 1$ for all $k \in B_j$. Each $A_j$ has probability $\Pa(A_j) = 2^{-\abs{a}-b}$ and the events $A_j$ are independent since the sets $B_j$ are disjoint. Thus, by the second Borel--Cantelli lemma,
+    \[\Pa(A_j, \text{ infinitely often}) =1. \]
+    For each $A_j$ we have $A_j \subseteq \{T < \infty\}.$ To see this let $k_1$ be the minimum of $B_j$. Suppose that $\w \in A_j$. If $T(\w) > k_1$, then $S_{k_1}(\w) \ge a$. Since $\w \in A_j$, 
+    \[S_{k_1+\abs{a}+b}(\w) = S_{k_1}(\w) + \abs{a}+b = b.\] 
+    Thus, $T(\w) \le k_1+\abs{a}+b < \infty$. We thus have $A_j \subseteq \{T < \infty\}$, and so
+     \[\Pa(T < \infty)\ge \Pa(A_j, \text{ infinitely often})=1.\] 
+\end{proof}
+Thus, $T\land n \to T$ almost surely and furthermore more $S_{T\land n} \to S_T$. Since $S_{T\land n}$ is uniformly bounded we have
+\[\E[S_T] =\lim_{n \to \infty} \E[S_{T\land n}] = \lim_{n\to \infty}\E[S_0] =0. \]
+We thus have 
+\[\Pa(S_T = b) = \frac{-a}{-a+b}. \]
+In terms of the gambler's ruin this equal $\frac{x}{y}$. So if the gambler starts with $x=900$ dollars, they have a $90\%$ of making $y=1000$ dollars before going broke. But as we see, the gambler will have to be very patient. We can also use the optional stopping theorem to calculate the expected value of $T$ as well. Recall that 
+\[M_n = S_n^2 - n,\]
+is a martingale since $\V(X_n)=1$. And thus 
+\[\E[M_{T \land n}] = \E[S_{T \land n}^2] - \E[T \land n]. \]
+The random variables $S_{T \land n}^2$ are uniformly bounded by $\max\{a^2,b^2\}$ and converge almost surely to $S_T^2$. Furthermore, $T \land n$ are all non-negative, and they converge almost surely to $T$. Therefore, by the dominated and monotone convergence theorem, we have
+\[\E[S_{T}^2] = \lim_{n \to \infty} \E[S_{T \land n}^2] = \lim_{n \to \infty}\E[T\land n] = \E[T]. \]
+We also know that
+\begin{align*}
+    \E[S_T^2]&=a^2\Pa(S_T = a) + b^2\Pa(S_T = b)\\
+    &=\frac{a^2b}{b-a} + \frac{-b^2a}{b-a}\\
+    &= \frac{ab(a-b)}{b-a}\\
+    &=-ab.
+\end{align*}
+In the gambler's ruin, this equals $x(y-x)$. So to get from $\$900$ to $\$1000$ or go broke, the gambler will have to wait on average $90000$ turns.
+\section{Sub-martingales and super-martingales}
+We will now state two definitions that generalize martingales.
+\begin{definition}
+    Let $\{F_n\}_{n \ge 0}$ be a filtration and let $\{X_n\}_{n \ge 0}$ be a sequence of adapted, integrable random variables. Then,
+    \begin{enumerate}
+        \item $\{X_n\}_{n \ge 0}$ is a \emph{sub-martingale} if for every $n$, \[\E(X_{n+1}|\F_n) \ge X_n.~\text{a.s}\]
+        \item $\{X_n\}_{n \ge 0}$ is a \emph{super-martingal}e if for every $n$, \[\E(X_{n+1}|\F_n) \le X_n.~\text{a.s}\]
+    \end{enumerate}
+\end{definition}
+\begin{remark}
+    One can use Jensen's inequality to make sub-martingales out of martingales. Let $\{M_n\}_{n \ge 0}$ be a martingale and let $\phi$ be a convex function such that $X_n = \phi(M_n)$ is integrable for every $n \ge 0$. Then $\{X_n\}_{n \ge 0}$ is a sub-martingale since, almost surely
+\end{remark}
+\end{document}
