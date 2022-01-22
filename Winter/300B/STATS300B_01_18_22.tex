@@ -1,0 +1,163 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 5}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/18/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture 5}
+\lhead{01/18/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Convergence of random variables}
+\subsection{Skorokhod's theorem}
+We ended last lecture with the statement and a proof of Skorokhod's theorem.
+\begin{theorem}[Skorokhod]
+    Suppose that $X_n \todd X_0$. Then there exist random variables $X_n^*$ such that $X_n^* \dist X_n$ and $X_n^* \toas X_0^*$.
+\end{theorem}
+The idea behind the proof was to work with the inverse CDFs, 
+\[F_n^{-1}(t) = \inf\{x \in \R : F_n(x) \ge t\}, \]
+where $F_n(x) = \Pa(X_n \le x)$. We defined $X_n^* = F_n^{-1}(\xi)$ where $\xi \sim U(0,1)$. We showed that if $X_n \todd X_0$, then $F_n^{-1}(\xi) \toas F_0^{-1}(\xi)$.
+\subsection{Marginal convergence}
+Let $X_n$ and $X$ be random $k$-vectors. Then
+\begin{enumerate}
+    \item $X_n \topp X$ if and only if $X_{n,j} \topp X_j$ for all $j=1,\ldots, k$.
+    \item $X_n \toas X$ if and only if $X_{n,j} \toas X_j$ for all $j=1,\ldots, k$.
+    \item $X_n \toL{p} X$ if and only if $X_{n,j} \toL{p} X_j$ for all $j=1,\ldots, k$.
+    \item If $X_n \todd X$, then $X_{n,j} \todd X_j$ for all $j=1,\ldots, k$. But (!) it is possible that $X_{n,j} \todd X_j$ for all $j=1,\ldots, k$ and $X_n \not\todd X$. Indeed, $X_n$ need not have any distribution limit (see homework).
+\end{enumerate}
+So for convergence in distribution, marginal (or element-wise) convergence is not enough to imply joint convergence. The Cramer--Wald device provides one work around. To show that $X_n \todd X$, it suffices to show that $a^TX_n \todd a^TX$ for all $a \in \R^k$ and if $X_n \todd X$, then $a^T X_n \todd a^TX$. There is a special case when marginal convergence in distribution does imply joint convergence in distribution. This is when all but one of the entries of $X$ are constant. More precisely, one can show, that if $X_n,Y_n,X$ are random vectors and $y$ is a constant, then
+\[X_n \todd X, Y_n \topp y \Longrightarrow (X_n,Y_n) \todd (X,y). \]
+Note that since $y$ is a constant, the condition $Y_n \topp y$ is equivalent to $Y_n \todd y$. This theorem can be combined with the continuous mapping theorem to prove Slutsky's theorem which is a real workhorse of asymptotic statistics.
+\begin{theorem}[Slutsky's]
+    Suppose $X_n \todd X$ and $Y_n \topp c$, then
+    \begin{enumerate}
+        \item $X_n+Y_n \todd X+c$
+        \item $Y_nX_n \todd cX$,
+        \item $X_n/Y_n \todd X/c$ provided $c \neq 0$.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    As claimed above, we know that $(X_n,Y_n) \todd (X,c)$. The function $(x,y) \mapsto x+y$, $(x,y)\mapsto xy$ and $(x,y) \mapsto x/y$ are all continuous on their domains. Thus, by the continuous mapping theorem the above results hold.
+\end{proof}
+\begin{example}[One-sided t-test] Suppose $X_1,\ldots,X_n$ are i.i.d. with $\E[X_i]=\mu$ and $\V(X_i) =\sigma^2 < \infty$. Suppose we wish to test $H_0 : \mu \le \mu_0$ against $H_1 : \mu > \mu_0$. 
+
+    If $X_i$ was normally distributed, we know that the uniformly most powerful unbiased test rejects when $T_n \ge t_{n-1,\al}$ where 
+    \[T_n = \frac{\sqrt{n}(\bar{X}_n-\mu_0)}{S_n}, \]
+    and 
+    \[ S_n^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i-\bar{X}_n)^2.\]
+    When $X_i$ are normally distributed and the null holds, we know that $T_n$ has the students $t$ distribution with $n-1$ degrees of freedom. We would like to know the asymptotic distribution of $T_n$ in the non-normal cases. In particular,
+    \begin{enumerate}
+        \item What is the asymptotic distribution of $T_n$ when $\mu = \mu_0$?
+        \item What is the asymptotic distribution of $T_n$ when $\mu >\mu_0$?
+    \end{enumerate}
+    With Slutsky's theorem we can answer both of these,
+    \begin{enumerate}
+        \item We have seen before that the weak law of large numbers implies that $S_n \topp \sigma$ and that the central limit theorem implies that $\sqrt{n}(\bar{X}_n-\mu_0)\todd \normal(0,\sigma^2)$. Thus, Slutsky's theorem implies that $T_n \todd \normal(0,1)$.
+        \item If $\mu > \mu_0$, then we can write $T_n$ as,
+        \[T_n = \frac{\sqrt{n}(\bar{X}_n-\mu)+\sqrt{n}(\mu-\mu_0)}{S_n} =\frac{\sqrt{n}(\bar{X}_n-\mu)}{S_n}+\frac{\sqrt{n}(\mu-\mu_0)}{S_n}. \] 
+        We know that $\frac{\sqrt{n}(\bar{X}_n-\mu)}{S_n} \todd \normal(0,1)$ but $\frac{\sqrt{n}(\mu-\mu_0)}{S_n} \topp +\infty$. Thus, when $\mu > \mu_0$, $T_n \todd +\infty$. Thus, for $\mu > \mu_0$,
+        \[\Pa_{\mu,\sigma^2}(T_n \ge t_{n-1,\al}) \stackrel{n \to \infty}{\to} 1. \]
+        Therefor, under any alternative, the test has asymptotic power 1.
+    \end{enumerate}
+\end{example}
+\begin{example}[Testing variance]
+    Suppose $X_1,X_2,\ldots$ are i.i.d. with $\E[X_1]<\infty$, $\V(X_1)=\sigma^2$ and $\E[(X_1-\mu)^4] = \mu_4 < \infty$. Let $Y_i = (X_i-\mu)^2$ then $\E[Y_i] =\sigma^2$ and $\V(Y_i) = \E[(X_i-\mu)^4] - \E[(X_i-\mu)^2]^2 = \mu_4-\sigma^4$. Thus,
+    \[T_n = \frac{\sqrt{n}(\bar{Y}_n-\sigma^2)}{\sqrt{\mu_4-\sigma^4}} \to \normal(0,1). \]
+\end{example}
+\begin{example}[Pearson's chi-squared]
+    Suppose $X_1,\ldots,X_n$ are i.i.d. with distribution $\multi_k(1,p)$. That is each $X_i$ is a vector in $\{0,1\}^k$ with exactly one entry equal to one and,
+    \[\Pa(X_{i,j} = 1) = p_j,  \]
+    for every $j$. Let $N=\sum_{i=1}^n X_i \sim \multi_k(n,p)$ and let $\wh{p} = \frac{N}{n}$. Let $H_0$ be the hypothesis $p= p_0$ and let $H_1$ be $p \neq p_0$. Pearson's chi-squared test statistic of $H_0$ against $H_1$ is,
+    \[Q_n = \sum_{i=1}^k \frac{(N_j-np_{0,j})^2}{np_{0,j}}.\]
+    We will show that under $H_0$, $Q \todd \chi^2_{k-1}$ as $n \to \infty$. It suffices to write $Q_n = W_n^TW_n$ where $W_n \todd \normal(0,I_{k-1})$. With this in mind, define,
+    \[Z_n = \begin{bmatrix}
+        \frac{N_1-np_{0,1}}{\sqrt{np_{0,1}}}\\
+        \vdots \\
+        \frac{N_k-np_{0,k}}{\sqrt{np_{0,k}}}
+    \end{bmatrix} \in \R^k.\]
+\end{example}
+Note that $\E_{H_0}[Z]=0$ and, for $i \neq j$,
+\begin{align*}
+    \text{Cov}_{H_0}(Z_{n,i}Z_{n,j})&= \frac{1}{n\sqrt{p_{0,i}p_{0,j}}}\text{Cov}_{H_0}(N_{n,i}N_{n,j})\\
+    &= \frac{1}{n\sqrt{p_{0,i}p_{0,j}}} np_{0,i}p_{0,j}\\
+    &=\sqrt{p_{0,i}p_{0,j}}.
+\end{align*}
+And \[\V_{H_0}(Z_{n,j}) = \frac{1}{np_{0,j}}\V_{H_0}(N_{n,j}) = \frac{np_{0,j}(1-p_{0,j})}{np_{0,j}} = 1-p_{0,j}.\] 
+Thus, $\E[Z_n]=0$ and $\V(Z_n) = \Sigma$ where $\Sigma = I - \sqrt{p_0}\sqrt{p_0}^T$. Furthermore, by the multivariate CLT, $Z_n \todd \normal_K(0,\Sigma)$. Now let $\Gamma$ be an orthogonal matrix with first row equal to $\sqrt{p_0}$. It follows that,
+\begin{align*}
+    Z_n^TZ_n &= (\Gamma Z_n)^T(\Gamma Z_n)\\
+    &=V_n^TV_n.
+\end{align*}
+By Slutsky's we have $V_n \todd V \sim \Gamma\normal_k(0,\Sigma) = \normal_k(0,\Gamma^T\Sigma \Gamma)$. Furthermore,
+\[\Gamma^T\Sigma \Gamma = \Gamma^T\Gamma - \Gamma^T \sqrt{p_0} \sqrt{p_0}^T \Gamma = I - e_1e_1^T = \begin{bmatrix}
+    0&0&\ldots & 0\\
+    0&1&\ldots & 0\\
+    \vdots&\vdots&\ddots&\vdots\\
+    0&0&\ldots &1
+\end{bmatrix}\]
+Thus $V^TV \sim \chi^2_{k-1}$ and $Q_n \todd \chi^2_{k-1}$.
+\section{Delta method}
+The central limit theorem tells us that $\sqrt{n}(\bar{X_n}-\mu)$ converges in distribution to $\normal(0,\sigma^2)$. Often we aren't just interested in the mean. The \emph{delta method} allows us to study the asymptotic distribution of functions of the mean.
+\begin{theorem}[Delta method 1]
+    Suppose that $X_1,X_2,\ldots$ are i.i.d. with mean $\mu$ and variance $\sigma^2 < \infty$. Suppose that $f$ is differentiable at $\mu$, then 
+    \[\sqrt{n}(f(\bar{X}_n)-f(\mu)) \todd \normal(0,[f'(\mu)]^2\sigma^2). \]
+\end{theorem}
+\begin{proof}
+    We can prove this result by combining Slutsky's theorem with a Taylor's approximation. We have 
+    \[f(\bar{X}_n) = f(\mu) + f'(\mu)(\bar{X}_n-\mu) + o(\bar{X}_n-\mu). \]
+    By the central limit theorem $\sqrt{n}(\bar{X}_n - \mu) \todd \normal(0,\sigma^2)$ and so $o(\bar{X}_n-\mu) = o_p(\sqrt{n})$. Thus, rearranging the above we get,
+    \[ \sqrt{n}(f(\bar{X}_n)-f(\mu)) = f'(\mu)\sqrt{n}(\bar{X}_n-\mu)+o_p(1).\]
+    Slutsky's theorem thus implies that $\sqrt{n}(f(\bar{X}_n)-f(\mu)) \todd f'(\mu)\normal(0,\sigma^2) = \normal(0,[f'(\mu)]^2\sigma^2)$.
+\end{proof}
+The delta method can be generalized to situations other than that of the central limit theorem. There are also higher dimensional versions like the following.
+\begin{theorem}[Delta mathod 2 (higher dimensional)]
+    Suppose that $X_1,X_2,\ldots$ are random $k$-vectors such that,
+    \[a_n(X_n-c) \todd Y. \]
+    If $f$ is a real-valued function that is differentiable at $c$, then
+    \[a_n(f(X_n) - f(c)) \todd \nabla f(c)^T Y. \]
+\end{theorem}
+The proof is via a Taylor's approximation like the previous version.
+\begin{example}
+    Suppose $X_1,X_2,\ldots$ are i.i.d. random vectors with $\E[X_1]=\ta \neq 0$ and $\text{Cov}(X_1)=\Sigma$. Define $\phi(h) = \frac{1}{2}\norm{h}_2^2$. By the multivariate central limit theorem, $\sqrt{n}(\bar{X}_n-\ta) \todd \normal_k(0,\Sigma)$. Thus,
+    \[\sqrt{n}(\phi(\bar{X}_n)-\phi(\ta)) \todd \ta^T\normal(0, \Sigma )=\normal(0,\ta^T\Sigma \ta),\]
+    since $\nabla h(\ta) = \ta$.
+\end{example}
+\begin{example}
+    Let $S_n^2 = \frac{1}{n}\sum_{i=1}^n X_i^2 - \bar{X}_n^2$. We know that $S_n^2 \topp \sigma^2 = \V(X_1)$, but can we say something about the limiting distribution of $S_n^2$? Note that $S_n^2 = \phi(\bar{X}_n, \bar{X^2}_n)$ where $\phi(x,y) = y-x^2$. Note that $\nabla \phi(x,y) = (-2x,1)^T$. Also, assume $X_1$ has a finite fourth moment,
+    \[\sqrt{n}\left(\begin{bmatrix}
+        \bar{X}_n\\\bar{X^2}{n}
+    \end{bmatrix} - \begin{bmatrix}
+        \mu \\ \mu^2+\sigma^2
+    \end{bmatrix}\right)\todd \normal_2(0,\Sigma). \]
+    Where 
+    \[\Sigma = \begin{bmatrix}
+        \V(X)& \cov(X,X^2)\\ \cov(X,X^2)&\V(X^2)
+    \end{bmatrix} \]
+    Note that $\nabla \phi(\mu,\mu^2+\sigma^2) = (-2\mu,1)^T$. Thus,
+    \begin{align*}
+        \nabla \phi(\mu,\mu^2+\sigma^2)^T\Sigma \nabla \phi(\mu,\mu^2+\sigma^2) &= [-2\mu,1]\begin{bmatrix}
+        -2\mu\sigma^2+\cov(X,X^2)\\
+        -2\mu\cov(X,X^2)+\V(X^2)
+    \end{bmatrix}\\
+    & = 4\mu^2\sigma^2-4\mu\cov(X,X^2)+\V(X^2) \\
+    &=:\gamma.
+\end{align*}
+By the delta-method $\sqrt{n}(S_n^2 - \sigma^2) \todd \normal(0,\gamma)$.
+\end{example}
+If the first derivate of our function is zero, then we can use the higher order delta method to get a better approximation.
+\begin{theorem}[Delta method 3 (higher order)]
+    Suppose that $X_n$ are random $k$-vectors such that 
+    \[r_n(X_n-\ta) \todd X, \]
+    where $r_n$ is a deterministic function with $r_n \to +\infty$. Let $\phi$ be a real-valued function that is twice differentiable at $\ta$ with $\phi'(\ta)=0$. Then,
+    \[r_n^2(\phi(X_n)-\phi(\ta)) \todd \frac{1}{2}X^T\nabla^2\phi(\ta)T.\]
+\end{theorem}
+Note that since $r_n \to + \infty$, $r_n^2 > r_n$ for sufficiently large $n$. Thus, the rate of convergence of $\phi(X_n)$ to $\phi(\ta)$ is faster. This is because we have to multiply by large numbers in order to have $\phi(X_n)-\phi(X)$ converge to a non-trivial distribution. We will prove the higher order delta method at the start of the next class. 
+\end{document}
