@@ -1,0 +1,135 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310B -- Lecture 5}
+\author{Sourav Chatterjee\\ Scribed by Michael Howes}
+\date{01/18/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310B -- Lecture 5}
+\lhead{01/18/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Sub-martingales and super-martingales}
+We  ended last  lecture  with  the definition of two generalizations  of  martingales. They  were,
+\begin{definition}
+    Let  $\{\F_n\}_{n \ge 0}$ be a filtration  and let $\{X_n\}_{n \ge 0}$ be  an adapted  sequence    of   integrable random  variables.  
+    \begin{enumerate}
+        \item The sequence $\{X_n\}_{n \ge 0}$  is a  \emph{sub-martingale}  if  for all $n$, $\E(X_{n+1}|\F_n)  \ge X_n$ almost surely. 
+        \item Likewise,  the  sequence $\{X_n\}_{n  \ge  0}$ is a  \emph{super-martingale} if for  all  $n$,  $\E(X_{n+1}|\F_n) \le X_n$  almost surely.
+    \end{enumerate}
+\end{definition}
+Clearly  $\{X_n\}_{n \ge 0}$ is   a  martingale if and only   if, $\{X_n\}_{n \ge 0}$ is both a sub-martingale and a super-martingale.
+\subsection{New  martingales from old}
+Jensen's inequality allows us to create many sub-martingales and super-martingales from a martingale.
+\begin{proposition}
+    Let $\{X_n\}_{n \ge 0}$ be  a martingale and  let  $\phi : \R \to \R$ be a function such  that $Y_n = \phi(X_n)$ is integrable for all $n$.  Then,
+    \begin{enumerate}
+        \item If $\phi$ is convex, then $\{Y_n\}_{n \ge  0}$ is sub-martingale.
+        \item If $\phi$ is concave,  then $\{Y_n\}_{n \ge 0}$ is a super-martingale.
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    If $\phi$ is convex, then
+    \[\E(Y_{n+1}|\F_n) = \E(\phi(X_{n+1})|\F_n) \ge \phi(\E(x_{n+1}|\F_n)) =\phi(X_n)=Y_n. \]
+    If $\phi$ is concave, then $-\phi$ is convex  and so $\{-Y_n\}_{n \ge 0}$ is a sub-martingale. This  implies that $\{Y_n\}_{n \ge 0}$ is a super-martingale. 
+\end{proof}
+\begin{example}
+    If $\{X_n\}_{n \ge 0}$, then $\abs{X_n}$, $X_n^2$ and $e^{\ta X_n}$ are all sub-martingales (provided the last two are integrable). 
+\end{example}
+We can also get new sub-martingales from a sub-martingale.
+\begin{proposition}
+    Let $\{X_n\}_{n \ge 0}$ be a sub-martingale and  let $\phi:\R\to \R$ be a  non-decreasing convex function. If $Y_n = \phi(X_n)$ is integrable from every $n$, then $\{Y_n\}_{n \ge 0}$ is a sub-martingale.
+\end{proposition}
+\begin{proof}
+    By convexity and Jensen's,
+    \[\E(Y_{n+1}|\F_n) \ge \phi(\E(X_{n+1}|\F_n)). \]
+    Also, $\E(X_{n+1}|\F_n) \ge X_n$ almost surely. Since $\phi$ is non-decreasing, this implies
+    \[\phi(\E(X_{n+1}|\F_n)) \ge \phi(X_n)  =Y_n.\qedhere \]
+\end{proof}
+\begin{example}
+    If $\{X_n\}_{n \ge  0}$ is a  sub-martingale, then $X_n^+$ is a sub-martingale. If $\ta > 0$ and $e^{\ta X_n}$ is integrable for every $n$, then $e^{\ta X_n}$ is also a sub-martingale. The random  variables $X_n^2$  and $\abs{X_n}$  need not form sub-martingales  even if they  are integrable. 
+\end{example}
+We can also  get a martingale  from a sub-martingale.
+\begin{proposition}[Doob's  decomposition]
+    Let $\{X_n\}_{n \ge  0}$  be  a sub-martingale. Then we can write $X_n = X_0+M_n+A_n$, where $\{M_n\}_{n \ge 0}$ is  a martingale and $\{A_n\}_{n \ge 0}$ is a non-decreasing,  predictable  sequence.
+\end{proposition}
+The definition  of  a predictable  sequence is given below.
+\begin{definition}
+    Let $\{F_n\}_{n \ge  0}$  be a   filtration. An adapted  sequence of random variables $\{A_n\}_{n \ge 0}$ is \emph{predictable} if for  every $n \ge 1$, $A_n$ is $\F_{n-1}$-measurable.
+\end{definition}
+\begin{proof}[Proof  of Doob's  decomposition]
+    Define,
+    \[ M_n  = \sum_{k=0}^{n-1} X_{k+1}-X_k - \E(X_{k+1}-X_k|\F_k). \]
+    Also define,
+    \[ A_n =  \sum_{k=0}^{n-1}\E(X_{k+1}-X_k|\F_k). \]
+    Then,
+    \[M_n+A_n = \sum_{k=0}^{n-1}X_{k+1}-X_k = X_n -X_0. \]
+    Thus, it remains to show that $\{M_n\}_{n \ge 0}$ is a martingale and that $\{A_n\}_{n \ge 0}$ is predictable  and non-decreasing. Note  that  for every  $k$,  $\E(X_{k+1}-X_k|\F_k)$ is  $\F_k$-measurable.  Thus, $A_n$  is  $\F_{n-1}$-measurable. We also have,
+    \[A_{n+1}-A_n = \E(X_{n+1}-X_n|\F_n) = \E(X_{n+1}|\F_n)-\E(X_n|\F_n)=\E(X_{n+1}|\F_n)-X_n \ge  0.\]
+    Also note that,
+    \[\E(X_{n+1}-X_n - \E(X_{n+1}-X_n|\F_n)|\F_n) = \E(X_{n+1}-X_n|\F_n)-\E(X_{n+1}-X_n|\F_n) = 0. \]
+    Thus,
+    \[\E(M_{n+1}-M_n|\F_n) = \E(X_{n+1}-X_n-\E(X_{n+1}-X_n|\F_n)|\F_n) = 0. \]
+    Thus, $\E(M_{n+1}|\F_n) =\E(M_n|\F_n)=M_n$ and so $\{M_n\}_{n \ge 0}$  is a martingale.
+\end{proof}
+Doob's  decomposition  result is  important  because  a  lot  of  properties about  martingales  are well known.  Thus,  if one   can  get a handle on the increasing  predictable sequence $\{A_n\}_{n \ge 0}$,  then  the original sub-martingale  $\{X_n\}_{n  \ge 0}$ can  be studied. 
+\subsection{Optional stopping for sub and super-martingales}
+\begin{proposition}
+    Let  $\{X_n\}_{n \ge   0}$ be an  integrable sequence adapted to $\{\F_n\}_{n  \ge 0}$.  Let $T$  and  $S$  be bounded stopping  times for  $\{\F_n\}_{n \ge 0}$. Then,
+    \begin{enumerate}
+        \item If  $\{X_n\}_{n \ge 0}$  is  a  sub-martingale,  then $\E(X_T|\F_S)  \ge  X_S$.
+        \item If  $\{X_n\}_{n  \ge 0}$ is a super-martingale, then $\E(X_T|\F_S) \le  X_S$.
+    \end{enumerate}
+\end{proposition}
+The  following proposition allows us to rigorously work with sequences  $\{X_n\}_{n \ge  0}$   that  are (sub/super)-martingales up  to  a stopping time $T$.
+\begin{proposition}\label{up_to}
+    Let  $\{X_n\}_{n \ge  0}$ be a  sequence of integrable random variables adapted to a filtration $\{\F_n\}_{n \ge 0}$. Let $T$ be a stopping time with respect to $\{\F_n\}_{n \ge 0}$, such that on the event $\{T>n\}$, we have
+    \begin{equation}
+        \label{ineq} X_n \le \E(X_{n+1}|\F_n)~~~\text{a.s.}
+    \end{equation}
+    By which we mean $\Pa(X_n > \E(X_{n+1}|\F_n), T > n) = 0$. Then the sequence $\{X_{n \land T}\}_{n \ge 0}$ is a sub-martingale with respect to $\{\F_n\}_{n \ge 0}$
+\end{proposition}
+
+\begin{proof}
+    As an exercise, one can show that $X_{n \land T}$ is $\F_n$-measurable and integrable. Now note that,
+    \begin{align*}
+        \E(X_{(n+1) \land T}|\F_n) &=\E\left(\sum_{i=0}^n X_{(n+1)\land T}\one_{\{T=i\}} + X_{(n+1)\land T}\one_{\{T > n\}}|\F_n\right)\\
+        &=\sum_{i=0}^n\E(X_{(n+1) \land T}\one_{\{T=i\}}|\F_n) +\E(X_{(n+1)\land T}\one_{\{T> n\}}|\F_n)\\
+        &=\sum_{i=0}^n\E(X_{i}\one_{\{T=i\}}|\F_n) +\E(X_{n+1}\one_{\{T> n\}}|\F_n)\\
+        &=\sum_{i=0}^n X_i\one_{\{T=i\}}+\E(X_{n+1}\one_{\{T> n\}}|\F_n),
+    \end{align*}
+    since $X_i\one_{\{T=i\}}$ is $\F_n$-measurable. The event $\{T > n\} = \{T \le n\}^c $ is in $\F_n$ and thus, by our assumption \eqref{ineq},
+    \begin{align*}
+        \E(X_{(n+1) \land T}|\F_n)&=\sum_{i=0}^n X_i\one_{\{T=i\}}+\one_{\{T> n\}}\E(X_{n+1}|\F_n)\\
+        &\ge \sum_{i=0}^n X_i\one_{\{T=i\}}+\one_{\{T> n\}}X_n\\
+        &=\sum_{i=0}^{n-1}X_i\one_{\{T=i\}} + X_n\one_{\{T > n-1\}}\\
+        &=X_{n \land T}. \qedhere
+    \end{align*}
+\end{proof}
+\begin{remark}
+    If the inequality in \eqref{ineq} is replaced with an equality, then $\{X_{n \land T}\}_{n \ge 0}$ is a martingale. Likewise, if the inequality in \eqref{ineq} is reversed, then $\{X_{n \land T}\}_{n \ge 0}$ is a super-martingale. The proofs are analogous.
+\end{remark}
+The idea behind proposition \eqref{up_to} is that even we can ignore what happens after the stopping time $T$. This is useful in examples when the distribution of $X_n$ changes after $T$ occurs. 
+\begin{example}
+    Suppose a gambler starts with $x>a$ dollars. At each turn the gambler can win or loss a dollar with equal probability. However, will their total is greater $a$, they have to pay $b$ in tax each turn. We wish to know how long it will take for the gambler to have less than $a$. Let $\{X_n\}_{n \ge 0}$ be the total the gambler has at each turn and let $\F_n = \sigma(X_1,\ldots, X_n)$. Let $T = \min\{n : X_n \le a \}$. We wish to bound $\E[T]$. Note that the event $\{T > n\}$ equals $\{X_1 > a,\ldots, X_n > a\}$. Thus, on the event $\{T > n\}$, $X_{n+1}$ is either $X_n+1-b$ or $X_n-1-b$. Furthermore, $X_{n+1}-X_n$ is independent of $\F_n$. Thus, on $\{T > n\}$,
+    \[\E(X_{n+1}|\F_n) = X_n +\E[X_{n+1}-X_n]=X_n-b \le X_n. \]
+    Now define $Y_n = X_n+nb$. On $\{T > n\}$, we have $\E(Y_{n+1}|\F_n) = X_N-b+(n+1)b=Y_n$. Thus, $\{Y_{n \land T}\}_{n \ge 0}$ is a martingale. Since $0 \land T = 0$, we thus have
+    \[\E[Y_{T \land n}] = \E[Y_0]=\E[X_0]=\E[x]=x. \]
+    On the other hand,
+    \[\E[Y_{T \land n}] = \E[X_{T \land n}]+b\E[T\land n]\ge a+b\E[T\land n]. \]
+    The inequality holds because if $T > n$, then $X_{T \land n}=X_n > a$ and if $T \le n$, then $X_{T \land n} = X_T = a$. The random variables $n \land T$ are non-negative and increase up to $T$. Thus, 
+    \[x \ge a+b\E[T], \]
+    which implies $\E[T] \le \frac{x-a}{b}$. This is agrees with our intuition, since the gambler loses $b$ dollars each turn on average and $T$ records the time it takes the gambler's total to go from $x$ dollars to $a$ dollars. 
+\end{example}
+\section{Optimal stopping problem}
+We will now consider a different kind of problem. Let $(\Om,\F,\Pa)$ be a probability space. The finite horizon optimal stopping problem is as follows. Suppose we have integrable random variables $\{X_n\}_{n=1}^N$ and a filtration $\{\F_n\}_{n = 1}^N$, can we find a stopping time $T$ taking values in $\{1,\ldots,N\}$ that maximizes $\E[X_T]$? Note that we have made no assumptions about $\{X_n\}_{n=1}^N$ beyond integrability. We have not assumed that $\{X_n\}_{n=1}^N$ is adapted to $\{\F_n\}_{n=1}^N$. Nonetheless, this problem has a solution in this very general set up!
+
+
+\end{document}
