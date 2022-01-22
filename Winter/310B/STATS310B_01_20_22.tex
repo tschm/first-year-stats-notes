@@ -1,0 +1,136 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310B -- Lecture 6}
+\author{Sourav Chatterjee\\ Scribed by Michael Howes}
+\date{01/22/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310B -- Lecture 6}
+\lhead{01/22/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Optimal stopping problem}
+We ended last lecture with the statement of the optimal stopping problem with a finite horizon. The problem was as follows. Suppose we are given integrable random variables $X_1,\ldots,X_N$ on a probability space $(\Om,\F,\Pa)$ and a filtration $\F_1\subseteq \ldots \subseteq \F_N$ of sub $\sigma$-algebras. We wish to find a stopping time $T$ with respect to $\{\F_n\}_{n \ge 0}$ taking values in $\{1,\ldots,N\}$ that maximizes $\E[X_T]$. We think of $X_n$ as the reward at time $n$, and thus we wish to find a way of stopping that maximizes the expected reward at time $T$.
+
+Our first step is to replace $\{X_n\}_{n=1}^N$ with a sequence adapted to $\{\F_n\}_{n=1}^N$. With this in mind, define $Y_n = \E(X_n|\F_n)$. The next lemma shows that we can work with $Y_n$ instead of $X_n$.
+\begin{lemma}\label{Ys}
+    For any stopping time $T$, $\E[X_T]=\E[Y_T]$.
+\end{lemma}
+\begin{proof}
+    Since $\{T=n\} \in \F_n$, we have
+    \begin{align*}
+        \E[X_T] &=\E\left[\sum_{n=1}^N X_n \one_{\{T=n\}}\right] \\
+        &=\sum_{n=1}^N \E\left[X_n\one_{\{T=n\}}\right]\\
+        &=\sum_{n=1}^N \E\left[\E(X_n|\F_n)\one_{\{T=n\}}\right]\\
+        &=\sum_{n=1}^N\E[Y_n\one_{\{T=n\}}]\\
+        &=\E\left[\sum_{n=1}^NY_n\one_{\{T=n\}}\right]\\
+        &=\E[Y_T].\qedhere 
+    \end{align*}
+\end{proof}
+Thus it suffices to find a stopping time that maximizes $\E[Y_T]$. We will now define random variable $V_1,\ldots,V_N$ by backwards induction. Let,
+\begin{align*}
+    V_N &= Y_N,\\
+    V_n &= \max\{Y_n, \E(V_{n+1}|\F_n)\} ~~~\text{for } n < N.
+\end{align*}
+The idea is that $V_n$ is either equal to either the reward at time $n$ ($Y_n$) or the expected future reward given the information up to time $n$ ($\E(V_{n+1}|\F_n)$). The random variable $V_n$ selects whichever reward looks to be bigger. Note the following,
+\begin{enumerate}
+    \item By definition, $V_N = Y_N$.
+    \item For all $n$, $V_n \ge Y_n$ by definition.
+\end{enumerate}
+Thus, define the following random variable taking values in $\{1,\ldots,N\}$.
+\[\tau = \min\{n : V_n = Y_n\}.\]
+Note that $\tau$ is a stopping time for $\{\F_n\}_{n=1}^N$, since both $V_n$ and $Y_n$ are $\F_n$-measurable. We will now show that $\tau$ is an optimal stopping time.
+\begin{theorem}
+    For all stopping times $T$, $\E[X_T] \le \E[X_\tau]$.
+\end{theorem}
+\begin{proof}
+    Fix a stopping time $T$.  By lemma \eqref{Ys}, it suffices to show that $\E[Y_T] \le \E[Y_\tau]$. Suppose that for some $\w \in \Om$ and $n \in \{1,\ldots,N\}$, we have $\tau(\w) > n$. This would imply that $V_n(\w)  \neq Y_n(\w)$. Since $V_n = \max\{Y_n, \E(V_{n+1}|\F_n)\}$, this implies that
+    \[V_n(\w) = \E(V_{n+1}|\F_n)(\w). \]
+    Thus, one $\{\tau > n\}$, $V_n = \E(V_{n+1}|\F_n)$. By a proposition proved in the previous lemma, this implies that $\{V_{n \land \tau}\}_{n=1}^N$ is a martingale with respect to $\{\F_n\}_{n=1}^N$. By the definition of $\tau$, $V_\tau = Y_\tau$. Also, $\tau \le N$ surely which means $\tau = N \land \tau$. Thus,
+    \[\E[Y_\tau] = \E[V_\tau] = \E[V_{N\land \tau}] = \E[V_{1\land \tau}] = \E[V_1]. \]
+    So, $\E[Y_\tau] = \E[V_1]$. Note that, by definition,
+    \[V_n \ge \E(V_{n+1}|\F_n), \]
+    sand thus $\{V_n\}_{n=1}^N$ is a super-martingale. Thus, by the optional stopping theorem,
+    \[\E[V_T] \le \E[V_1] = \E[Y_\tau]. \]
+    But we have $Y_n \le V_n$ for every $n =1,\ldots,N$ and so $Y_T \le Y_T$. Thus,
+    \[\E[Y_T]\le\E[V_T]\le\E[Y_\tau].\qedhere \]
+\end{proof}
+\section{A hiring problem}
+We will now consider an application of the optimal stopping theorem. Suppose we have $N$ candidates for a job, and we are to interview them sequentially. The $N$ candidates have ranks $(r_1,\ldots,r_N)$ which is a uniform permutation of $1,\ldots,N$. After each interview, we have to either hire the current candidate immediately or we have to continue the search with no possibility of hiring the current candidate later.
+
+The information we have up to time $n$ is the relative ranks of the first $n$ candidates which we label $(r_1^n,\ldots, r_n^n)$. For example, if $N=5$ and $(r_1,r_2,r_3,r_4,r_5)= (2,4,1,3,5)$. The for $n=3$, we would have $(r_1^3, r_2^3, r_3^3)= (2,3,1)$. Our filtration is given by $\F_n = \sigma(r_1^n,\ldots, r_n^n)$. 
+
+We wish to maximize the probability that we pick the best candidate (i.e. the candidate with rank 1). Thus, we wish to find a stopping time that maximizes $\Pa(r_T=1)$. To put this into the framework of the optimal stopping problem, define
+\[X_n = \one_{\{r_n=1\}}. \]
+This gives, $\E(X_T)=\Pa(r_T=1)$ for all stopping times $T$. Our first step is to calculate $Y_n = \E(X_n|\F_n)$. We claim that,
+\[Y_n = \begin{cases}
+    0 & \text{if } r_n^n \neq 1,\\
+    1 & \text{if } r_n^n = 1.
+\end{cases} \]
+\begin{proof}
+Since $Y_n$ is a function of $r_1^n,\ldots, r_n^n$, the random variable $Y_n$ is $\F_n$-measurable. To see that $Y_n = \E(X_n|\F_n)$, note that every event in $\F_n$ can be written as a finite disjoint union of events of the form $A_\sigma = \{(r_1^n,\ldots, r_n^n) = (\sigma_1,\ldots,\sigma_n)\}$ where $\sigma$ is a permutation of $\{1,\ldots,n\}$. Thus, it suffices to show that 
+\[\E[X_n \one_{A_\sigma}] = \E[Y_n \one_{A_\sigma}], \]
+for all $\sigma$. Fix such a $\sigma$. If $\sigma_n \neq 1$ and $r_n^n = \sigma_n$, then $r_n \neq 1$ and so $\E[X_n \one_{A_\sigma}] = 0 = \E[Y_n \one_{A_\sigma}]$. Thus suppose that $\sigma_n=1$. Then,
+\begin{align*}
+    \E[X_n \one_{A_\sigma}] &= \Pa(r_n = 1, (r_n^1,\ldots, r_n^n)= (\sigma_1,\ldots,1))\\
+    &=\Pa(r_n=1|r_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1)\Pa(r_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1)\\
+    &=\Pa(r_n=1|r_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1)\frac{1}{n!}.
+\end{align*}
+By Bayes's rule, $\Pa(A|B) = \Pa(B|A)\frac{\Pa(A)}{\Pa(B)}$. Thus, 
+\begin{align*}
+    &\Pa(r_n=1|r_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1)\\
+     &= \Pa(r_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1|r_n=1) \frac{\Pa(r_n=1)}{\Pa(r_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1)}\\
+    &=\frac{1}{(n-1)!} \frac{1/N}{1/n!}\\
+    &= \frac{n}{N}.
+\end{align*}
+Thus,
+\begin{align*}
+    \E[X_n \one_{A_\sigma}]&=\frac{n}{N}\cdot \frac{1}{n!}\\
+    &=\frac{n}{N}\Pa(_1^n=\sigma_1,\ldots, r_n^{n-1}=\sigma_{n-1}, r_n^n = 1)\\
+    &=\E[Y_n\one_{A_\sigma}].
+\end{align*}
+Thus, $Y_n = \E(X_n|\F_n)$.
+\end{proof}
+The definition of $Y_n$ can also be seen intuitively. If $r_n^n=1$, then $r_n$ is the highest rank out of $r_1,\ldots,r_n$. The probably that $r_n=1$ given $r_n^n=1$ is thus the probability that one of $r_1,\ldots,r_n$ is 1 and this event has probability $\frac{n}{N}$. Also, clearly if $r_n^n \neq 1$, then we cannot have $r_n =1$. 
+
+We next claim that $Y_n$ is independent of $\F_{n-1}$ for $n \ge 2$. 
+\begin{proof}
+    Since $Y_n$ only takes two values, it suffices to prove that $\Pa(Y_n = n/N, A) = \Pa(Y_n = n/N)\Pa(A)$ for all $A \in \F_{n-1}$. As before, we can restrict our attention to $A$ of the form $A_\sigma = \{r_1^{n-1}=\sigma_1,\ldots, r_{n-1}^{n-1} = \sigma_{n-1}\}$ for $\sigma$ a permutation of $\{1,\ldots,n-1\}$. Note that,
+    \[\Pa(A_\sigma) = \frac{1}{(n-1)!} \text{ and } \Pa(Y_n = n/N) = \Pa(r_n^n = 1) = \frac{1}{n}. \]
+    And also,
+    \[\Pa(Y_n = n/N, A_\sigma) = \Pa(r_1^n = \sigma_1+1,\ldots, r_{n-1}^n = \sigma_{n-1}+1, r_n^n = 1) = \frac{1}{n!}. \]
+    Thus, $\Pa(Y_n = n/N,A_\sigma) = \Pa(Y_n = n/N)\Pa(A_\sigma)$. 
+\end{proof}
+As in the proof of the optimal stopping theorem, let 
+\begin{align*}
+    V_N &= Y_N,\\
+    V_n &= \max\{Y_n, \E(V_{n+1}|\F_n)\} ~~~\text{for } n < N.
+\end{align*}
+By the independence of $Y_n$ and $\F_{n-1}$ we can show that for all $n \le N-1$, the random variable $\E(V_{n+1}|\F_n)$ is a number that we will denote by $v_n^N$. 
+\begin{proof}[Proof of above claim]
+    Note that, by independence, 
+    \[\E(V_N|\F_{N-1})=\E(Y_N|\F_{N-1})  =\E[Y_N] =\frac{N}{N}\cdot \Pa(r_N^N=1)=\frac{1}{N}.\]
+    Thus, the result holds for $n = N-1$, with $v_{N-1}^N = \frac{1}{N}$. Now suppose that the result holds for some $n$ so that $\E(V_{n+1}\F_n) = v_n^N$. Then $V_n = \max\{Y_n, v_n^N\}$ is independent of $\F_{n-1}$ and so,
+    \[\E(V_n|\F_{n-1})=\E[\max\{Y_n, v_n^N\}] = v_{n-1}^N.\qedhere \]
+\end{proof}
+By our solution to the optimal stopping problem, the optimal stopping time is
+\[ \tau = \min\{n : V_n = Y_n\} = \min\{n : Y_n \ge \E(V_{n+1}|\F_{n})\} = \min\{n : Y_n \ge v_n^N\},\]
+where we interpret $\E(V_{N+1}|\F_N)$ as $Y_N$ and $v_N^N$ as 0. Note that the condition $v_{n-1}^N = \max\{Y_n, v_n^N\}$ implies that the sequence $v_n^N$ is decreasing. The random variable $Y_n$ take values $\frac{n}{N}$ and 0. Thus, while $\frac{n}{N} < v_n^N$, we will never stop at time $n$. But once $\frac{n}{N} \ge v_n^N$, we will stop once we have $Y_n \neq 0$ which means $r_n^n = 1$. Thus,
+\[\tau = \min\{n : n \ge t^N \text{ and } r_n^n=1\}, \]
+where $t^N = \min\{n : \frac{n}{N} \ge v_n^N\}$. Thus, our rule is as follows:
+\begin{enumerate}
+    \item Interview the first $t^N-1$ candidates but do not hire any of them.
+    \item Hire the next candidate who is better than all the first  $t^N-1$ candidates.
+\end{enumerate}  
+It remains to calculate $t^N$ which is a non-random quantity. Recall that $Y_n = \frac{n}{N}$ with probability $\frac{1}{n}$ and $Y_n = 0$ otherwise. Thus,
+\[v_{n-1}^n = v_n^N \cdot \frac{n-1}{n} + \frac{n}{N}\cdot \frac{1}{n} = \frac{n-1}{n}v_n^N + \frac{1}{N}. \]
+We also know that $v_{N-1}^N = \E[Y_N] = \frac{1}{N}$. Thus, by applying the above recursion, we get
+\[v_n^N = \frac{1}{N}\left\{1+n \sum_{k=n+1}^{N-1} \frac{1}{k}\right\} \]
+\end{document}
