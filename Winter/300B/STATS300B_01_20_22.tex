@@ -1,0 +1,130 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 6}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/20/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture 6}
+\lhead{01/20/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{The delta method}
+We ended last class with the statement of the higher order delta method. We stated the following.
+\begin{theorem}[Delta method 3 (higher order)]
+    Suppose that $X_n$ are random $k$-vectors such that 
+    \[r_n(X_n-\ta) \todd X, \]
+    where $r_n$ is a deterministic function with $r_n \to +\infty$. Let $\phi$ be a real-valued function that is twice differentiable at $\ta$ with $\phi'(\ta)=0$. Then,
+    \[r_n^2(\phi(X_n)-\phi(\ta)) \todd \frac{1}{2}X^T\nabla^2\phi(\ta)T.\]
+\end{theorem}
+We will now prove the above.
+\begin{proof}
+    Note that,
+    \begin{align*}
+        \phi(X_n) &=\phi(\ta)+\nabla \phi(\ta)^T(X_n-\ta) + (X_n-\ta)^T\nabla^2 \phi(\ta)(T_n-\ta)+o(\norm{X_n-\ta}_2^2)\\
+        &=\phi(\ta) + \frac{1}{2}(X_n-\ta)^T\nabla^2 \phi(\ta)(X_n-\ta)+o(\norm{X_n-\ta}_2^2).
+    \end{align*}
+\end{proof}
+Note that $o(\norm{X_n-\ta}_2^2) = o_p(r_n^{-2})$. Thus, by Slutsky's
+\begin{align*}
+    r_n^2\left(\phi(X_n)-\phi(\ta)\right)&=\frac{1}{2}(r_n(X_n-\ta))^T\nabla^2 \phi(\ta)(r_n(X_n-\ta))+r_n^2o_p(r_n^{-2})\\
+    &\todd  \frac{1}{2}X^T\nabla^2 \phi(\ta) X.\qedhere 
+\end{align*}
+The central limit theorem gives a special one-dimensional case of the higher-order delta method. If $X_1,\ldots$ are i.i.d. with mean $\mu$ and variance $\sigma^2 < \infty$, then $\sqrt{n}(\bar{X}_n-\mu) \todd \normal(0,\sigma^2)$. Thus, if $g$ is a twice differentiable at $\mu$, then 
+\[n(g(\bar{X}_n)-g(\mu)) \todd g''(\mu)\sigma^2 Z^2, \]
+where $Z \sim \normal(0,1)$. So that, $\frac{n}{g''(\mu)\sigma^2}(g(\bar{X}_n)-g(\mu)) \todd \chi^2_1$.
+
+\section{Maximum likelihood estimation}
+Suppose we have data $X$ in the form of $n$ i.i.d. observations $X_1,\ldots,X_n$ drawn from a distribution $\Pa_\ta$ with density $p_\ta$. The likelihood $L(\ta)= p_\ta(X)$ is the density evaluated at $X$ viewed as a function of $\ta$. The value $\wh{\ta}$ that maximizes $L(\ta)$ is called the maximum likelihood estimator (MLE) of $\ta$. Much of this course will focus on properties of MLEs.
+\subsection{MLEs for one-dimensional exponential families}
+Suppose that $X$ is generated from a one dimensional exponential family in canonical form. That is, 
+\[p_\eta(x) = \exp\{\eta T(x) - A(\eta)\}h(x), \]
+where $\eta$ is the natural parameter for the family, $T(X)$ are the sufficient statistics for the family and $A(\eta) = \log\left(\int \exb{\eta T(x)}h(x)dx\right)$ is the log-partition function for the family. The log-partition function is convex and differentiable  with,
+\[A'(\eta) = \E_\eta[T(X)],\]
+and 
+\[A''(\eta) = \V_\eta(T(X)).\]
+Another name of the $A(\eta)$ is the \emph{cummulant generating function of $T(X)$}. Suppose now that we have an i.i.d. sample of size $n$ drawn from $p_\eta$. Let $l(\eta) = \log(p_\eta(X_1,\ldots,X_n))$ be the log-likelihood function. Then,
+\begin{align*}(
+    l(\eta)&= \eta \sum_{i=1}^n T(X_i)-nA(\eta)+\log\left(\prod_{i=1}^n h(X_i)\right)\\
+    \therefore l'(\eta) &= \sum_{i=1}^n T(X_i)-nA'(\eta) = \sum_{i=1}^n T(X_i)-n\E_\eta[T(X)]\\
+    \therefore l''(\eta) &= -nA''(\eta) = -n\V_\eta(T(X)) \le 0.
+\end{align*}
+Thus, any solution to $l'(\eta)=0$ is a local maximum of $l$. It follows that the MLE $\wh{\eta}$ solves the equation,
+\[\E_{\wh{\eta}}[T(X)] = \frac{1}{n}\sum_{i=1}^n T(X_i) = \bar{T}_n  \]
+Thus, the MLE is a type of method of moments estimator in this example. In particular, we have $\wh{\eta} = \phi(\bar{T})$ where $\phi$ can be thought of as $(A')^{-1}$. By the central limit theorem,
+\[\sqrt{n}(\bar{T}-\E_\eta[T(X)]) \todd \normal(0,\V_\eta(T(X))) = \normal(0,A''(\eta)). \]
+Thus, by the delta method,
+\[\sqrt{n}(\wh{\eta}-\eta) \todd \normal(0, \phi'(\eta)^2A''(\eta)). \]
+We know that $\phi'(\ta) = \frac{1}{A''(\eta)}$ and so, $\sqrt{n}(\wh{\eta}-\eta) \todd \normal(0, A''(\eta)^{-1})$. We will see that similar results hold for distributions that are not exponential families.
+\subsection{Asymptotic efficiency}
+Recall that the Fisher information of a parameter $\ta$ is defined to be,
+\[I(\eta) = \E_\eta[l'(\eta)^2] = -\E_\eta[l''(\eta)]. \]
+We have seen that for exponential families, $I(\eta) = -\E[-A''(\eta)]=A''(\eta)$. We also have the Cramer--Rao lower bound that states if $\wh{\eta}$ is an unbiased estimator for $\eta$ based on an i.i.d. sample of size $n$, then
+\[\V_\eta(\wh{\eta}) \ge \frac{1}{nI(\eta)}. \]
+For exponentially families, $\V(\wh{\eta}_{MLE}) \sim \frac{1}{n A''(\eta)} = \frac{1}{nI(\eta)}$. Thus, the MLE estimator asymptotically reaches the Cramer--Rao lower bound. Estimators with this property are called \emph{asymptotically efficient}.
+\begin{definition}
+ An estimator $\wh{\eta}$ is \emph{asymptotically efficient} if $\V(\wh{\eta}) \sim \frac{1}{nI(\eta)}$.
+\end{definition}
+We can also compare the asymptotic efficiency of two estimators. 
+\begin{definition}
+    Let $\wh{\eta}_1$ and $\wh{\eta}_2$ be two estimators. The asymptotic relative efficiency (ARE) of $\wh{\eta}_2$ compared to $\wh{\eta}$ is,
+    \[\lim_{n \to \infty} \frac{\V_\eta(\wh{\eta}_2)}{\V_\eta(\wh{\eta}_0)}. \]
+\end{definition}
+\subsection{The ARE of the median}
+Let $X_1,X_2,\ldots$ be i.i.d. with common CDF $F$. Let $\gamma \in (0,1)$ and let $\wt{\ta}_n$ be the $[\gamma n]^{th}$ order statistic for $X_1,\ldots, X_n$, where $[y]$ denotes the ceiling of $y$. If $F(\ta) = \gamma$ and if $F'(\ta)$ exists and is strictly positive, then 
+\[\sqrt{n}(\wt{\ta}_n - \ta) \todd \normal\left(0, \frac{\gamma(1-\gamma)}{[F'(\ta)]^2}\right). \]
+The idea is that the event $\sqrt{n}(\wt{\ta}_n -\ta) \le a$ is equivalent to $\wt{\ta}_n \le \ta + \frac{a}{\sqrt{n}}$. Which is in turn to at least $[\gamma n]$ of $X_i$'s being less than $b=\ta + \frac{a}{\sqrt{n}}$. Thus,
+\[\{\wt{\ta}_n \le a\} = \left\{\sum_{i=1}^n \one_{\{X_i \le b\}} \ge [\gamma n] \right\}. \]
+Furthermore, the random variables $\one_{\{X_i \le b\}}$ are i.i.d. and with mean $F(\ta+a/\sqrt{n})$ and variance $F(\ta+a/\sqrt{n})(1-F(\ta+a/\sqrt{n}))$. Thus, we can apply the central limit theorem to and use the fact the CDF is differentiable at $\ta$. 
+
+A special case is when $\gamma = 1/2$ and $\wt{\ta}_n$ is the median of the sample $X_1,\ldots,X_n$. For a symmetric distribution we can look at the ARE of $\wt{\ta}_n$ compared to $\bar{X}_n$. If $X_i \sim \normal(\ta,\sigma^2)$, then $\V(\bar{X}_n) = \frac{\sigma^2}{n}$ and $\V(\wt{\ta}_n) \sim \frac{1}{n}\cdot \frac{1}{4F'(\ta)}$. Note that,
+\[F'(\ta) = \frac{1}{\sqrt{2\pi} \sigma}\exb{-\frac{1}{2\sigma^2}(\ta-\ta)^2} = \frac{1}{\sqrt{2\pi}\sigma^2}.\]
+Thus, the ARE of the sample median compared to the sample mean is 
+\[\frac{2\pi \sigma^2}{4\sigma^2} = \frac{\pi}{2} \approx 1.577 >1. \]
+Thus, for Gaussian data, the sample mean has lower asymptotic variance than the sample median. 
+
+\section{M-estimators and Z-estimators}
+The MLE is defined to be,
+\[\wh{\ta}_n =  \amax_{\ta \in \Ta} L(\ta|X). \]
+We would like to know the following about $\wh{\ta}_n$,
+\begin{enumerate}
+    \item Consistency,
+    \item Asymptotic distribution,
+    \item Optimality.
+\end{enumerate}
+Since the MLE is defined as a maximizer it is an M-estimator. In many cases the MLE is also defined by solving the equation $l'(\wh{\ta})=0$, this makes $\wh{\ta}$ a Z-estimator as well. To prove consistency for M-estimators and Z-estimators, it helps to think of the log likelihood as a random function. We would like to say that the sample average of the log likelihood converges to the population log likelihood for all $\ta$. Thus, we need to understand the convergence of random functions.
+\subsection{A weak law for random functions}
+\begin{definition}
+    Let $K$ be a compact set and let $\mu : K  \to \R$ be a continuous function. Define $\norm{\mu}_\infty = \sup_{t \in K} \abs{\mu(t)}$.
+\end{definition}
+\begin{lemma}
+    Let $X$ be a random variable taking values in a compact set $K$. Let $h(t,x)$ be a function such that $h(\cdot, x)$ is a continuous function from $K$ to $\R$. Define $W(t) = h(t,X)$ for $t \in K$. Thus, $W$ is a random continuous function on $K$. Suppose that $\E\norm{W}_\infty < \infty$, then
+    \begin{enumerate}
+        \item The function $\mu(t) = \E[W(t)]$ is continuous on $K$.
+        \item As $\eps \searrow 0$,
+        \[ \sup_{t \in K} \E\left[\sup_{s : \norm{s-t} \le \eps} \abs{W(s)-W(t)}\right] \to 0. \]
+    \end{enumerate}
+\end{lemma} 
+\begin{proof}
+    Suppose that $t_n \to t$, then $W(t_n) \to W(t)$. Furthermore, $\abs{W(t_n)} \le \norm{W}_\infty$ and $\norm{W}_\infty$ is integrable. Thus, by the dominated convergence theorem,
+    \[\mu(t_n)=\E[W(t_n)] \to \E[W(t)] = \mu(t).  \]
+    Thus, $\mu$ is continuous. For each $x$ in our sample space, define
+    \[M_\eps(t) = \sup_{\norm{s-t}\le \eps}\abs{W(t) - W(s)}. \]
+    For fixed $t$, $M_\eps(t) \to 0$ as $\eps \to 0$ and $\abs{M_\eps(t)}\le 2\norm{W}_\infty$. Thus, by the dominated convergence theorem for each $t \in K$ we have,
+    \[\lim_{\eps \to 0} \E\left[ \sup_{\norm{s-t}\le \eps}\abs{W(t) - W(s)}\right] = 0. \]
+    The uniform result of the lemma is derived by the above point-wise result combined with the compactness of $K$
+\end{proof}
+We can use the above lemma to prove our weak law for random functions. We know from the regular weak law that $\abs{\bar{W}_n(t) - \mu(t)} \topp 0$, but we want a result that is uniform in $t$. 
+\begin{theorem}
+    Let $X_1,X_2,\ldots$ be i.i.d. random variables and let $W_i(t)=h(t,X_i)$ where $h$ is a function such that $h(\cdot,x):K \to \R$ is a continuous function on a compact set $K$ for all $x$. Suppose that $\E[\norm{W_1}_\infty] < \infty$. Let $\mu(t) = \E[W_1(t)]$, then
+    \[\norm{W_n - \mu}_\infty \topp 0, \]
+    as $n \to \infty$.  
+\end{theorem}
+\end{document}
