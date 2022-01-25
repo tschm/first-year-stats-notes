@@ -1,0 +1,102 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305B -- Lecture 6}
+\author{Jonathon Taylor\\ Scribed by Michael Howes}
+\date{01/24/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305B -- Lecture 6}
+\lhead{01/24/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Model diagnostics in logistic regression}
+\subsection{Grouped goodness-of-fit-tests}
+If  our covariates  $X$ are grouped  (for instance  $X$ is categorical), then we  can  use  a  $G^2$  or $X^2$ statistic  to measure our  model's goodness-of-fit.  If we  do not have  groups, then we  can create groups  by partitioning the feature space. These goodness-of-fit tests  are  measuring  variation  in the counts  that  is   unexplained  by our  model.  
+\subsection{Pearson's residuals}
+Define the Pearson's residuals to be,
+\[e_i   = \frac{Y_i-\wh{\pi}_i}{\sqrt{\wh{\pi}_i(1-\wh{\pi}_i)}}. \]
+If  the model is true and  if we  wrote  $\pi_i$ instead  of $\wh{\pi}_i$, then the above  residuals  would  be independent and with mean  0 and variance  1. But $\wh{\pi}_i$ is fit to $Y$, and  so  $e_i$  may be  dependent and have variance less than 1. The  residuals are used in  \emph{Pearson's $\chi^2$ statistic},
+\[X^2 = \sum_{i=1}^n  e_i^2.\]
+The  statistic $X^2$ can be used as an alternative to the  deviance.  
+\subsection{Deviance residuals}
+An alternative to the  Pearson's residuals is   to use  the  decomposition,
+\[\DEV(\wh{\pi}|Y)=\sum_{i=1}^n \DEV(\wh{\pi}_i|Y_i),\]
+where $\DEV(\wh{\pi}_i|Y_i) =-2\left(Y_i\log(\wh{\pi}_i)+(1-Y_i)\log(1-\wh{\pi}_i)\right)$  in the binary case. The  \emph{deviance  residuals} are defined  to be,
+\[\text{sign}\left(Y_i-\wh{\pi}_i\right)\sqrt{\DEV(\wh{\pi}_i|Y_i)}. \]
+\subsection{Standardized residuals  and  hat  matrices} 
+Is  there a way to  adjust  Pearson's residuals so that they have variance  1?   In  ordinary least  squares  regression, we  know that 
+\[ r_i   =  \frac{Y_i-\wh{Y}_i}{\sqrt{R_{ii}}}, \]
+have  variance  $\sigma^2$.  Where  $R$  is the orthogonal  projection onto the orthogonal complement of  the  range  of $X$. That  is, $R=I-X(X^TX)^{-1}X^T=I-H$.  Can  we  find  something analogous to the hat  matrix in  logistic regression? Recall that,
+\[ \wh{\beta}-\beta^*  \approx (X^TW_{\beta^*}X)^{-1}X\left(Y-\pi_{\beta^*}(X)\right) = (\wt{X}^T\wt{X})^{-1}\wt{X}R_{\beta^*}(X,Y),  \]
+where  $\wt{X}=W_{\beta^*}(X)^{1/2}X$ and $R_{\beta}(X,Y) =  W_{\beta^*}(X)^{-1/2}(Y-\pi_{\beta^*}(X))$.  Thus, logistic regression looks like weighted  least  squares. Recall the in weighted least squares  we  use  the estimator,
+\[\wh{\beta}_W = \amin_\beta \left\{\sum_{i=1}^n  W_i(Y_i-X_i^T\beta)^2\right\}. \]
+If  $\wt{X}=W^{1/2}X$ and $\wt{Y}=W^{1/2}Y$, then 
+\[\wh{\beta}_W =  \amin_\beta \left\{\sum_{i=1}^n  (\wt{Y}_i-\wt{X}_i^T\beta)^2\right\} = (\wt{X}^T\wt{X})^{-1}\wt{X}^T\wt{Y}. \]
+The  vector  $R_{\beta}(X,Y) =  W_{\beta^*}(X)^{-1/2}(Y-\pi_{\beta^*}(X))$ has independent entries with  mean 0  and variance 1. Thus, when  viewing  logistic regression as  weighted  least squares, the appropriate  hat  matrix is,
+\[H_{\beta^*} = \wt{X}(\wt{X}^T\wt{X})^{-1}\wt{X}^T = W_{\beta^*}(X)^{1/2}X(X^TW_{\beta^*}(X)X)^{-1}X^TW_{\beta^*}(X)^{1/2}.\]
+Which  we  have to  estimate  with,
+\[H_{\wh{\beta}} =  W_{\wh{\beta}}(X)^{1/2}X(X^TW_{\wh{\beta}}(X)X)^{-1}X^TW_{\wh{\beta}}(X)^{1/2}. \]
+Thus,  the standardized residuals are,
+\[r_i = \frac{e_i}{\sqrt{1-H_{\wh{\beta},ii}}}. \]
+These residuals  are the  leverage scores $H_{\wh{\beta},ii}$ can be used similarly to how they are used in OLS.
+\subsection{Analogies  of  $R^2$}
+In OLS,  we have  $R^2  =  \frac{SST-SSE}{SST}$. The analog  for logistic regression  is  thus,
+\[ R^2  = \frac{\DEV(M_0)-\DEV(M)}{\DEV(M_0)}, \]
+where  $M$  is our  model  and $M_0$ is the  model with  just  an  intercept. 
+\subsection{Confusion  matrices  and  AUC}
+So  far we have been modelling $\pi(x) = \Pa(Y|X=x)$  via $\wh{\pi}(x)$. To make a prediction $\wh{y}(x)  \in \{0,1\}$, we  can pick a  threshold  $c$ and  define,
+\[\wh{y}(x) = \begin{cases}
+    1 \text{if } \wh{\pi}(x) \ge c,\\
+    0 & \text{if }  \wh{\pi}(x) < c.
+\end{cases}  \]
+For each  fixed   $c$, we  can  create  a  \emph{confusion  matrix} that  records the number  of  correct  and incorrect predictions  and  the predicted values. The  confusion matrix looks  like this,
+\begin{center}
+    \begin{tabular}{cc|cc}
+        &&\multicolumn{2}{c}{Actual}\\
+        &&0&1\\
+        \hline 
+        Fitted&0&True   negative (TN)&False negative  (FN)\\
+                &1&  False positive (TP)& True  positive (TP)
+    \end{tabular}
+\end{center}
+From this we  can calculate the  true positive  rate (TPR)  and the false positive rate (FPR). These are,
+\[TPR  = \frac{TP}{TP+FN},~~~FPR  = \frac{FP}{FP+TN}.\]
+Ideally  we  would  have $TPR  \approx  1$  and $FPR  \approx  0$, but it can be hard to  achieve both simultaneously. Both TPR and FPR  are functions  of our chosen threshold  $c$. By plotting  the pair  $(FPR,TPR)$ as $c$  varies  from  0 to  1, we produce an ROC curve. We can  measure  our  classifier by how far the ROC curve is above  the line $y=x$. This can be summarized by the  AUC which is the area under the ROC curve. A random assignment of 0  and  1 to $\wh{y}$ would give a curve with $AUC = 0.5$.
+
+\subsection{Model selection}
+We can use the AIC to select models. The AIC of a model $M$ with $p(M)$ parameters is defined to be
+\begin{align*}
+    AIC(M) &=-2\log L(M)+2p(M)\\
+&=\DEV(M)+2p(M)+2g(Y),
+\end{align*}
+where $L(M)$ is the maximized likelihood of the data under the model $M$. We also have the BIC which is,
+\begin{align*}
+    BIC(M) &=-2\log L(M)+\log(n)p(M).
+\end{align*}
+We can then choose a model by picking the one which minimizes $AIC(M)$ or $BIC(M)$. The AIC is a generalization of Mallow's $C_p$ statistic and the B in BIC stands for Bayesian. A warning: if AIC or BIC or something else is used to pick a model $M$, then all the inference results we derived no longer hold. This is because we are using the data  twice. Once to pick the model but then again to do inference. For the inference results, the model was chosen separately to the data. 
+\section{Generalized linear models}
+Suppose that,
+\[f(y|\ta) = \alpha(\ta)b(y)\exp(yQ(\ta)), \]
+where,
+\[\alpha(\ta) = \int_{\mathcal{Y}} \exp(yQ(\ta))b(y)m(dy). \]
+This means that our data $y$ comes from an exponential family with sufficient statistic $y$, natural parameters $\eta = Q(\ta)$ and reference measure $m$ with density $b(y)$. We can write,
+\[\al(\ta)^{-1} = \exp(\Lambda(\eta)) =\int_{\mathcal{Y}} \exp(y\eta)b(y)m(dy). \]
+Standard calculations give,
+\[\nabla \Lambda(\eta) = \E_\eta[Y], \]
+and 
+\[\nabla^2 \Lambda(\eta) = \V_\eta(Y). \] 
+Thus, the function $\eta \mapsto \E_\eta[Y]$ is increasing and invertible on its range. It follows that $\V_\eta(Y)$ can be written as a function of $\eta = (\nabla \Lambda)^{-1}(\E_\eta[Y])$. Thus, $\V(Y) = V(\mu)$ where $V$ is a function and $\mu = \E_\eta[Y]$. Here are some examples,
+\begin{enumerate}
+    \item Poisson: If $Y \sim \poi(\mu)$, then \[P_\mu(Y=y)=\exp(y\log(\mu))\frac{e^{-\mu}}{y!}.\]
+    The natural parameter if $\log(\mu)$ and here $\V_\mu(Y)=\mu=V(\mu)=V(\E_\mu[Y])$. The natural regression model is $\log(\mu_i)=X_i^T\beta$.
+    \item Bernoulli: If $Y\sim \bern(\pi)$, then \[P_{\pi}(Y=y) = \exp(y\log(\pi)+(1-y)\log(1-\pi))=\exp(y\log(\pi/(1-\pi))-\log(1-\pi)).\]
+    Thus, the natural parameter is $\eta = \log(\pi/(1-\pi))$, and we have our familiar logistic regression model. In this case, $\V_\pi(Y)=\pi(1-\pi)=V(\pi)=V(\E_\pi(Y))$.
+\end{enumerate}
+\end{document}
