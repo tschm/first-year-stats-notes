@@ -1,0 +1,111 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305B -- Lecture 7}
+\author{Jonathon Taylor\\ Scribed by Michael Howes}
+\date{01/26/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305B -- Lecture 7}
+\lhead{01/26/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Binary GLMs}
+\subsection{Fitting}
+Let $F$ be a CDF with density $f$. The deviance for a binary GLM with link function $g=F^{-1}$ is,
+\[\DEV(\beta|Y) = 2\sum_{i=1}^n - Y_i \frac{F(X_i^T\beta)}{F(X_i^T\beta)(1-F(X_i^T\beta))} - \log\left(1-F(X_i^T\beta)\right). \]
+Thus, 
+\[\nabla \DEV(\beta|Y) = 2\sum_{i=1}^n X_i \frac{f(X_i^T\beta)^2}{F(X_i^T\beta)(1-F(X_i^T\beta))}\left[\frac{F(X_i^T\beta)-Y_i}{f(X_i^T\beta)}\right]. \]
+Since $X_i^T\beta = F^{-1}(\E_\beta[Y_i])$, we have that $\E_\beta [F(X_i^T\beta)-Y_i] = 0$. Thus, we have
+\[\E[\nabla^2 \DEV(\beta|Y)] = 2\sum_{i=1}^n X_iX_i^T\frac{f(X_i^T\beta)^2}{F(X_i^T\beta)(F(X_i^T\beta)-1)} = 2X^TW_\beta X, \]
+where $W_\beta = \diag\left(\frac{f(X_i)^2}{F(X_i^T\beta)(1-F(X_i^T\beta))}\right).$ We can also rewrite $\nabla \DEV(\beta|Y)$ in terms of the $W_\beta$,
+\[\nabla \DEV(\beta|Y) = 2X^TW_\beta \left(\frac{Y-F(X\beta)}{f(X\beta)}\right). \]
+To fit a binary glm, we can use Fisher scoring. Fisher scoring is an iterative quasi-Newton method given by{
+\begin{align*}
+    \widehat{\beta}^{(k+1)}& = \wh{\beta}^{(k)} - \E_{\beta^{(k)}}[\nabla^2 \DEV(\beta^{(k)}|Y)]^{-1}\nabla \DEV(\wh{\beta}^{(k)}|Y) \\
+    &= (X^TW_{\wh{\beta}^{(k)}}X)^{-1}X^TW_{\wh{\beta}^{(k)}}\left(X\wh{\beta}^{(k)}+\frac{Y-F(X\wh{\beta}^{(k)})}{f(X\wh{\beta}^{(k)})}\right).
+\end{align*}
+Note that the above method is a form of iterative re-weighted least squares. This was important for historical reasons since least squares was one of the main algorithms implemented on early computers. When we view Fisher scoring as iterative re-weighted least squares, the response at step $k+1$ is,
+\[Z^{(k+1)} = X\wh{\beta}^{(k)} + \frac{Y-F(X\wh{\beta}^{(k)})}{f(X\wh{\beta}^{(k)})} = g(\E_{\beta^{(k)}}(Y)) + g'(\E_{\wh{\beta}^{(k)}}(Y))(Y-\E_{\wh{\beta}^{(k)}}[Y]). \]
+This is because if $\mu = F(X^T\beta)$, then $g(\mu) = F^{-1}(\mu) = X^T\beta$ and $g'(\mu) = \frac{1}{F'(F^{-1}(\mu))} = \frac{1}{f(X\beta)}$. The weight matrix at time $k+1$ is,
+\begin{align*}
+    W^{(k+1)} &= \diag\left(\frac{f(X_i^T\wh{\beta}^{(k)})^2}{F(X_i^T\wh{\beta}^{(k)})(1-F(X_i^T\wh{\beta}^{(k)}))}\right)\\
+    &=\diag\left(\frac{F(X_i^T\wh{\beta}^{(k)})(1-F(X_i^T\wh{\beta}^{(k)}))}{f(X_i^T\wh{\beta}^{(k)})^2}\right)^{-1}\\
+    &=\frac{1}{f(X\wh{\beta}^{(k)})^2}\V_{\wh{\beta}^{(k)}}\left(Y\right)^{-1}\\
+    &=g'(\wh{\mu}^{(k)})^2 V(\wh{\mu}^{(k)})^{-1},
+\end{align*}
+where $\wh{\mu}^{(k)} = \E_{\wh{\beta}}[Y]$. This shows how Fisher scoring can be generalized to other glms. Instead of minimizing the deviance, we simply run iterative re-weighted least squares with $Z^{(k)} = g(\wh{\mu}^{(k)})+g'(\wh{\mu}^{(k)})(Y-\wh{\mu}^{(k)})$ and $W^{(k)} = g'(\wh{\mu}^{(k)})^2V(\wh{\mu}^{(k)})^{-1}$. This is important because in general for glms we do not have a full model from which we can calculate and optimize a likelihoood. We just have the functions $g$ and $V$. Note that, in the binary case, if the model is true, then 
+\[\wh{\beta} \approx \normal(\beta^*, (X^TW_{\wh{\beta}}X)^{-1}). \]
+If the model is not true, then we have the sandwich form
+\[\wh{\beta}-\beta^* \approx \normal(0, Q^{-1}_{\beta^*}\Sigma_{\beta^*}Q^{-1}_{\beta^*}), \]
+where $Q_{\beta^*} = \E_{\beta^*}[X^TW_{\beta^*}X]$ and $\Sigma_{\beta^*} = \V(X^T(Y-\pi_{\beta^*}(X)))$. In practice, we can estimate $Q_{\beta^*}$ with $X^TW_{\wh{\beta}}X$ and bootstrap for $\Sigma_{\beta^*}$ or we can bootstrap directly for $\V(\wh{\beta})$. 
+\subsection{Inference}
+The difference of deviance can be used as a likelihood ratio test. If $M_R \subseteq M_F$ are two models, then if $M_R$ contains the true model 
+\[\DEV(M_R)-\DEV(M_F) \stackrel{n \to \infty}{\sim} \chi^2_{df_R-df_F}. \]
+Unlike in linear regression, this test is different to the Wald test for a single predictor (i.e. when $M_F$ is $M_R$ plus one additional predictor).
+\section{Poisson data}
+Suppose $Y \sim \poi(\la)$, then for $y=0,1,2,\ldots,$ we have
+\[\Pa_\la(Y=y) = \frac{\la^y}{y!}\exp(-\la) = \exp(y \log(\la)-\la)\frac{1}{y!}. \]
+The canonical link for this family is $g = \log$, giving the model $\log(\la_i) = X_i^T\beta$ where $\la_i = \E[Y_i|X_i]$. This model is called the \emph{log-linear model}. The variance function for this model is $\V(Y_i|X_i) = \la_i$. The deviance is 
+\[\DEV(\beta|Y) = 2\sum_{i=1}^n -Y_iX_i^T\beta+e^{X_i^T\beta}+Y_i\log(Y_i)-Y_i,  \]
+the terms $Y_i\log(Y_i)-Y_i$ come from the saturated model where we have $\la_i = Y_i$. The gradient and Hessian of the deviance are thus,
+\[\nabla \DEV(\beta|Y) = 2X^T(\exp(X\beta)-Y) = 2X^T(\E_{\beta}[Y]-Y), \]
+and
+\[\nabla^2 \DEV(\beta|Y) = 2X^TW_{\beta}X, \]
+where $W_{\beta} = \V_\beta(Y) = \exp(X\beta)$. Thus, we can fit this model by using Newton--Raphson. This gives us the iterative rule,
+\begin{align*}
+    \wh{\beta}^{(k+1)} &= \wh{\beta}^{(k)} -  \nabla^2 \DEV(\wh{\beta}^{(k)}|Y)^{-1}\left(\nabla\DEV(\wh{{\beta}^{(k)}}|Y)\right)\\
+    &=\wh{\beta}^{(k)} - \left(X^TW_{\beta}X\right)^{-1}X^T(\E_{\wh{\beta}^{(k)}}[Y]-Y)\\
+    &=\wh{\beta}^{(k)} + \left(X^T\exp(X\beta)X\right)^{-1}X^T(Y-\exp(X\beta)).
+\end{align*}
+This iterative algorithm once again corresponds to a form of iterative re-weighted least squares, with response,
+\begin{align*}
+    Z^{(k+1)} &= X\wh{\beta}^{(k)} -  (Y-\exp(X\wh{\beta}^{(k)}))/\exp(X\wh{\beta}^{(k)})\\
+    &=g(\wh{\la}^{(k)}) - g'(\wh{\la}^{(k)})(Y-\wh{\la}^{(k)})
+\end{align*}
+where $\wh{\la}^{k} = \exp(X\wh{\beta}^{(k)}) = \E_{\wh{\beta}^{(k)}}[Y]$.
+and weight matrix,
+\begin{align*}
+    W^{(k+1)} &= \exp(X\wh{\beta}^{(k)})\\
+    &=\V_{\wh{\beta}^{(k)}}(Y).
+\end{align*}
+\subsection{Residuals}
+Like the binary models, there are two types of residuals for the log-linear model. We have the Pearson residuals,
+\[e_i = \frac{Y_i-\wh{\la}_i}{\sqrt{\wh{\la}_i}} = \frac{Y_i - \E_{\wh{\la}_i}[Y]}{\sqrt{\V_{\wh{\la}_i}(Y)}}. \]
+We also have the deviance residuals. Note that
+\[\DEV(\wh{\la}|Y) = \sum_{i=1}^n \DEV(\wh{\la}_i|Y_i). \]
+Thus, we can define the deviance residuals as 
+\[d_i = \text{sign}(Y_i - \wh{\la}_i)\DEV(\wh{\la}_i|Y_i), \]
+recall that $\DEV(\wh{\la}_i|Y_i) = 2\left(\wh{\la}_i-Y_i\log(\wh{\la}_i)-Y_i+Y_i\log(Y_i)\right)$. We also have a hat matrix for the log-linear model. It is given by
+\[H_{\wh{\beta}} = W_{\wh{\beta}}^{1/2}X(X^TW_{\wh{\beta}}X)^{_1}X^TW_{\wh{\beta}}^{1/2}, \]
+where $W_{\wh{\beta}}=\exp(X\wh{\beta})$.
+\subsection{``Unnatural'' models for Poisson data}
+We can get other models for Poisson data by changing the link function $g$. The link function satisfies $g(\la_i) = X_i^T\beta$ and hence $\la_i = g^{-1}(X_i^T\beta)$. The natural choice if $g = \log$ but two other choices are \texttt{identity}: $g(\la) = \la$ and \texttt{inverse}: $g(\la) = 1/\la$. These can be used in \texttt{glm()} in R by specifying the link function. For a link function $g$, the deviance is
+\[\DEV(\beta|Y) = 2\sum_{i=1}^n \left[g^{-1}(X_i^T\beta)-Y_i\log\left(g^{-1}(X_i^T\beta)\right)-Y_i + Y_i\log(Y_i)\right].\]
+We can fit a Poisson glm with Fisher scoring which we can present as an IRLS algorithm with
+\[Z^{(k+1)} = X\wh{\beta}^{(k)}+g'(\wh{\la}^{(k)})(Y-\wh{\la}^{(k)}), \]
+and 
+\[W^{(k+1)} = g'(\wh{\la}^{(k)})^2 V(\wh{\la}^{(k)})^{-1}, \]
+where $\wh{\la}^{(k)} = g^{-1}(X\wh{\beta}^{(k)})$ and $V(\la) = \la$. Note that 
+\[\nabla \DEV(\beta|Y) = 2X^T\left(\frac{\E_{\beta}[Y]-Y}{g'(\E_{\beta}[Y])\E_{\beta}[Y]}\right),\]
+and 
+\begin{align*}
+    \E_\beta[\nabla^2 \DEV(\beta|Y)]&=2X^T\left(\frac{1}{g'(\E_{\beta}[Y])^2\E_{\beta}[Y]}\right)
+    2X^TW_\beta X,
+\end{align*}
+where $W_\beta = \diag\left(\frac{1}{g'(\la_i)^2\V_{\la_i}(Y)}\right)=\diag\left(\frac{1}{g'(\la_i)^2\la_i}\right)$, where $\la_i = g^{-1}(X_i^T\beta)$. We again have a sandwich estimator for the variance of $\wh{\beta}^{(k)}$,
+\[\wh{\beta}-\beta^* \approx \normal(0, Q^{-1}\Sigma Q^{-1}),\]
+where $Q = X^TW_{\beta^*} X$ and $\Sigma = \V(X^TW^{(\infty)}Z^{(\infty)})$. When the model is correct, $X^TW_{\beta^*}X \approx \Sigma$. 
+\section{Over-dispersion}
+The Poisson model requires that $\E[Y_i]=\V(Y_i)$ but this may be far from true. In simple clustering models we in fact have $\V(Y_i) = \phi \E[Y_i]$ where $\phi$ has to be estimated from the data. In a Poisson glm we can estimate $\phi$ with
+\[\wh{\phi} = \frac{1}{n-p} \sum_{i}e_i^2, \]
+where $p$ is the number of parameters and $e_i$ are the Pearson residuals. Another way to incorporate over-dispersion is to work with a negative binomial distribution. Consider the following non-standard parametrization of the negative binomial distribution, $Y \sim \mathsf{Negative binomial}(\mu,k)$
+\[\Pa(Y= y) = \frac{\Gamma(y+k)}{\Gamma(k)\Gamma(y+1)}\left(\frac{k}{\mu+k}\right)^k \left(1-\frac{k}{\mu+k}\right)^y. \]
+For a fixed $k$, this is a one-dimensional exponential family with $\E[Y]=\mu$ and $\V(Y) = \mu + \frac{\mu^2}{k}$. Thus, by varying $k$, we get different amounts of over-dispersion in our model. The parameter $k$ can be estimated from the data.
+\end{document}
