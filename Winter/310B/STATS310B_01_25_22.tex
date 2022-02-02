@@ -1,0 +1,138 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310B -- Lecture 7}
+\author{Sourav Chatterjee\\ Scribed by Michael Howes}
+\date{01/25/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310B -- Lecture 8}
+\lhead{01/25/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{The hiring problem}
+ Last time we defined $X_n = \one_{\{r_n =1 \}}$ for $n=1,\ldots,N$, where $(r_1,\ldots,r_N)$ was a random permutation of $\{1,\ldots,N\}$ drawn uniformly. We showed that $Y_n = \E(X_n|\F_n) = \frac{n}{N}\one_{r_n^n =1 }$, where $r^n =(r_1^n,\ldots,r_n^n)$ was the relative ranks of $(r_1,\ldots,r_n)$ and $\F_n = \sigma(r^n)$. We define $V_N = Y_N$ and for $n=1,\ldots,N_1$,
+ \[V_n = \max\left\{Y_n \E(V_{n+1}\F_n)\right\}. \]
+ It was proven that $v_n^N = \E(V_{n+1}|\F_n)$ was a non-random constant for $n=1,\ldots,N-1$. Furthermore, we have $v_n^N = \E(\max\{Y_n, v_n^N\})$ for $n<N-1$ and $V^N_{N-1}= \frac{1}{N} = \E(Y_N)$. The optimal stopping time for this problem is
+ \[\tau = \min\{n : V_n = Y_n\}. \]
+ If we define $v_N^N = 0$, then $\tau$ is given by
+ \[\tau = \min\{n : Y_n \ge V_n^N\}. \]
+ Note that $v_1^N \ge v_2^N \ge \ldots \ge v_{n-1}^N = \frac{1}{N}$. Thus, we can define $t_N = \min\{n : \frac{n}{N} \ge v_n^N\}$. Note that for $n < t_N$, $Y_n < v_n^N$ always and if $n \ge t_N$, then $Y_n \ge v_n^N$ if and only if $Y_n \neq 0$. Thus,
+ \[\tau = \min\{n\ge t_N : r_n^n = 1\}.  \]
+ That is the optimal stopping time, does not stop during $\{1,\ldots,t_N\}$ but then stops as soon as there is a candidate who is better than everyone who stopped before. We will now approximate $t_N$. 
+ 
+ Note that if $n < t_N$, then $\frac{n}{N} < v_n^N$ and so $v_{n-1} = v_n^N$. If $v_{n-1} \ge t_N$, then 
+ \begin{align*}
+     v_{n-1}^N &= \frac{n}{N}\Pa(Y= \frac{n}{N})+v_n^N\Pa(Y=0)\\
+     &= \frac{1}{N}+v_n^N\left(1-\frac{1}{n}\right).
+ \end{align*}
+ This gives a recursive formula for $v_n^N$ when $n \ge t_N$. Solving this recursion gives,
+ \[v_n^N = \frac{1}{N}+\frac{n}{N}\sum_{k=n+1}^{N-1}\frac{1}{k}. \]
+ Thus, $t_N$ is defined as the unique $n$ such that 
+ \[\frac{1}{N}+\frac{n-1}{N}\sum_{k=n}^{N-1}\frac{1}{k} \le \frac{n}{N} \le \frac{1}{N}+\frac{n}{N}\sum_{k=n+1}^{N-1}\frac{1}{k}. \]
+ Note that,
+ \[\frac{1}{N}+\frac{n-1}{N}\sum_{k=n}^{N-1}\frac{1}{k},\frac{1}{N}+\frac{n}{N}\sum_{k=n+1}^{N-1}\frac{1}{k} \approx \frac{n}{N}\log\left(\frac{N}{n}\right). \]
+ Thus, for large $N$, we have 
+ \[\frac{t_N}{N} \approx \frac{t_N}{N}\log\left(\frac{N}{t_N}\right). \]
+ Thus, $\frac{N}{t_N} \approx e$ and so $t_N \approx \frac{N}{e}$. We can also calculate the probability that we hire the best candidate. By the proof of the optimal stopping theorem, we have
+ \begin{align*}
+     \Pa(r_\tau = 1) &= \E[Y_\tau]\\
+     &=\E[V_\tau]\\
+     &=\E[V_{\tau \land N}]\\
+     &=\E[V_{\tau \land 1}]\\
+     &=\E[V_1]\\
+     &=\E\left[\max\{Y_n, v_1^N\right]\\
+     &=v_1^N\\
+     &=v_{t_N}^N\\
+     &\approx \frac{1}{e}\log(e)\\
+     &=\frac{1}{e}.
+ \end{align*}
+ \section{Convergence of martingales}
+ Our next topic is the convergence of martingales. There are many results about the convergence of martingales. The arguments are quite different from previous convergence results such as the strong law of large numbers of the central limit theorem. We will first prove Doob's sub-martingale convergence theorem.
+ \begin{theorem}\label{convergence}
+     Let $\{X_n\}_{n \ge 0}$ be a sub-martingale adapted to a filtration $\{\F_n\}_{n \ge 0}$. If $\sup_n \E[X_n^+]<\infty$, then there exists an integrable random variable $X$ such that $X_n \to X$ almost surely.
+ \end{theorem}
+ To prove this result we will need to use ``upcrossings.'' Upcrossings are a random collection of indices defined inductively. 
+ \begin{definition}
+     Given a sequence of random variables $\{X_n\}_{n \ge 0}$ and an interval $[a,b]$ with $a<b$, the \emph{upcrossings} of $[a,b]$ by $\{X_n\}_{n \ge 0}$ are defined as follows. Let $S_1$ be the first time $n$ such that $X_n \le a$. Let $T_1$ be the first $n$ after $S_1$ such that $X_n \ge b$. Let $S_2$ be the first $n$ after $T_1$ such that $X_n \le a$, and $T_2$ the first $n$ after $S_2$ such that $X_n \ge b$. And we keep going like this. That is, taking $T_0 = -1$, we define, for $k \ge 1$,
+     \[S_k = \inf\{n \ge T_{k-1} : n \le a\}, \]
+     and 
+     \[T_k  = \inf \{n \ge S_k : n \ge b\}. \]
+     In the above, we follow the convention that the infimum of the empty set is $+\infty$. The collections of indices $\{S_k,S_k+1,\ldots,T_k\}$ such that $S_k <\infty$ are called the upcrossings of $[a,b]$ by $\{X_n\}_{n \ge 0}$. 
+ \end{definition}
+ We will use upcrossings in the next lemma.
+ \begin{lemma}[Doob's upcrossing lemma]
+    Let $\{X_n\}_{n \ge 0}$ by a sub-martingale adapted to $\{\F_n\}_{n \ge0}$. Take any interval $[a,b]$ with $a<b$ and let $U_m$ by the number of complete upcrossings of $[a,b]$ by time $m$. Then,
+    \[\E[U_m] \le \frac{\E[(X_m-a)^+]-\E[(X_0-a)^+]}{b-a}. \]    
+ \end{lemma}
+ \begin{proof}
+     Define $Y_n = a+(X_n-a)^+$. Since $x \mapsto a+(x-a)^+$ is non-decreasing and convex, $\{Y_n\}_{n \ge 0}$ is a sub-martingale adapted to $\{\F_n\}_{n \ge 0}$. We also have that $Y_n \ge a$ for all $n$ and the upcrossing of $\{X_n\}_{n \ge 0}$ are exactly the upcrossings of $\{Y_n\}_{n \ge 0}$.
+
+     Note also that whenever $k,k+1,\ldots,k+l$ is an upcrossing of $[a,b]$, then $Y_k = a$ and thus,
+     \begin{enumerate}
+            \item For all $j=k,k+1,\ldots, k+l$, $Y_j - Y_k \ge 0$, and
+            \item $Y_{k+l}-Y_k \ge b-a$.
+     \end{enumerate}
+     Thus, if we sum the increments $Y_{j+1}-Y_j$ over all $j$ such that $j,j+1$ are in the same upcrossing and $j < m$, then this sum is at least $U_m(b-a)$. This is because the terms in the final (possibly incomplete) upcrossing are non-negative. We can write this sum as follows,
+     \[W_m := \sum_{n=1}^m Z_n(Y_n - Y_{n-1}), \]
+     where,
+     \[Z_n = \begin{cases}
+         1 & \text{if $n,n-1$ are in the same upcrossing},\\
+         0 & \text{else}. 
+     \end{cases}\]
+     It turns out that $Z_n$ is $\F_{n-1}$ measurable. In particular, $Z_n$ is determined by $Y_1,\ldots,Y_{n-1}$. To see this, note that $n-1$ being in an upcrossing is determined by $Y_1,\ldots,Y_{n-1}$. If $n-1$ is not in an upcrossing, then $Z_n = 0$. If $n-1$ is in an upcrossing, then $n$ is in the same upcrossing if and only if $Y_{n-1} < b$ and hence $Z_n = 1$ if and only if $Y_{n-1} < b$. Thus, $Z_n = \one_{A_n}$ for some $A_n \in \F_n$. It follows that 
+     \begin{align*}
+         \E[W_m] &=\sum_{n=1}^m \E[Z_n(Y_n-Y_{n-1})]\\
+         &=\sum_{n=1}^m \E[\E(Z_n(Y_n-Y_{n-1})|\F_{n-1})]\\
+         &=\sum_{n=1}^m \E[\E(Z_n(Y_n-Y_{n-1})|\F_{n-1})]\\
+         &=\sum_{n=1}^m \E[Z_n\left(\E(Y_n|\F_{n-1})-Y_{n-1}\right)].
+     \end{align*} 
+     Recall that $\{Y_n\}_{n \ge 0}$ is a sub-martingale with respect to $\{\F_n\}_{n \ge 0}$. Thus, $\E(Y_n|\F_{n-1}) \ge Y_{n-1}$ almost surely and so
+     \[\E[Z_n\left(\E(Y_n|\F_{n-1})-Y_{n-1}\right)] \le \E[\E(Y_n|\F_{n-1})-Y_{n-1}] = \E[Y_n]-\E[Y_{n-1}]. \]
+     Thus,
+     \begin{align*}
+         \E[U_m](b-a)&\le \E[W_m]\\
+         &\le \sum_{n=1}^m \E[Y_n]-\E[Y_{n-1}]\\
+         &=\E[Y_m] - \E[Y_0]\\
+         &=\E[(X_m-a)^+]-\E[(X_0-a)^+],
+     \end{align*} 
+     proving the lemma. 
+ \end{proof}
+ We will immediately use this lemma to prove Theorem \eqref{convergence}.
+ \begin{proof}
+     Let $\{X_n\}_{n \ge 0}$ be a sub-martingale such that,
+     \[\sup_n \E[X_n^+]< \infty. \]
+     Let $[a,b]$ be any interval with rational endpoints $a<b$. Define $U_m$ be the number of complete upcrossings of $[a,b]$ by $\{X_n\}_{n \ge 0}$ up to time $m$ and let $U$ by the number of complete upcrossing of $[a,b]$ by $\{X_n\}_{n \ge 0}$. Note that $U_m \nearrow U$ and thus $\E[U_m] \nearrow \E[U]$. By the upcrossing lemma, we know that
+     \[\E[U_m] \le \frac{\E[(X_m-a)^+]-\E[(X_0-a)^+]}{b-a}. \]
+     But $(X_m-a)^+ \le X_m^++\abs{a}$. Thus, 
+     \[\E[U_m] \le \frac{\E[X_m^+]+\abs{a}-\E[(X_0-a)^+]}{b-a} \le \frac{\sup_n \E[X_n^+]+\abs{a}-\E[(X_0-a)^+]}{b-a}. \]
+     Thus, $\E[U] < \infty$ and $\Pa(U < \infty) = 1$. Hence, with probability 1, $\{X_n\}_{n \ge 0}$ has finitely many upcrossings of $[a,b]$. Let $A_{a,b}$ be the set of all $\w \in \Om$, such that $\{X_n(\w)\}_{n \ge 0}$ upcrosses $[a,b]$ finitely many times. We have thus shown that $\Pa(A_{a,b}) = 1$. Furthermore, if we define
+     \[A = \bigcup_{a \in \Q} \bigcup_{b \in \Q, b>a}A_{a,b}, \]
+     then $\Pa(A)=1$. We will show by contradiction that for every $\w \in A$, $X_n(\w)$ converges to some limit $X(\w)$. Indeed, if $X_n(\w)$ did not have a limit, then we would have
+     \[ \liminf_{n \to \infty}X_n(\w) < \limsup_{n \to \infty}X_n(\w).\]
+     This implies that there exists $a,b \in \Q$ with $a<b$, such that 
+     \[\liminf_{n \to \infty}X_n(\w) a<b< \limsup_{n \to \infty}X_n(\w). \]
+     It follows that $\{X_n(\w)\}_{n \ge 0}$ must upcross $[a,b]$ infinitely many times. Thus, the random variable
+     \[X = \lim_{n \to \infty} X_n,\]
+     is well-defined on $A$ and hence well-defined almost surely. It remains to show that $X$ is integrable. We will show $\E[X^+] < \infty$ and $\E[X^-] < \infty$. By Fatou's lemma we have,
+     \begin{align*}
+         \E[X^+] &= \E\left[\lim_{n \to \infty} X_n^+\right]\\
+         &\le \liminf_{n \to \infty} \E[X_n^+]\\
+         &\le \sup_n \E[X_n^+]\\
+         &< \infty.
+     \end{align*}
+     Furthermore, since $\{X_n\}_{n \ge 0}$ is a sub-martingale,
+     \begin{align*}
+         \E[X_n^-]&=\E[X_n^+]-\E[X_n]\\
+         &=\E[X_n^+]-\E[\E(X_n|\F_0)]\\
+         &\le \E[X_n^+]-\E[X_0].
+     \end{align*} 
+     Thus, $\sup_{n} \E[X_n^-]<\infty$ and Fatou's lemma again gives $\E[X^-]<\infty$.
+ \end{proof}
+\end{document}
