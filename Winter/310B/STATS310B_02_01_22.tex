@@ -1,0 +1,123 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS310B -- Lecture 9}
+\author{Sourav Chatterjee\\ Scribed by Michael Howes}
+\date{02/01/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS310B -- Lecture }
+\lhead{02/01/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Uniform integrability}
+We ended last lecture with the statement of the following proposition,
+\begin{proposition}\label{charactrized}
+    Let $\{X_n\}_{n \ge 1}$ be a sequence of random variables. The sequence $\{X_n\}_{n \ge 0}$ is uniformly integrable if and only if the following both hold,
+    \begin{enumerate}
+        \item $\sup_n \E[\abs{X_n}] < \infty$.
+        \item For all $\eps >0$ there exists $\delta > 0$ such that for all $A$ and $n$, if $\Pa(A) <\delta$, then $\E[\abs{X_n}\one_A] < \eps$.
+    \end{enumerate}
+\end{proposition}
+Which we will now prove.
+\begin{proof}
+    First suppose that $\{X_n\}_{n \ge 1}$ is uniformly integrable. Fix any $\eps > 0$, then there exists a $k$ such that for all $n$,
+    \[\E[\abs{X_n}\one_{\{\abs{X_n}>k\}}] < \eps. \]
+    It follows that,
+    \[\E[\abs{X_n}] =\E[\abs{X_n}\one_{\{\abs{X_n}\le k\}}]+\E[\abs{X_n}\one_{\{\abs{X_n}>k\}}]<k+\eps. \]
+    Thus, $\sup_n \E[\abs{X_n}] < \infty$. Now let $\eps >0$ be arbitrary and fix $k$ so that for all $n$,
+    \[\E[\abs{X_n}\one_{\{\abs{X_n}>k\}}] < \eps/2.\]
+    Set $\delta = \frac{\epsilon}{2k}$ and suppose $\Pa(A)<\delta$. Then
+    \begin{align*}
+        \E[\abs{X_n}\one_A]&=\E[\abs{X_n}\one_{A\cap\{\abs{X_n}> k\}}]+\E[\abs{X_n}\one_{A\cap\{\abs{X_n}\le k\}}]\\
+        &\le \E[\abs{X_n}\one_{\{\abs{X_n}>k\}}]+\E[k\one_A]\\
+        &< \epsilon/2 + k\Pa(A)\\
+        &<\epsilon/2+k\delta\\
+        &=\epsilon.
+    \end{align*}
+    Now conversely suppose that the two conditions hold and note that, 
+    \[\E[\abs{X_n}\one_{\{\abs{X_n}>k\}}] \ge \E[k\one_{\{\abs{X_n}>k\}}]=k\Pa(\abs{X_n}>k). \]
+    Thus, for every $n$ and $k$, $\Pa(\abs{X_n} > k)\le \frac{\sup_m \E[\abs{X_m}]}{k}$. Thus, given $\epsilon >0$ choose $\delta$ so that $\Pa(A)<\delta$ implies that $\E[\abs{X_n}\one_A]<\epsilon$ for every $n$. If $k > \frac{\sup_m \E[\abs{X_m}]}{\delta}$, then $\Pa(\abs{X_n} > k) < \epsilon$ for all $n$ and hence
+    \[\E[\abs{X_n}\one_{\{\abs{X_n}>k\}}] < \epsilon.\qedhere \]
+\end{proof}
+The above proposition has the following important corollary.
+\begin{corollary}
+    Let $X$ be an integrable random variable. Then for all $\epsilon > 0$, there exists $\delta >0$ such that if $\Pa(A)<\delta$, then $\E[X\one_A]<\epsilon$. 
+\end{corollary}
+\begin{proof}
+    By proposition \eqref{charactrized} it suffices to show that the sequence $X_n=X$ is uniformly integrable. By the dominated convergence theorem
+    \[\lim_{k \to \infty} \E[\abs{X}\one_{\{\abs{X}>k\}}] = 0, \]
+    showing that for all $\epsilon$ there exists a $k$ such that $\E[\abs{X}\one_{\{\abs{X}>k\}}]<\epsilon$. 
+\end{proof}
+\section{L\'evy downwards convergence theorem}
+With these results about uniform integrability we are ready to finish proving L'evy downwards convergence theorem. Recall the theorem's statement,
+\begin{theorem}[L\'evy's downards convergence theorem]
+    Let $X$ be an integrable random variable defined on $(\Om,\F,\Pa)$. Let $\F_0 \supseteq \F_1 \supseteq \F_2 \supseteq \ldots$ be a decreasing sequence of sub-$\sigma$-algebras of $\F$. Define $\F^* = \bigcap_{n=0}^\infty \F_n$, then 
+    \[\E(X|\F_n) \to \E(X|\F^*), \]
+    almost surely and in $L^1$.
+\end{theorem}
+\begin{proof}
+    In the previous lecture we use the upcrossing lemma to show that there exists an integrable random variable $X^*$ such that if $X_n = \E(X|\F_n)$, then $X_n \to X^*$ almost surely. It remains to show that $X_n \to X^*$ in $L^1$ and that $X^*=\E(X|\F^*)$. We will first show that $\{X_n\}_{n \ge 0}$ is uniformly integrable. Thus, fix $\epsilon >0$ and let $\delta$ be such that $\Pa(A) < \delta$ implies that $\E[\abs{X}\one_A] < \epsilon$. Now choose $k$ so that $\frac{\E[\abs{X}]}{k} < \epsilon$. Let $A_n$ be the event $\{\E(\abs{X}|\F_n)>k\}$. Note that, by Markov's inequality,
+    \begin{align*}
+        \Pa(A_n) &\le \frac{\E[\E(\abs{X}|\F_n)]}{k}\\
+        &=\frac{\E[\abs{X}]}{k}\\
+        &<\delta.
+    \end{align*}
+    Thus, $\E[\abs{X}\one_{A_n}]<\epsilon$. Furthermore, since $A_n \in \F_n$ we have
+    \[\E[\E(\abs{X}|\F_n)\one_{A_n}] = \E[\abs{X}\one_{A_n}] <\epsilon. \]
+    By Jensen's inequality $\abs{X_n} = \abs{\E(X|\F_n)} \le \E(\abs{X}|\F_n)$. Thus,$\E[\abs{X_n}\one_{A_n}] <\epsilon.$
+    Furthermore, since $\abs{X_n} < \E(\abs{X}|\F_n)$, we have $\{\abs{X_n}>k\} \subseteq A_n$ and so
+    \[\E[\abs{X_n}\one_{\{\abs{X_n}>k\}}] \le \E[\abs{X_n}\one_{A_n}] <\epsilon. \]
+    Thus, $\{X_n\}_{n \ge 0}$ are uniformly integrable. Since $X_n \to X^*$ almost surely, this implies that $X_n \to X^*$ in $L^1$. It remains to show that $X^* = \E(X|\F^*)$. First note that $X^*$ is $\F^*$ measurable. This is because for every $m$, $X_n = \E(X|\F_n)$ is $\F_m$ measurable for every $n \ge m$. Thus, $X^* = \lim_{n \ge m} X_n$ is $\F_m$ measurable. Since this holds for every $m$ we must have that $X^*$ is $\F^* = \bigcap_{m=1}^\infty \F_m$ measurable. Now suppose that $A \in \F^*$. Then $A \in \F_n$ for every $n$ and hence 
+    \[\E[X_n\one_A]=\E[X\one_A], \]
+    for every $m$. Furthermore, 
+    \[\abs{\E[X_n\one_A]-\E[X^*\one_A]} \le \E[\abs{X_n-X^*}\one_A]\le \E[\abs{X_n-X^*}]. \]
+    Since $X_n \to X^*$ in $L^1$, this implies that
+    \[\E[X^*\one_A] = \lim_{n \to \infty} \E[X_n\one_A] = \lim_{n \to \infty}\E[X\one_A]=\E[X\one_A]. \]
+    Thus, $X^*=\E(X|\F^*)$.
+\end{proof}
+We will now discuss and later prove an application of this convergence theorem.
+\section{De Finetti's theorem}
+\begin{definition}
+    
+Let $X_1,X_2,\ldots$ be an infinite sequence of random variables. The sequence $\{X_n\}_{n \ge 1}$ is \emph{exchangeable} if for any permutation $\pi : \N \to \N$ that fixes all but finitely many values $(X_{\pi(1)},X_{\pi(2)},\ldots)$ has the same distribution as $(X_1,X_2,\ldots)$.
+\end{definition}
+More precisely, we can think of the sequence $\{X_n\}_{n \ge 1}$ as a single random variable $X$ taking values in $\R^\N$ given by 
+\[X(\w) = (X_1(\w), X_2(\w),\ldots).\]
+The distribution of $X$ is the probability measure in induces on $(\R^\N,\F_{\R^\N})$ where $\F_{\R^\N}$ is the product $\sigma$-algebra of countably many copies of the Borel $\sigma$-algebra.  Thus, the law of $X$ is the probability measure $\mu_X$ given by
+\[\mu_X(B) = \Pa(X^{-1}(B)). \]
+For a permutation $\pi : \N \to \N$ we can define another random variable $X_\pi = (X_{\pi(1)},X_{\pi(2)},\ldots)$. The sequence $\{X_n\}_{n \ge 0}$ is exchangeable if and only if for every $\pi$ that fixes all but finitely many $i \in \N$, $\mu_{X_\pi}=\mu_X$. 
+
+For example, if $\{X_n\}_{n \ge 0}$ is an exchangeable sequence, then
+\[\Pa(X_2+X_3+X_5^2 > 20 \text{ and } X_2 < 5) = \Pa(X_1+X_3+X_{10000}^2 > 20\text{ and } X_1 < 5). \]
+De Finetti's theorem is a theorem about exchangeable sequences. A special case of de Finetti's theorem concerns $\{0,1\}$-valued exchangeable sequences.
+\begin{theorem}[de Finitti's theorem for coin tosses.]
+    Let $\{X_n\}_{n \ge 0}$ be an exchangeable sequence of $\{0,1\}$ valued random variables. Then there exists a probability measure $\mu$ on $[0,1]$ such that for every $n$ and every choice of $x_1,\ldots,x_n \in \{0,1\}$,
+    \[\Pa\left(X_1=x_1,\ldots, X_n = x_n\right) = \int_0^1 \ta^{\sum_{i=1}^n x_i}(1-\ta)^{n-\sum_{i=1}^n x_i} \mu(d\theta). \]
+    Furthermore, the limit $\Ta = \lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^n X_i$ exists almost surely and the random variable $\Ta$ is distributed according to $\Ta$.
+\end{theorem}
+Informally, conditional on the random variable $\Ta$, $X_1,\ldots,X_n$ are i.i.d. random variables with $\Pa(X_i=1|\Ta=\ta)=\ta$. 
+\subsection{The exchangeable $\sigma$-algebra}
+Let $X_1,X_2,\ldots$ be any sequence of random variables. Recall that the $\sigma$-algebra $\G = \sigma(X_1,X_2,\ldots)$ consists of all set of the form $X^{-1}(B)$ where $X=(X_1,X_2,\ldots)$ and $B$ is a measurable subset of $\R^\N$.
+\begin{definition}
+    A set $B \subseteq \R^\N$ is \emph{invariant under permutations of the first $n$ coordinates} if for all permutations $\pi$ of $\{1,\ldots,n\}$, for all $x=(x_1,x_2,\ldots) \in \R^\N$, if $x \in B$, then $(x_{\pi(1)},\ldots, x_{\pi(n)}, x_{n+1},\ldots) \in B$.
+\end{definition}
+For example $\{x_1+x_2+x_3 > 5\}$ is invariant under permutations of the first 3 coordinates. The set $\{X_1+x_2+x_3^2 > 5\}$ is invariant under permutations of the first 2 coordinates but not invariant under permutations of the first 2 coordinates.
+\begin{definition}
+    Let $\{X_n\}_{n\ge 0}$ be a sequence of random variables and let $\G = \sigma(X_1,X_2,\ldots)$. Define $\E_n$ be the $\sigma$-algebra of all $A \in \G$ such that $A = X^{-1}(B)$ for some $B \subseteq \R^\N$ that is invariant under permutations of the first $n$ coordinates. Also define $\E = \bigcap_{n=1}^\infty \E_n$. The $\sigma$-algebra $\E$ is called the \emph{exchangeable $\sigma$-algebra} of $\{X_n\}_{n \ge 0}$.
+\end{definition}
+We are now ready to state the general version of de Finetti's theorem.
+\begin{theorem}[de Finetti's theorem]
+    Let $\{X_n\}_{n \ge 0}$ be an exchangeable sequence of random variables and let $\E$ be the exchangable $\sigma$-algebra of $\{X_n\}_{n \ge 0}$. Then $\{X_n\}_{n \ge 0}$ are i.i.d. given $\E$ meaning that for every $n$ and every choice of Borel sets $A_1,\ldots,A_n$, we have
+    \begin{align*}
+        \Pa(X_1 \in A_1,\ldots,X_n \in A_n|\E) &=\prod_{i=1}^n \Pa(X_i \in A_i |\E)\\
+        &=\prod_{i=1}^n \Pa(X_1 \in A|\E).
+    \end{align*}
+\end{theorem}
+\end{document}
