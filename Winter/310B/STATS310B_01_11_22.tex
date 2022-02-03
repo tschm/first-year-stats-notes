@@ -94,7 +94,7 @@ We are now ready to prove Jensen's inequality.
         &=\E[X_{n+1}]+S_n\\
         &=S_n.
     \end{align*}
-    More generally is $X_i$ is integrable with mean $\mu_i$, then $S_n = \sum_{i=1}^n X_i-\mu_i$ is a martingale.
+    More generally if $X_i$ is integrable with mean $\mu_i$, then $S_n = \sum_{i=1}^n X_i-\mu_i$ is a martingale.
 \end{example}
 \begin{example}
     Let $X_1,\ldots, X_n$ be independent with $\E\abs{X_i}^2 < \infty$. Suppose that $\E[X_i]=0$ and $\E[X_i^2]=\sigma^2$ for all $i$. Let,
@@ -112,7 +112,7 @@ We are now ready to prove Jensen's inequality.
 \end{example}
 \begin{example}
     Let $X_1,X_2,\ldots$ be i.i.d. random variables such that for some $\ta \in \R$, $m(\ta) =\E[e^{\ta X_i}] < \infty$. Then 
-    \[M_n = \frac{e^{\ta S_n}}{m(\ta)^2},\]
+    \[M_n = \frac{e^{\ta S_n}}{m(\ta)^n},\]
     is a martingale with respect to $\F_n = \sigma(X_1,\ldots,X_n)$. Note that 
     \[\E[\abs{M_n}] = \frac{1}{m(\ta)^n}\E[e^{\ta S_n}]=\frac{1}{m(\ta)^n}\prod_{i=1}^n \E[e^{\ta X_i}]=1.\]
     Furthermore,

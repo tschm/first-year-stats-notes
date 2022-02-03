@@ -108,16 +108,16 @@ Let $X_1,X_2,\ldots$ be any sequence of random variables. Recall that the $\sigm
 \begin{definition}
     A set $B \subseteq \R^\N$ is \emph{invariant under permutations of the first $n$ coordinates} if for all permutations $\pi$ of $\{1,\ldots,n\}$, for all $x=(x_1,x_2,\ldots) \in \R^\N$, if $x \in B$, then $(x_{\pi(1)},\ldots, x_{\pi(n)}, x_{n+1},\ldots) \in B$.
 \end{definition}
-For example $\{x_1+x_2+x_3 > 5\}$ is invariant under permutations of the first 3 coordinates. The set $\{X_1+x_2+x_3^2 > 5\}$ is invariant under permutations of the first 2 coordinates but not invariant under permutations of the first 2 coordinates.
+For example $\{x_1+x_2+x_3 > 5\}$ is invariant under permutations of the first 3 coordinates. The set $\{x_1+x_2+x_3^2 > 5\}$ is invariant under permutations of the first 2 coordinates but not invariant under permutations of the first 2 coordinates.
 \begin{definition}
-    Let $\{X_n\}_{n\ge 0}$ be a sequence of random variables and let $\G = \sigma(X_1,X_2,\ldots)$. Define $\E_n$ be the $\sigma$-algebra of all $A \in \G$ such that $A = X^{-1}(B)$ for some $B \subseteq \R^\N$ that is invariant under permutations of the first $n$ coordinates. Also define $\E = \bigcap_{n=1}^\infty \E_n$. The $\sigma$-algebra $\E$ is called the \emph{exchangeable $\sigma$-algebra} of $\{X_n\}_{n \ge 0}$.
+    Let $\{X_n\}_{n\ge 0}$ be a sequence of random variables and let $\G = \sigma(X_1,X_2,\ldots)$. Define $\Ec_n$ be the $\sigma$-algebra of all $A \in \G$ such that $A = X^{-1}(B)$ for some $B \subseteq \R^\N$ that is invariant under permutations of the first $n$ coordinates. Also define $\Ec = \bigcap_{n=1}^\infty \Ec_n$. The $\sigma$-algebra $\Ec$ is called the \emph{exchangeable $\sigma$-algebra} of $\{X_n\}_{n \ge 0}$.
 \end{definition}
 We are now ready to state the general version of de Finetti's theorem.
 \begin{theorem}[de Finetti's theorem]
-    Let $\{X_n\}_{n \ge 0}$ be an exchangeable sequence of random variables and let $\E$ be the exchangable $\sigma$-algebra of $\{X_n\}_{n \ge 0}$. Then $\{X_n\}_{n \ge 0}$ are i.i.d. given $\E$ meaning that for every $n$ and every choice of Borel sets $A_1,\ldots,A_n$, we have
+    Let $\{X_n\}_{n \ge 0}$ be an exchangeable sequence of random variables and let $\Ec$ be the exchangable $\sigma$-algebra of $\{X_n\}_{n \ge 0}$. Then $\{X_n\}_{n \ge 0}$ are i.i.d. given $\Ec$ meaning that for every $n$ and every choice of Borel sets $A_1,\ldots,A_n$, we have
     \begin{align*}
-        \Pa(X_1 \in A_1,\ldots,X_n \in A_n|\E) &=\prod_{i=1}^n \Pa(X_i \in A_i |\E)\\
-        &=\prod_{i=1}^n \Pa(X_1 \in A|\E).
+        \Pa(X_1 \in A_1,\ldots,X_n \in A_n|\Ec) &=\prod_{i=1}^n \Pa(X_i \in A_i |\Ec)\\
+        &=\prod_{i=1}^n \Pa(X_1 \in A|\Ec).
     \end{align*}
 \end{theorem}
 \end{document}
