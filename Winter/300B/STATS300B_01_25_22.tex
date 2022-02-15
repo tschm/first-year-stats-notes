@@ -1,0 +1,101 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 7}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/25/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture7 }
+\lhead{01/25/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Motivation}
+\begin{enumerate}
+    \item We want to prove consistency of the MLE.
+    \item The MLE maximizes the log-likelihood which is an empirical average. In particular, the log-likelihood is a random function.
+    \item We will thus use the weak law for random functions.
+\end{enumerate}
+\section{Random functions}
+Recall the following,
+\begin{theorem}
+    Let $K$ be a compact set and suppose $X_1,X_2,\ldots$ are i.i.d. and $W_i(t)=h(t,X_i) \in C(K)$ for all values of $X_i$. Let $\mu(t) = \E[W_1(t)]$ and assume that $\E[\norm{W}_\infty] < \infty$, then $\norm{\bar{W}_n -\mu}_\infty \topp 0$.
+\end{theorem}
+We will also use the following theorem about the optimizers of random functions.
+\begin{theorem}
+    Let $G_n$ be random functions in $C(K)$ where $K$ is compact. Let $g \in C(K)$ be a deterministic function. Suppose that $\norm{G_n - g}_\infty \topp 0$, then
+    \begin{enumerate}
+        \item If $t_n \topp t^*$, then $G_n(t_n)\topp g(t^*)$.
+        \item Let $t_n$ be a random variable maximizing $G_n$. If $g$ achieves its maximum at a unique value $t^*$, then $t_n \topp t^*$.
+        \item Suppose that $K \subseteq \R$ and $t_n$ is a random variable solving $G_n(t_n)=0$. If $t^*$ is the unique value in $K$ such that $g(t^*)=0$, then $t_n \topp t^*$.
+    \end{enumerate}
+\end{theorem}
+\section{Kullback--Leibler information}
+\begin{definition}
+    Let $P$ and $Q$ be probability measures with densities $p$ and $q$ with respect to a common $\sigma$-finite measure $\mu$. The \emph{Kullback--Leibler information} of $P$ and $Q$ is defined to be,
+    \[K(P,Q) = \E_P\left[
+        \log\left(\frac{p(X)}{q(X)}\right)
+    \right]. \]
+\end{definition}
+\begin{proposition}
+    For all probability distributions, $K(P,Q) \ge 0$ and $K(P,Q)=0$ if and only if $P=Q$.
+\end{proposition}
+\begin{proof}
+    Recall that $-\log$ is convex. Thus, by Jensen's inequality,
+    \begin{align*}
+        \E_P\left[\log\left(\frac{p(X)}{q(X)}\right)\right]&=\E_P\left[-\log\left(\frac{q(X)}{p(X)}\right)\right]\\
+        &\ge -\log\left(\E_P\left[\frac{q(X)}{p(X)}\right]\right)\\
+        &=-\log\left(\int_{p(x)\neq 0}q(x)dx\right)\\
+        &\ge -\log(1)\\
+        &=0.
+    \end{align*}
+    Furthermore, we have equality when $\frac{q(X)}{p(X)}$ is constant $P$-almost everywhere. But since $p$ and $q$ are densities this happens only when $P=Q$.
+\end{proof}
+Kullback--Leibler distant relates to the log-likelihood in the following way,
+\begin{lemma}
+    Consider a model $\Po = \{P_\ta : \ta \in \Om\}$ and consider the following assumptions,
+    \begin{enumerate}
+        \item If $\ta \neq \ta^*$, then $P_\ta \neq P_{\ta^*}$.
+        \item There exists a measure $\mu$ such that for every $\ta$, $P_\ta$ has a density $p_\ta$ with respect to $\mu$.
+        \item The support of $P_\ta$, $\{x : p_\ta(x)>0\}$ does not depend on $\ta$.
+    \end{enumerate}
+    Then, if $X_1,\ldots, X_n$ are i.i.d. $P_{\ta^*}$, then 
+    \[\frac{1}{n}\left[\frac{L_n(\ta^*)}{L_n(\ta)}\right] \toas K(P_{\ta^*},P_\ta),\]
+    where $L_n(\ta)$ is the log-likelihood evaluated at $\ta$.  In particular, for all $\ta\neq \ta^*$,
+    \[\Pa(L_n(\ta^*|X) \ge L_n(\ta|X)) \to 1.\] 
+\end{lemma}
+\begin{proof}
+    The proof is a simple application of the strong law of large numbers.
+\end{proof}
+We are now ready to state the consistency theorem for the MLE. 
+\begin{theorem}
+    Suppose that the three assumption of the previous lemma hold and that $\Om$ is compact. Fix $\ta^* \in \Om$ and define $h:\Om \times \X \to \R$ as the function,
+    \[h(\ta,x) = \log\left[\frac{p_\ta(X)}{p_{\ta^*}(x)}\right]. \]
+    Let $X_0,X_1,X_2,\ldots$ be i.i.d. samples from $P_{\ta^*}$ and define $W_i(\ta) = h(\ta,X_i)$. Suppose that $h$ is continuous in $\ta$ for every $x$ and,
+    \[\E_{\ta^*}[\norm{W_0}_\infty] < \infty. \]
+    Define $\wh{\ta}_n$ to be the MLE given $X_1,\ldots,X_n$. Then, under $P_{\ta^*}$, $\wh{\ta}_n \topp \ta$.
+\end{theorem}
+
+\section{Asymptotic normality}
+We now know that the MLE is consistent, but what can we say about the limiting distribution? 
+\begin{theorem}
+    Let $\Po = \{P_\ta:\ta \in \Om\}$ be a model for $X \in \X$. Suppose that $\Om \subseteq \R$ and that $P_\ta$ has a density $p_\ta$ with respect to a common base measure $\mu$. Suppose that the following hold,
+    \begin{enumerate}
+        \item The support of $p_\ta$ does not depend on $\ta$.
+        \item For every $x \in \X$, $\frac{\partial^2}{\partial \ta^2} p_\ta(x)$ exists and is continuous in $\ta$.
+        \item If $l(\ta) = \log p_\ta(x)$, then the Fisher information exists, is finite and can be calculated as either
+        \[I(\ta) = \E_\ta\left[\left(\frac{\partial}{\partial \ta}l(\ta)\right)^2\right]~~\text{ or }~~I(\ta) = -\E_\ta\left[\frac{\partial^2}{\partial \ta^2}l(\ta)\right],\]
+        and $\E\left[\frac{\partial}{\partial \ta}l(\ta)\right]=0$.
+        \item For every $\ta$ in the interior of $\Om$, there exists $\eps > 0$ such that $\E_\ta \norm{\one_{[\ta-\eps,\ta+\eps]}\frac{\partial^2}{\partial\ta^2}l(\ta)}< \infty$.
+        \item The MLE $\wh{\ta}_n$ is consistent.
+    \end{enumerate}
+    Then for any $\ta^*$ in the interior of $\Om$, if $X_i \iid P_{\ta^*}$, then 
+    \[\sqrt{n}\left(\wh{\ta}_n-\ta\right) \todd \normal\left(0, \frac{1}{I(\ta)}\right).\]
+\end{theorem}
+\end{document}
