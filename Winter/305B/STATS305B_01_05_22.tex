@@ -21,22 +21,22 @@ HW will be up soon (probably today). It will be due in $\approx 1.5$ weeks.
 \section{Inference (Agresti 1.3,1.4)}
 \subsection{Binomial}
 Consider the null $H_0 : \pi = \pi_0$ where $Y \sim \bin(n,\pi)$. The MLE estimate of $\pi$ is $\wh{\pi}= \frac{y}{n}$. The \emph{Wald test statistic} is
-\[z = \frac{\wh{\pi}-\pi_0}{\sqrt{\wh{\pi}(1-\wh{pi})/n}} = \frac{MLE-\ta_0}{\sqrt{\V_{\wh{\ta}}(MLE)}}.\]
-The statistic $z$ is asymptotically standard normal under $H_0$. To get a confidence interval we can use $\wh{\pi} \pm 1.96\sqrt{\wh{\pi}(1-\wh{\pi})/n}$. There is also the \emph{score test}
+\[z = \frac{\wh{\pi}-\pi_0}{\sqrt{\wh{\pi}(1-\wh{\pi})/n}} = \frac{MLE-\ta_0}{\sqrt{\V_{\wh{\ta}}(MLE)}}.\]
+The statistic $z$ is asymptotically standard normal under $H_0$. To get a confidence interval we can use $\wh{\pi} \pm 1.96\sqrt{\wh{\pi}(1-\wh{\pi})/n}$. There is also the \emph{score test statistic}
 \[z = \frac{\wh{\pi}-\pi_0}{\sqrt{\pi_0(1-\pi_0)/n}} = \frac{MLE-\ta_0}{\sqrt{\V_{\ta_0}(MLE)}}. \]
 This statistic is also asymptotically standard normal under $H_0$ and it better behaved for values of $\pi$ close to 0 or 1. The resulting confidence interval is
 \[CI = \left\{\pi : \abs{\frac{\wh{\pi}-\pi}{\sqrt{\pi(1-\pi)/n}}} < 1.96\right\}.\]
-The end points can be calculated by solving a quadratic. The \emph{likelihood ratio test} is
-\[-2\log L_0 - (-2 \log L_1), \]
+The end points can be calculated by solving a quadratic. The \emph{likelihood ratio test statistic} is
+\[G^2 = -2\log L_0 - (-2 \log L_1), \]
 where $L_0$ is the maximum log likelihood under $H_0$ and $L_1$ is the maximum log likelihood under $H_0 \cup H_1$. For the binomial model the likelihood ratio test becomes 
 \[LR(\pi_0) = 2\left[y\log(\wh{\pi}/\pi_0)+(n-y)\log((1-\wh{\pi})/(1-\pi_0))\right], \]
-and, asymptotically, $LR(\pi_0) \sim \chi_1^2$ under $H_0 : \pi = \pi_0$. The resulting confidence interval is $CI:$  $\{\pi : LR(\pi_0) \le 1.96^2\}$ which can be calculated numerically.
+and, asymptotically, $LR(\pi_0) \sim \chi_1^2$ under $H_0 : \pi = \pi_0$. The resulting confidence interval is \[CI=  \{\pi : LR(\pi_0) \le 1.96^2\},\] which can be calculated numerically.
 \subsection{Multinomial}
 Suppose $Y \sim \multi(n,\pi)$ with $k$ classes and $H_0:\pi=\pi_0$. In this case the likelihood ratio test statistic is
 \[G(\pi_0) := 2\sum_{i=1}^k y_i \log\left(\frac{\wh{\pi}_i}{\pi_{i,0}}\right),\]
 under the null $G(\pi_0)$ has an asymptotic $\chi^2_{k-1}$ distribution. We also have the Pearson's $\chi^2$ statistic which is essentially a score test
 \[\sum_{i=1}^k \frac{(y_i-n\pi_{i,0})^2}{n\pi_{i,0}} \stackrel{n \to \infty}{\sim} \chi^2_{k-1}.\]
-The score in this model is $y - n \pi_0$ and a score test statistic would be \[(y-n\pi_0)^T\V_{\pi_0}(y-n\pi_0)^{-1}(y-n\pi_0) =(y-n\pi_0)^T\V_{\pi_0}(y)^{-1}(y-n\pi_0) \] although in this model the covariance matrix is rank deficient, and so we can't actually invert $\V_{\pi_0}(y)$. 
+The score in this model is $y - n \pi_0$ and a score test statistic would be \[(y-n\pi_0)^T\V_{\pi_0}(y-n\pi_0)^{-1}(y-n\pi_0) =(y-n\pi_0)^T\V_{\pi_0}(y)^{-1}(y-n\pi_0) \] although in this model the covariance matrix is rank deficient, and so we can't actually invert $\V_{\pi_0}(y)$. We can instead use the pseudo-inverse or work with only $k-1$ categories.
 \subsection{Poisson}
 Suppose $Y_1,\ldots,Y_k \stackrel{\text{ind}}{\sim} \poi(\la_i)$ and our null is $H_0:(\la_1,\ldots,\la_k)=(\la_{1,0},\ldots,\la_{k,0})$. The likelihood ratio test statistic is
 \[-2\sum_{i=1}^k y_i\left[\log\left(\frac{y_i}{\la_{0,i}}\right)-\left[1-\frac{\la_{0,i}}{y_i}\right]\right] \stackrel{n \to \infty}{\sim} \chi^2_k, \]
@@ -86,8 +86,8 @@ We will use $Y$ for the column value and $1,\ldots,J$ for the possible values $Y
 As with $\cdot$, the symbol $i+$ means that the variable replaced with $+$ has been marginalized. There are multiple ways in which the data in the table could have been gathered. Equivalently, there are different descriptions of the sampling process.
 \begin{enumerate}
     \item If both the rows and columns are random, then we could have $N_{ij} \sim \poi(\la\pi_{ij})$ and hence $N_{++} \sim \poi(\la)$. In the case we randomly assign either a placebo or aspirin with equal probability we will have $\pi_{ij} = \frac{1}{2}\times \Pa(Y=j|X=i) = \frac{1}{2}\pi_{j|i}$.
-    \item For clinical trails/prospective studies we fix the row values and model the column as random. For example, we could select 10 000 people and assign them the placebo and select 10 000 different people and assign them the aspirin. In this case for each row we will have a different distribution for $N_{+|i} \sim \multi(10000, \pi_{+|i})$ where $\pi_{+|i}$ are different parameters for each row.
-    \item For case control sampling. We fix the column values and treat the row values as random. For example, we could sample 100 people who had fatal heart attacks and 100 people who had non-fatal heart attacks and then compare the frequency of aspirin taking. In this case each column will be a distributed according to $\multi(100, \pi_{+|j})$ for different column parameters $\pi_{\cdot|j}$. This isn't very realistic in this example.
+    \item For clinical trails/prospective studies we fix the row values and model the column as random. For example, we could select 10 000 people and assign them the placebo and select 10 000 different people and assign them the aspirin. In this case for each row we will have a different distribution for $N_{+|i} \sim \multi(10000, \pi_{\cdot|i})$ where $\pi_{\cdot|i}$ are different parameters for each row.
+    \item For case control sampling. We fix the column values and treat the row values as random. For example, we could sample 100 people who had fatal heart attacks and 100 people who had non-fatal heart attacks and then compare the frequency of aspirin taking. In this case each column will be a distributed according to $\multi(100, \pi_{\cdot |j})$ for different column parameters $\pi_{\cdot|j}$. This isn't very realistic in this example.
 \end{enumerate}
 \subsection{Case control}
 Consider the following table where the data was gathered in a case-control experiment:
@@ -104,7 +104,7 @@ Consider the following table where the data was gathered in a case-control exper
         
     \end{tabular}
 \end{center}
-Since this is case-control study the data is given in the form of $P(\text{smoker}|\text{cancer})$ and $P(\text{smoker}|\text{no cancer})$. What we want is $P(\text{cancer}|\text{smoker})$ and $P(\text{cancer}|\text{non smoker})$ but to calculate these we need $P(\text{cancer})$ which is not available due to the structure of the study. The probabilities we do have are
+Since this is a case-control study the data is given in the form of \[P(\text{smoker}|\text{cancer}) \text{ and } P(\text{smoker}|\text{no cancer}).\] What we want is $P(\text{cancer}|\text{smoker})$ and $P(\text{cancer}|\text{non smoker})$ but to calculate these we need $P(\text{cancer})$ which is not available due to the structure of the study. The probabilities we do have are
 \begin{align*}
     P(\text{smoker}|\text{cancer})&= \frac{688}{709},\\
     P(\text{smoker}|\text{no cancer}) &=\frac{650}{709}.
@@ -210,5 +210,5 @@ For $I \times J$ tables we can define the local odds ratios, these are
 \[\Ta_{ij} = \frac{\frac{\pi_{ij}}{\pi_{i,j+1}}}{\frac{\pi_{i+1,j}}{\pi_{i+1,j+1}}} = \frac{\pi_{ij}\pi_{i+1,j+1}}{\pi_{i+1,j}\pi_{j,i+1}}, \]
 where $1 \le i \le I-1$ and $1 \le j \le J-1$. The number of local ORs is $(I-1)\times (J-1)$. The local ORs are less interpretable than the OR, but they do determine the associations between $X$ and $Y$ as can be seen by counting the number of free parameters. In the full model there are $IJ-1$ total parameters. For the row marginals there are $I-1$ free parameters and for the column marginals there are $J-1$ free parameters. Thus, the number of free parameters needed to describe the associations is
 \[IJ-1 - (I-1)-(J-1) = IJ-I-J+1=(I-1)\times(J-1), \]
-which is the number of local ORs. Note that when $I=J=2$ as before, there is just a single OR and a single parameter needed to describe the association between $X$ and $Y$.
+which is the number of local ORs. Note that when $I=J=2$ as before, there is just a single OR and a single parameter is all that is needed to describe the association between $X$ and $Y$.
 \end{document}

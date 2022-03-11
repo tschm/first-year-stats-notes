@@ -44,7 +44,7 @@ Some common questions we might ask about the distribution are:
 \begin{enumerate}
     \item Independence: $\pi_{ij} = \pi_{i \cdot}\pi_{\cdot j}$ for all $1 \le i \le I$, $1 \le j \le J$.
     \item Homogeneity (I): If we didn't sample the rows randomly but instead took multiple samples of $C$ from different populations, then $\pi_{ij}$ doesn't make sense since $R$ is not random. We instead have $I$ different distributions for $\pi_{\cdot j}$. We could ask if they are all the same.
-    \item Homogeneity (II): suppose $I=J$ and the values $R_i,C_i$ are common. We could then ask if $\pi_{i \cdot} = \pi_{\cdot i}$ for $1 \le i \le n$. 
+    \item Homogeneity (II): suppose $I=J$ and the values $R_i,C_i$ are common. We could then ask if $\pi_{i \cdot} = \pi_{\cdot i}$ for $1 \le i \le I$. 
 \end{enumerate}
 Some common models for this sort of data are the multinomial model and the Poisson model. We will see that the multinomial and Poisson models are connected.
 \subsection{Regression}
@@ -66,15 +66,15 @@ In standard linear regression from 305A we have $Y \in \R^{n \times q}$ and $X \
 \end{enumerate}
 \subsection{Survival analysis}
 Let $T$ be a survival time (simply a non-negative random variable). We will model $T$ via it's survival function $P(T > t) = 1-\text{CDF}$. One model is via hazard functions where we have
-\[P_\beta(T > t |X) = \exp\left(-\int_0^t h_\beta(s;X)ds)\right). \]
+\[P_\beta(T > t |X) = \exp\left(-\int_0^t h_\beta(s;X)ds\right). \]
 There are non-parametric methods and also the \emph{Cox proportional hazards model} where
 \[\frac{h_\beta(s;X_1)}{h_\beta(s;X_0)} = \exp\left((X_1-X_0)^T\beta\right) = \frac{\exp(X_1^T\beta)}{\exp(X_0^T\beta)}. \]
-We will consider some complications like censoring and truncation. Censoring can occur when conducting a study with an end date. The end date may pass before we have viewed the survival time of some subjects. We have partial information (the survival time is greater than the end date of the study) but we do not have full information (the exact survival time). How can we use the partial information?
+We will consider some complications like censoring (aka truncation). Censoring can occur when conducting a study with an end date. The end date may pass before we have viewed the survival time of some subjects. We have partial information (the survival time is greater than the end date of the study) but we do not have full information (the exact survival time). How can we use the partial information?
 \section{Distributions}
 \subsection{Multinomial and Poisson}
 Some distributions that we will use in this class are:
 \begin{itemize}
-    \item Binomial (2 classes): $Y \sim \bin(n,\pi)$, $\pi \in (0,1)$, $n=1,2,\ldots$. Then $Y \in \{0,1,\ldots,n\}$ and $\Pa(Y=j) = \binom{n}{j} \pi^j(1-\pi)^{n-j}$. 
+    \item Binomial (2 classes): $Y \sim \bin(n,\pi)$, $\pi \in [0,1]$, $n=1,2,\ldots$. Then $Y \in \{0,1,\ldots,n\}$ and $\Pa(Y=j) = \binom{n}{j} \pi^j(1-\pi)^{n-j}$. 
     \item Multinomial ($k$ classes): $Y \sim \multi(n,\pi)$, $\pi = (\pi_1,\ldots, \pi_k)$, $\pi_i \ge 0$ and $\sum_{i=1}^k \pi_i = 1$, then $Y \in \{(Y_1,\ldots,Y_k) \in \Z^{k,+}: \sum_{i=1}^k Y_i = n\}$ and 
     \[\Pa(Y=(y_1,\ldots,y_k)) = \binom{n}{(y_1,\ldots,y_k)} \prod_{i=1}^k \pi_i^{y_i} = \frac{n!}{\prod_{i=1}^k y_i!}\prod_{i=1}^k \pi_i^{y_i}.\]
     \item Poisson (unbounded count): $Y \sim \poi(\la) $ $\la > 0$, then $Y \in \Z^+ =\{0,1,2,\ldots\}$ and \[\Pa(Y=j) = \frac{e^{-\la}\la^j}{j!}.\]
@@ -90,9 +90,10 @@ where,
     \item $m$ is a measure called the \emph{carrier} or \emph{reference}.
     \item $\eta$ are called the \emph{natural parameters}.
     \item $S(y)$ are called the \emph{sufficient statistics}.
-    \item $\La(\eta)$ is called the \emph{cummulant generating function} of $S$,
-    \[\La(\eta) = \log\left(\int e^{\eta^T S(y)}dm\right) \]
+    \item $\La(\eta)$ is called the \emph{cummulant generating function} of $S$.
 \end{itemize}
+Since the density for an exponential family integrates to 1, we must have,
+\[\La(\eta) = \log\left(\int e^{\eta^T S(y)}dm\right). \]
 \begin{remark}
     Often we will have $\{\eta : \La(\eta) < \infty\} = \R^{\dim(\eta)}$ which makes optimizing the natural parameters $\eta$ easier than optimizing some other parameters which may be constrained.
 \end{remark}
@@ -100,7 +101,7 @@ where,
     We have already seen examples of exponential families:
     \begin{itemize}
         \item Binomial:
-        \[P_\pi(j) = \binom{n}{j}\pi^j (1-\pi)^{n-j} =\binom{n}{j}\left(\frac{\pi}{1-\pi}\right)(1-\pi)^{n}. \]
+        \[P_\pi(j) = \binom{n}{j}\pi^j (1-\pi)^{n-j} =\binom{n}{j}\left(\frac{\pi}{1-\pi}\right)^j(1-\pi)^{n}. \]
         To turn this into an exponential family, let $m = \binom{n}{j}$ with respect to counting measure on $\{0,1,\ldots,n\}$ and let $\eta = \log(\pi/(1-\pi))$, so $\pi = \frac{e^\eta}{1+e^{\eta}}$. Also let $S(j)=j$ and $e^{-\La(\eta)} =(1-\pi)^n$ so 
         \[\La(\eta) = -n\log(1-\pi)=-n\log\left(\frac{1}{1+e^{\eta}}\right)=n\log(1+e^{\eta}).\]
         Now rather than $\pi \in (0,1)$ we have $\eta \in \R$. This makes it easy to do optimization once we have a model. The exponential family automatically suggests a model. Suppose we have $(Y_i,X_i)$ and we want $Y_i |X_i \sim \bern(\pi(X_i))$. We can use the natural parameters $\eta$ and make a model $Y_i |X_i \sim \bern(\eta(X_i))$. Since $\eta$ is unconstrained we can take $\eta(X_i) = X_i^T\beta$, giving us a linear model. Under this model we have

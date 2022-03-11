@@ -21,7 +21,7 @@
 Let $F$ be a CDF with density $f$. The deviance for a binary GLM with link function $g=F^{-1}$ is,
 \[\DEV(\beta|Y) = 2\sum_{i=1}^n - Y_i \frac{F(X_i^T\beta)}{F(X_i^T\beta)(1-F(X_i^T\beta))} - \log\left(1-F(X_i^T\beta)\right). \]
 Thus, 
-\[\nabla \DEV(\beta|Y) = 2\sum_{i=1}^n X_i \frac{f(X_i^T\beta)^2}{F(X_i^T\beta)(1-F(X_i^T\beta))}\left[\frac{F(X_i^T\beta)-Y_i}{f(X_i^T\beta)}\right]. \]
+\[\nabla \DEV(\beta|Y) = 2\sum_{i=1}^n X_i \frac{f(X_i^T\beta)^2}{F(X_i^T\beta)(1-F(X_i^T\beta))}\left[\frac{Y_i-F(X_i^T\beta)}{f(X_i^T\beta)}\right]. \]
 Since $X_i^T\beta = F^{-1}(\E_\beta[Y_i])$, we have that $\E_\beta [F(X_i^T\beta)-Y_i] = 0$. Thus, we have
 \[\E[\nabla^2 \DEV(\beta|Y)] = 2\sum_{i=1}^n X_iX_i^T\frac{f(X_i^T\beta)^2}{F(X_i^T\beta)(F(X_i^T\beta)-1)} = 2X^TW_\beta X, \]
 where $W_\beta = \diag\left(\frac{f(X_i)^2}{F(X_i^T\beta)(1-F(X_i^T\beta))}\right).$ We can also rewrite $\nabla \DEV(\beta|Y)$ in terms of the $W_\beta$,
@@ -40,7 +40,7 @@ This is because if $\mu = F(X^T\beta)$, then $g(\mu) = F^{-1}(\mu) = X^T\beta$ a
     &=\frac{1}{f(X\wh{\beta}^{(k)})^2}\V_{\wh{\beta}^{(k)}}\left(Y\right)^{-1}\\
     &=g'(\wh{\mu}^{(k)})^2 V(\wh{\mu}^{(k)})^{-1},
 \end{align*}
-where $\wh{\mu}^{(k)} = \E_{\wh{\beta}}[Y]$. This shows how Fisher scoring can be generalized to other glms. Instead of minimizing the deviance, we simply run iterative re-weighted least squares with $Z^{(k)} = g(\wh{\mu}^{(k)})+g'(\wh{\mu}^{(k)})(Y-\wh{\mu}^{(k)})$ and $W^{(k)} = g'(\wh{\mu}^{(k)})^2V(\wh{\mu}^{(k)})^{-1}$. This is important because in general for glms we do not have a full model from which we can calculate and optimize a likelihoood. We just have the functions $g$ and $V$. Note that, in the binary case, if the model is true, then 
+where $\wh{\mu}^{(k)} = \E_{\wh{\beta}}[Y]$. This shows how Fisher scoring can be generalized to other glms. Instead of minimizing the deviance, we simply run iterative re-weighted least squares with features $X$, iterative response \[Z^{(k)} = g(\wh{\mu}^{(k)})+g'(\wh{\mu}^{(k)})(Y-\wh{\mu}^{(k)})\] and iterative weights $W^{(k)} = g'(\wh{\mu}^{(k)})^2V(\wh{\mu}^{(k)})^{-1}$. This is important because in general for glms we do not have a full model from which we can calculate and optimize a likelihood. We just have the functions $g$ and $V$. Note that, in the binary case, if the model is true, then 
 \[\wh{\beta} \approx \normal(\beta^*, (X^TW_{\wh{\beta}}X)^{-1}). \]
 If the model is not true, then we have the sandwich form
 \[\wh{\beta}-\beta^* \approx \normal(0, Q^{-1}_{\beta^*}\Sigma_{\beta^*}Q^{-1}_{\beta^*}), \]
@@ -66,8 +66,8 @@ where $W_{\beta} = \V_\beta(Y) = \exp(X\beta)$. Thus, we can fit this model by u
 \end{align*}
 This iterative algorithm once again corresponds to a form of iterative re-weighted least squares, with response,
 \begin{align*}
-    Z^{(k+1)} &= X\wh{\beta}^{(k)} -  (Y-\exp(X\wh{\beta}^{(k)}))/\exp(X\wh{\beta}^{(k)})\\
-    &=g(\wh{\la}^{(k)}) - g'(\wh{\la}^{(k)})(Y-\wh{\la}^{(k)})
+    Z^{(k+1)} &= X\wh{\beta}^{(k)} +  (Y-\exp(X\wh{\beta}^{(k)}))/\exp(X\wh{\beta}^{(k)})\\
+    &=g(\wh{\la}^{(k)}) + g'(\wh{\la}^{(k)})(Y-\wh{\la}^{(k)})
 \end{align*}
 where $\wh{\la}^{k} = \exp(X\wh{\beta}^{(k)}) = \E_{\wh{\beta}^{(k)}}[Y]$.
 and weight matrix,
@@ -81,9 +81,9 @@ Like the binary models, there are two types of residuals for the log-linear mode
 We also have the deviance residuals. Note that
 \[\DEV(\wh{\la}|Y) = \sum_{i=1}^n \DEV(\wh{\la}_i|Y_i). \]
 Thus, we can define the deviance residuals as 
-\[d_i = \text{sign}(Y_i - \wh{\la}_i)\DEV(\wh{\la}_i|Y_i), \]
+\[d_i = \text{sign}(Y_i - \wh{\la}_i)\sqrt{\DEV(\wh{\la}_i|Y_i)}, \]
 recall that $\DEV(\wh{\la}_i|Y_i) = 2\left(\wh{\la}_i-Y_i\log(\wh{\la}_i)-Y_i+Y_i\log(Y_i)\right)$. We also have a hat matrix for the log-linear model. It is given by
-\[H_{\wh{\beta}} = W_{\wh{\beta}}^{1/2}X(X^TW_{\wh{\beta}}X)^{_1}X^TW_{\wh{\beta}}^{1/2}, \]
+\[H_{\wh{\beta}} = W_{\wh{\beta}}^{1/2}X(X^TW_{\wh{\beta}}X)^{-1}X^TW_{\wh{\beta}}^{1/2}, \]
 where $W_{\wh{\beta}}=\exp(X\wh{\beta})$.
 \subsection{``Unnatural'' models for Poisson data}
 We can get other models for Poisson data by changing the link function $g$. The link function satisfies $g(\la_i) = X_i^T\beta$ and hence $\la_i = g^{-1}(X_i^T\beta)$. The natural choice if $g = \log$ but two other choices are \texttt{identity}: $g(\la) = \la$ and \texttt{inverse}: $g(\la) = 1/\la$. These can be used in \texttt{glm()} in R by specifying the link function. For a link function $g$, the deviance is

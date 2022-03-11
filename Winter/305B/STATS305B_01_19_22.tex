@@ -37,7 +37,7 @@ If our row labels are ordinal, we can fit a simpler model than $\logit(\pi_i)=\a
 \subsection{Deviance}
 In  logistic regression, the \emph{deviance} of a model takes the place of the sum of square residuals in linear regression.  The  deviance is defined to be,
 \[\DEV(\pi|Y) =  -2\log L(\pi|Y)+2\log L(\widehat{\pi}_s|Y), \]
-where $\pi$ is the MLE for $\pi$ within the model  and $\widehat{\pi}_s$ is an  estimator fit using the saturated model. The estimator  $\widehat{\pi}_s$  is fit by taking the number of parameters to equal the number of data points and without  any constraints. For binomial data $\widehat{\pi}_{s,i} = Y_i$ and $2\log L(\widehat{\pi}_s|Y) = 0$. For binomial data $Y_i \sim \bin(n_i,\pi_i)$,
+where $\pi$ is the MLE for $\pi$ within the model  and $\widehat{\pi}_s$ is an  estimator fit using the saturated model. The estimator  $\widehat{\pi}_s$  is fit by taking the number of parameters to equal the number of data points and without  any constraints. For binary data $\widehat{\pi}_{s,i} = Y_i$ and $2\log L(\widehat{\pi}_s|Y) = 0$. For binomial data $Y_i \sim \bin(n_i,\pi_i)$,
 \[\widehat{\pi}_{s,i}=\frac{Y_i}{n_i},\]  
 and we typically don't have $\log L(\widehat{\pi}_s|Y)=0$. If $Y$ is a binary vector, then
 \[\DEV(\pi|Y)= -2\log L(\pi|Y)= -2\sum_{i=1}^n(Y_i\log(\pi_i)+(1-Y_i)\log(1-\pi_i)).\]
@@ -76,7 +76,7 @@ The Newton--Raphson method for logistic regression is thus,
 \end{enumerate}
 Note that the difference $\delta^{(t+1)} = \wh{\beta}^{(t)} - \widehat{\beta}^{(t+1)}$ is the solution to 
 \[\amin_\delta \sum_{i=1}^m W_{ii}^{(t)}\left(X_i^T\delta - r_i^{(t)}\right)^2, \]
-where $W_{ii}^{(t)}$ are the diagonal elements of $W_{\wh{\beta}^{(t)}}(X)$ and $r^{(t)}$ is the vector of residuals with entries $r_i^{(t)} = Y-\pi_{\wh{\beta}^{(t)}}(X)$. Thus, the Newton--Raphson method is a type of iteratively re-weighted least squares. 
+where $W_{ii}^{(t)}$ are the diagonal elements of $W_{\wh{\beta}^{(t)}}(X)$ and $r^{(t)}$ is the vector of scaled residuals with entries $r_i^{(t)} = \frac{Y_i-\pi_{\wh{\beta}^{(t)}}(X_i)}{W_{ii}^{(t)}}$. Thus, the Newton--Raphson method is a type of iteratively re-weighted least squares. This was an important fact when people were first fitting generalized linear models.
 \subsection{The distribution of $\wh{\beta}$}
 The MLE $\wh{\beta}$ satisfies $\nabla -\log L(\wh{\beta}|Y) = 0$ and thus satisfies,
 \[X^T(Y-\pi_{\wh{\beta}}(X)) = 0. \]
@@ -86,11 +86,12 @@ If the logistic regression model is true for some parameter $\beta^*$, then
 \[\pi_{\wh{\beta}}(X) \approx \pi_{\beta^*}(X) + W_{\beta^*}(X)X(\wh{\beta}-\beta^*), \]
 since $\nabla \pi_{\beta^*}(X) = W_{\beta^*}X$. The error in the above Taylor's approximation is of the order $\norm{\wh{\beta}-\beta^*}_2^2$ which is of the order $\frac{1}{n}$. If we rearrange the above approximation and multiply by $X^T$, then we get
 \[X^TW_{\beta^*}(X)X(\widehat{\beta}-\beta_*) \approx X^T\pi_{\wh{\beta}}(X)-X^T\pi_{\beta^*}(X) = X^T(Y-\pi_{\beta^*}(X)), \]
-by stationary. Thus,
+by stationarity. Thus,
 \[\widehat{\beta}-\beta^* \approx (X^TW_{\beta_*}(X)X)^{-1}X^T(Y-\pi_{\beta^*}(X)). \]
 Thus, the expectation $\E_{\beta^*}[\widehat{\beta}-\beta^*]$ is asymptotically 0 and the asymptotic variance is,
 \begin{align*}
-    \V_{\beta^*}(\wh{\beta}-\beta^*) \approx (X^TW_{\beta^*}(X)X)^{-1}\V_{\beta^*}(X^T(Y-\pi_{\beta^*}(X)))(X^TW_{\beta^*}(X)X)^{-1} \approx (X^TW_{\beta^*}(X)X)^{-1}.
+    \V_{\beta^*}(\wh{\beta}-\beta^*)& \approx (X^TW_{\beta^*}(X)X)^{-1}\V_{\beta^*}(X^T(Y-\pi_{\beta^*}(X)))(X^TW_{\beta^*}(X)X)^{-1}\\
+    & \approx (X^TW_{\beta^*}(X)X)^{-1}.
 \end{align*}
 This is because,
 \[\V_{\beta^*}(X^T(Y-\pi_{\beta^*}(X))) \approx X^TW_{\beta^*}(X)X.\]
@@ -103,7 +104,7 @@ We can also ask about the distribution of $\wh{\beta}$ when the assumptions of t
 The parameter $\beta^*$ is a population parameter. Another way to describe $\beta^*(F)$ is as the minimizer of,
 \[\beta \mapsto \E_F[-(X^T\beta)Y+\log(1+\exp(X^T\beta))]. \]
 If we perform the same Taylor expansion and rearranging around $\beta^*(F)$, we get
-\[\wh{\beta}-\beta^*(F) \approx (X^TW_{\beta^*(F)}X^{-1}X^T(Y-\pi_{\beta^*(F)}(X)).\]
+\[\wh{\beta}-\beta^*(F) \approx (X^TW_{\beta^*(F)}X)^{-1}X^T(Y-\pi_{\beta^*(F)}(X)).\]
 Under suitable conditions on $F$, we will have,
 \[n^{-1/2}X^T(Y-\pi_{\beta^*(F)}) \stackrel{d}{\to} \normal(0,\Sigma(F)).\]
 We will also have

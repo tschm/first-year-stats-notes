@@ -35,17 +35,17 @@ and we set $\beta^{(k+1)} =\beta^{(k)}$ otherwise. The resulting sequence $\{\be
 \subsection{Gibbs sampling}
 It is often easier to sample from univariate distributions than from multivariate distributions. Gibbs sampling tries to exploit this. For each $j=1,\ldots,p$ define
 \[g_j(\beta_j|\beta_{-j},Y) = \frac{g(\beta|y)}{\int_{-\infty}^\infty g(\beta|Y)d\beta_j}. \]
-That, if $g_j(\cdot|\beta_{-j},Y)$ is the conditional density of $\beta_j$. It is often the case that $g_j(\cdot|\beta_{-j},Y)$ is a recognizable density even if $g(\beta|Y)$ isn't (but there is no guarantee this will happen). The Gibbs cycles through $j=1,\ldots,p$ drawing samples $\beta_j^{new}$ from $g(\cdot|\beta_{-j},Y)$ and then updating the $j^{th}$ coordinate of the sample. Something the index $j$ is chosen randomly.
+That, if $g_j(\cdot|\beta_{-j},Y)$ is the conditional density of $\beta_j$. It is often the case that $g_j(\cdot|\beta_{-j},Y)$ is a recognizable density even if $g(\beta|Y)$ isn't (but there is no guarantee this will happen). The Gibbs cycles through $j=1,\ldots,p$ drawing samples $\beta_j^{new}$ from $g(\cdot|\beta_{-j},Y)$ and then updating the $j^{th}$ coordinate of the sample. Sometimes the index $j$ is chosen randomly.
 
 \subsection{Hit-and-run sampling}
-Suppose we are using the latent threshold model for $Y$. That is we have binary data $Y$ with $\Pa(Y_i=1|X_i) = F(X_i^T\beta)$ for come CDF $F$. This model corresponds to having \emph{latent variables} $T_i \iid F$ such that,
+Suppose we are using the latent threshold model for $Y$. That is we have binary data $Y$ with \[\Pa(Y_i=1|X_i) = F(X_i^T\beta),\]for come CDF $F$. This model corresponds to having \emph{latent variables} $T_i \iid F$ such that,
 \[Y_i = \begin{cases}
     1 & \text{if } T_i \le X_i^T\beta,\\
     0 & \text{else }.
 \end{cases} \] 
 We then have $g(\beta|Y) = g(\beta|T \le X\beta)$. Thus instead of sampling from $g(\beta|Y)$ we can instead draw sample $(T,\beta)$ from $(F,g(\cdot))$ and then only keep the samples that satisfy $T_i \le X_i^T\beta$ if and only if $Y_i = 1$. We can then throw away that $T$'s and keep the sampled $\beta$ which be distributed according to $g(\beta|T\le X\beta)$.  
 
-This is especially easy to do if we have a probit model and a normal prior on $\beta$. In that case, we wish to sample from $Z \sim \normal(\mu,\sigma)|AZ\le b$ for some fixed $A$ and $b$. By transforming $A$ and $b$, we may assume that $\Sigma = I$. The inequality $AZ\le b$, conditioned on $Z_{-j}$ reduce to,
+This is especially easy to do if we have a probit model and a normal prior on $\beta$. In that case, we wish to sample from $Z \sim \normal(\mu,\Sigma)|AZ\le b$ for some fixed $A$ and $b$. By transforming $A$ and $b$, we may assume that $\Sigma = I$. The inequality $AZ\le b$, conditioned on $Z_{-j}$ reduce to,
 \[L(Z_{-j}, A, b) \le Z_j \le U(Z_{-j},A,b). \]
 Thus, we can simply draw $Z_j$ from $\normal(\mu_j,1)$ truncated to the interval $[L,U]$. This gives an algorithm similar to Gibbs sampling.
 
@@ -64,7 +64,7 @@ We then set $\pi_k = 1-\sum_{j=1}^{k-1}\pi_j$. The density $f(\cdot|\pi)$ is sup
 Thus,
 \[\log L(\pi|Y) = \sum_{j=1}^{k-1} y_i \log\left(\frac{\pi_i}{1-\sum_{l=1}^{k-1}\pi_l}\right) +N\log\left(1-\sum_{l=1}^{k-1}\pi_l\right).\]
 We therefore have an exponential family with sufficient statistic $(y_1,\ldots, y_{k-1})$ and natural parameters,
-\[\eta_j = \log\left(\frac{\pi_i}{1-\sum_{l=1}^{k-1}\pi_l}\right). \]
+\[\eta_j = \log\left(\frac{\pi_j}{1-\sum_{l=1}^{k-1}\pi_l}\right). \]
 Now suppose we have categorical data $(X_i,Y_i)_{i=1}^n$  where $X_i = X[i,\cdot]\in\R^p$ are covariates and $Y_i \sim \multi(N_i,\pi_i)$. We can create a regression model where,
 \[\eta_{i,j} = X[i,\cdot]^T \beta[\cdot,j]. \]
 The parameters $\beta$ live in $\R^{p \times (k-1)}$  since we have $p$ covariates and $k$ categories. We also have $X \in \R^{n \times p}$ as usual and thus $\eta \in \R^{n \times (k-1)}$ since we have $n$ values of $Y$ and each $Y_i$ is one of $k$ categories. In this model, the original parameters $\pi_{i,j}$ are given by

@@ -1,0 +1,31 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS300B -- Lecture 8}
+\author{Julia Palacios\\ Scribed by Michael Howes}
+\date{01/27/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS300B -- Lecture 8}
+\lhead{01/27/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Fisher information}
+Suppose we have a model $\Po = \{P_\ta : \ta \in \Om\}$ and $\Om \subseteq \R^d$. Define $l_\ta(x) = \log(p_\ta(x))$ where $p_\ta$ is the density of $P_\ta$. The \emph{Fisher information of $\ta$} is defined to be the matrix,
+\[I(\ta) = \E[\nabla l_\ta(X) \nabla l_\ta(X)^T] = \V_\ta(\nabla l_\ta(X)). \]
+If integration and differentiation can be exchanged, then
+\[I(\ta) = -\E[\nabla^2 l_\ta(X)].\]
+Under appropriate assumptions about the regularity of the map $\ta \mapsto l_\ta$, then for all $\ta$ in the interior of $\Om$,
+\[\sqrt{n}(\wh{\ta}_n-\ta) \todd \normal_k(0,I(\ta)^{-1}), \]
+where $\wh{\ta}_n$ is the MLE from a sample $X_1,\ldots,X_n \iid P_\ta$. We can combine this result with the delta method. If $g:\Om \to \R$ is differentiable at $\ta$, then 
+\[\sqrt{n}(g(\wh{\ta}_n)-g(\ta)) \todd N(0, \nabla g(\ta)^T I(\ta)^{-1}\nabla g(\ta)).\]
+And there is also a multivariate version, if $g: \Om \to \R^p$, then 
+\[\sqrt{n}(g(\wh{\ta}_n)-g(\ta)) \todd \normal_p\left(0,(Dg(\ta))^TI(\ta)^{-1}(Dg(\ta))\right). \]
+
+\end{document}

@@ -53,7 +53,7 @@ and
 \[\frac{1}{2}D = 88\cdot(80+174+29+75)+53\cdot(80+29)+304\cdot(29+75)+174\cdot29 = 73,943. \]
 Thus,
 \[\wh{\gamma} = \frac{99568-73943}{99568+73943}\approx 0.178.  \]
-Thus, $\wh{\gamma} \neq 0$ but is this result statistically significant? To answer this we need to know the (approximate) distribution of $\wh{\gamma}$ under $H_0$. This leads us to the next topic.
+Thus, $\wh{\gamma} \neq 0$ but is this result statistically significant? To answer this we need to know the (approximate) distribution of $\wh{\gamma}$ under $H_0$. This leads us to inference for 2-way tables. We will first talk about inference for the odds-ratio, and then we'll return to estimating the distribution of $\wh{\gamma}$.
 \section{Inference for 2-way tables (Agresti, Ch 3)}
 \subsection{Wald confidence intervals}
 Consider the following table documenting car crashes 
@@ -73,12 +73,12 @@ We would thus estimate the relative risk to be around 10. Since the rare-disease
 We wish to understand the standard error of this estimate. To do this, we will consider a number of different models
 \subsubsection{Poisson sampling}
 Suppose we have the model $N_{ij} \indep \poi(\la_{ij})$. This model corresponds to when we record all the crashes in a particular place and period. Suppose we wish to test the null $H_0:X \ind Y$ which is equivalent to $\ta = 1$ where $\ta$ is the odds ratio. We know that $\wh{\ta} \approx 10$, but we wish to calculate the variance of $\wh{\ta}$. Since $\wh{\ta} = \frac{N_{11}N_{22}}{N_{12}N_{21}}$, it is easier to work with \[\log(\wh{\ta}) = \log(N_{11})+\log(N_{22})-\log(N_{12})-\log(N_{21}).\] By the independence assumption we have 
-\[\V(\log(\wh{\ta})) = \sum_{i,j=1}^2 \V(\log(n_{ij})). \]
+\[\V(\log(\wh{\ta})) = \sum_{i,j=1}^2 \V(\log(N_{ij})). \]
 To approximate $\V(\log(N_{ij}))$ we will use the \emph{delta-method}. The delta-method states 
 \[\V(f(\wh{\ta})) \approx \V(f'(\ta_0)(\wh{\ta}-\ta_0)) = f'(\ta_0)^2\V(\wh{\ta}). \]
 Thus, $\V(\log(N_{ij})) \approx \frac{\V(N_{ij})}{\la_{ij}^2} = \frac{1}{\la_{ij}}$. And hence
 \[\V(\log(\wh{\ta})) \approx \sum_{i,j=1}^2 \frac{1}{\la_{ij}}. \]
-We do not know $\la_{ij}$, but we can estimate $\la_{ij}$ with $n_{ij}$ thus our 95\% confidence interval for $\log(\ta)$ is 
+We do not know $\la_{ij}$, but we can estimate $\la_{ij}$ with $N_{ij}$ thus our 95\% confidence interval for $\log(\ta)$ is 
 \[\log(\wh{\ta})\pm 1.96\sqrt{\sum_{i,j=1}^2 \frac{1}{N_{i,j}}}. \]
 By applying the exponential function to the end points we can get a confidence interval for $\ta$. In the seat belt example, the 95\% confidence interval for $\ta$ is
 \[CI = [6.74, 17.42]. \]
@@ -96,7 +96,7 @@ Note that $\diag(\pi)\nabla f(\pi) = [1,1,-1,-1]^T$ and $\pi^T \nabla f(\pi))=0$
     1\\1\\-1\\-1
 \end{bmatrix}\right)= \frac{1}{n\pi_{11}}+\frac{1}{n\pi_{22}}+\frac{1}{n\pi_{12}}+\frac{1}{n\pi_{21}}. \]
 We do not know $\pi_{ij}$,but we can estimate $n\pi_{ij}$ with $n_{ij}$. This gives us the same variance estimate as the Poisson sampling
-\[\wh{\V(\log(\wh{\ta}))} = \sum_{i,j=1}^2 \frac{1}{n_{ij}}. \]
+\[\wh{\V}(\log(\wh{\ta})) = \sum_{i,j=1}^2 \frac{1}{N_{ij}}. \]
 \subsubsection{Independent binomial rows}
 Suppose finally that we have the model
 \[N_{11} \sim \bin(n_1, \pi_1) ~~ \text{ and } N_{21} \sim \bin(n_2, \pi_2), \]
@@ -109,15 +109,15 @@ By independence,
 Let $f(\pi_i) = \log(\pi_i)-\log(1-\pi_i)$. Then $f'(\pi_i) = \frac{1}{\pi_i}+\frac{1}{1-\pi_i}=\frac{1}{\pi_i(1-\pi_i)}$. Also, $\V(\wh{\pi}_i) = \frac{\pi_i(1-\pi_i)}{n_i}$. Thus, by the delta-method
 \[\V(\log(\wh{\pi}_{1})-\log(1-\wh{\pi}_{1})) \approx \frac{1}{(\pi_i(1-\pi_i))^2} \cdot \frac{\pi_i(1-\pi_i)}{n_i} = \frac{1}{n_i\pi_i(1-\pi_i)}. \]
 Thus,
-\[\V(\wh{\ta}) \approx \frac{1}{n_1\pi_1(1-\pi_1)}+\frac{1}{n_2\pi_2(1-\pi_2)}.\]
-We estimate $\pi_i$ with $\frac{n_{i1}}{n_i}$
+\[\V(\log(\wh{\ta})) \approx \frac{1}{n_1\pi_1(1-\pi_1)}+\frac{1}{n_2\pi_2(1-\pi_2)}.\]
+We estimate $\pi_i$ with $\frac{N_{i1}}{n_i}$. This gives,
 \begin{align*}
-    \wh{\V(\wh{\ta})} &= \frac{1}{n_{11}(1-n_{11}/n_1)}+\frac{1}{n_{21}(1-n_{21}/n_2)} \\
-    &= \frac{n_1}{n_{11}n_{12}}+\frac{n_2}{n_{21}n_{22}}\\
-    &=\frac{n_{11}+n_{12}}{n_{11}n_{12}}+\frac{n_{21}+n_{22}}{n_{21}n_{22}}\\
-    &=\sum_{i,j=1}^2 \frac{1}{n_{i,j}}.
+    \wh{\V}(\log(\wh{\ta})) &= \frac{1}{N_{11}(1-N_{11}/n_1)}+\frac{1}{N_{21}(1-N_{21}/n_2)} \\
+    &= \frac{n_1}{N_{11}N_{12}}+\frac{n_2}{N_{21}N_{22}}\\
+    &=\frac{N_{11}+N_{12}}{N_{11}N_{12}}+\frac{N_{21}+N_{22}}{N_{21}N_{22}}\\
+    &=\sum_{i,j=1}^2 \frac{1}{N_{i,j}}.
 \end{align*}
-Thus, we get the same estimate as before. Each of these calculations are example of ``Wald confidence intervals/significance tests''. In each case we estimate the standard errors by plugging in the MLE. This is different to likelihood ratio tests and score tests. For likelihood ratio tests and score tests we estimate the standard errors by plugging the MLE under the null.
+Thus, we get the same estimate as before. Each of these calculations are examples of ``Wald confidence intervals/significance tests''. In each case we estimate the standard errors by plugging in the MLE. This is different to likelihood ratio tests and score tests. For likelihood ratio tests and score tests we estimate the standard errors by plugging the MLE under the null.
 \subsection{Profile likelihood}
 Suppose we are interested in a parameter $\ta = f(\pi)$, and we wish to do maximum likelihood estimation. There may be multiple parameters $\pi$ that give the same value of $\ta$. This means that we have to work with the \emph{profile likelihood}. For a fixed $\ta_0$, consider the set 
 \[A(\ta_0) = \{ \pi : f(\pi)=\ta_0\}.\]
@@ -140,7 +140,7 @@ Suppose we have a clinical trial and so $N_{1i} \indep \bin(n_i,\pi_i)$. Then
 By the delta method we would have, 
 \[\V(\log(\wh{\pi}_i)) \approx \frac{1}{\pi_i^2}\frac{\pi_i(1-\pi_i)}{n_i} = \frac{1-\pi_i}{\pi_i n_i}. \]
 We can estimate the approximate variance by plugging in the MLE
-\[\wh{\V(\log(\wh{r}))} = \frac{1-\wh{\pi}_1}{n_{11}}+\frac{1-\wh{\pi}_2}{n_{22}}. \]
+\[\wh{\V}(\log(\wh{r})) = \frac{1-\wh{\pi}_1}{N_{11}}+\frac{1-\wh{\pi}_2}{N_{22}}. \]
 The Poisson model can also be used to estimate the standard error of the relative risk and the result using the delta-method is the same.
 \section{Inference for $I\times J$ tables (Agresti 3.2)}
 Suppose we have a table
@@ -159,7 +159,7 @@ where we have counts $N_{ij} \sim \poi(\la_{ij})$ and thus $\pi_{ij}=\Pa(X=i,Y=j
 \subsection{Likelihood ratio test}
 Let $L_0 = \max\limits_{\la \in H_0}L(\la|N)$ and let $L_1 = \max\limits_{\la \in H_0 \cup H_1}L(\la |N)$. Under the null, the statistic
 \[G^2 = -2\log L_0-(-2\log L_1 ),\]
-has asymptotic distribution $\chi^2_{(I-1)(J-1)}$. This is because $H_0 \cup H_1$ has $IJ$ free parameters and $H_0$ has $(I-1)+(J-1)+1$ free parameters. We know that the MLE under $H_0 \cup H_1$ is $\wh{\pi}_{ij} = \frac{n_{ij}}{N_{++}}$ and $\wh{\sum_{h,k}\la_{hk}}=N_{++}$. We will see that the MLEs under $H_0$ are $\pi_{i+} = \frac{N_{i+}}{N_{++}}$, $\pi_{+j} = \frac{N_{+j}}{N_++}$ and $\wh{\sum_{h,k} \la_{hk}}=N_{++}$. Thus,
+has asymptotic distribution $\chi^2_{(I-1)(J-1)}$. This is because $H_0 \cup H_1$ has $IJ$ free parameters and $H_0$ has $(I-1)+(J-1)+1$ free parameters. We know that the MLE under $H_0 \cup H_1$ is $\wh{\pi}_{ij} = \frac{n_{ij}}{N_{++}}$ and $\wh{\la}=N_{++}$ where $\la = \sum_{i,j}\la_{ij}$. We will see that the MLEs under $H_0$ are $\pi_{i+} = \frac{N_{i+}}{N_{++}}$, $\pi_{+j} = \frac{N_{+j}}{N_++}$ and $\wh{\sum_{h,k} \la_{hk}}=N_{++}$. Thus,
 \begin{align*}
     -2\log(L_0)& =2\left[\sum_{ij} -N_{ij}\log(\wh{\la}_{ij})+\wh{\la}_{ij}\right] \\
     -2\log(L_1) &=2\left[\sum_{ij} -N_{ij}\log(N_{ij})+N_{ij}\right]
@@ -185,4 +185,7 @@ For the test of independence, Pearson's test statistic is
     X^2 = \sum_{ij}\frac{(N_{ij}-\wh{\la}_{ij})^2}{\wh{\la}_{ij}} = \sum_{ij} \frac{(O_{ij}-E_{ij})^2}{E_{ij}},
 \end{align*}
 where $E_{ij}=\wh{\la}_{ij} = \frac{n_{i+}n_{+j}}{n_{++}}$ are the MLE estimates under $H_0$ (also called the expected values) and $O_{ij}=N_{ij}$ are the observed values. Under $H_0$, $X^2 \sim \chi^2_{(I-1)(J-1)}$, asymptotically. 
+
+\section{Bootstrapping}
+Returning to the statistics $\wh{\gamma}$ from Section 1. Calculating a standard error for $\wh{\gamma}$ is harder, but there are r packages that do this. Another option is to bootstrap. To do this we can create a ``flattened'' version of the contingency table where the number of rows is $N_{++}$ the total number of individuals. And in each row we have a record of each individual's $X$ and $Y$ response. This means there will be exactly $N_{ij}$ rows with $X=i$ and $Y=j$. We can then create bootstrap samples (samples \emph{with} replacement) from the flattened table. We can then create contingency tables for each bootstrapped sample and then calculate $\wh{\gamma}^*_b$ for each bootstrap sample $b$. Then we use the empirical distribution of $\{\wh{\gamma}^*_b\}_{b=1}^B$ to  estimate the sampling distribution of $\wh{\gamma}$. We'll talk more about this next lecture. 
 \end{document}

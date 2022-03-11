@@ -53,7 +53,7 @@ where  $M$  is our  model  and $M_0$ is the  model with  just  an  intercept.
 \subsection{Confusion  matrices  and  AUC}
 So  far we have been modelling $\pi(x) = \Pa(Y|X=x)$  via $\wh{\pi}(x)$. To make a prediction $\wh{y}(x)  \in \{0,1\}$, we  can pick a  threshold  $c$ and  define,
 \[\wh{y}(x) = \begin{cases}
-    1 \text{if } \wh{\pi}(x) \ge c,\\
+    1 &\text{if } \wh{\pi}(x) \ge c,\\
     0 & \text{if }  \wh{\pi}(x) < c.
 \end{cases}  \]
 For each  fixed   $c$, we  can  create  a  \emph{confusion  matrix} that  records the number  of  correct  and incorrect predictions  and  the predicted values. The  confusion matrix looks  like this,
@@ -104,39 +104,39 @@ Thus, the function $\eta \mapsto \E_\eta[Y]$ is increasing and invertible on its
         \item Probit: $F^{-1}(\pi)=\Phi^{-1}(\pi)$.
         \item cloglog: $F^{-1}(\pi)=-\log(-\log(\pi))$.
     \end{itemize}
-    Each of these  can be used in R's \texttt{glm(family = binomial())} by specifying the link. The parameters in other models may be less intepretable than in the logistic model.
+    Each of these  can be used in R's \texttt{glm(family = binomial())} by specifying the link. The parameters in other models may be less interpretable than in the logistic model.
 \end{enumerate}
-A generalized linear model is model  for $Y|X$ where we have i.i.d.  data $X_i,Y_i)_{i=1}^n$.  We specify  the  following,
+A generalized linear model is model  for $Y|X$ where we have i.i.d.  data $(X_i,Y_i)_{i=1}^n$.  We specify  the  following,
 \begin{enumerate}
     \item We  model $\eta_i = g(\E(Y_i|X_i))=g(\mu_i)  =X_i^T\beta$ where $g$  is the \emph{link function} for the model.
     \item If  $\V(Y_i|X_i)=\phi V(\E(Y_i))=\phi V(\mu_i)$ for  some  \emph{dispersion parameter}  $\phi>0$ and \emph{variance function} $V$.
     \item The glm is specified by the pair  $(g,V)$. If   $Y_i|X_i$  comes  from  a  one-dimensional exponential family, then $V$  is  determined and there is ``canonical'' choice  for $g$.
 \end{enumerate}
 
-We will now briefly talk about fitting a glm for binary data with $\pi_i = F^{-1}(X_i^T\beta)$ where $F$ is a cdf with density  $f$. The deviance for such a  model is,
+We will now briefly talk about fitting a glm for binary data with $\pi_i = F^{-1}(X_i^T\beta)$ where $F$ is a CDF with density  $f$. The deviance for such a  model is,
 \[\DEV(\beta|Y)=-2\log(L(\pi(\beta)|Y)) = 2\sum_{i=1}^n-Y_i\log\left(\frac{F(X_i^T\beta)}{1-F(X_i^T\beta)}\right)+\log\left(1-F(X_i^T\beta)\right).  \]
 Like logistic regression, we could try to minimize  the deviance by using Newton--Raphson. The gradient of the deviance is,
 \[\nabla \DEV(\beta|Y) = 2\sum_{i=1}^n X_i  \frac{f(X_i^T\beta)}{F(X_i^T\beta)(1-F(X_i^T\beta))}\left[
     \frac{F(X_i^T\beta)-Y_i}{f(X_i^T\beta)}
 \right]. \]
-Clearly  the Hessian is going to  be quite  complicated. However, $\E[Y_i|X_i]  = F(X_i^T\beta)$.  Thus  if we calculate the Hessian, and then  compute the expected value of the Hessian, many terms will cancel.  Indeed,
+Clearly  the Hessian is going to  be quite  complicated. However, $\E[Y_i|X_i]  = F(X_i^T\beta)$.  Thus,  if we calculate the Hessian, and then  compute the expected value of the Hessian, many terms will cancel.  Indeed,
 \[\E_{\beta}[\nabla^2\DEV(\beta|Y)|X] =  2\sum_{i=1}^n  X_iX_i^T\frac{f(X_i^T\beta)^2}{F(X_i^T\beta)(1-F(X_i^T\beta))} = 2X^TW_\beta(X)  X,  \]
 where $W_\beta(X)  =  \diag\left(
     \frac{f(X_i^T\beta)}{F(X_i^T\beta)(1-F(X_i^T\beta))}
-\right)$, which looks a lot like our Hessian from  logistic regression. But is it valid to replace the Hessian with the expected value of the Hessian when doing Newton-Raphson?  It turns  out this it is okay and is an example of an optimization technique called a \emph{quasi-Newton}  method.  This is how we will optimize the deviance in glms. 
+\right)$, which looks a lot like our Hessian from  logistic regression. But is it valid to replace the Hessian with the expected value of the Hessian when doing Newton--Raphson?  It turns  out this it is okay and is an example of an optimization technique called a \emph{quasi-Newton}  method.  This is how we will optimize the deviance in glms. 
 \section{Quasi-Newton methods}
-In Newton--Raphson, we approximatee the objective function $l$ with it's quadratic Taylor's approximation. We then minimize the quadratic Taylor's approximation and iterate. More precisely, suppose we want  to minimize $l$ and we have a  current  guess $\beta_c$. We then  have,
+In Newton--Raphson, we approximate the objective function $l$ with its quadratic Taylor's approximation. We then minimize the quadratic Taylor's approximation and iterate. More precisely, suppose we want  to minimize $l$, and we have a  current  guess $\beta_c$. We then  have,
 \[l(\beta) \approx l(\beta_c))+\nabla l(\beta_c)^T(\beta-\beta_c)+\frac{1}{2}(\beta-\beta_c)^T\nabla^2 l(\beta_c)(\beta-\beta_c). \]
 We can  easily minimize the  quadratic approximation  which gives us a new value $\beta_n$. Standard calculus gives,
 \[\beta_n = \beta_c - \nabla^2l(\beta_c)^{-1}\nabla l(\beta_c). \]
-Iterating this gives us Newton--Raphson. \emph{Quasi-Newton} methods are a class of methods where we replace $\nabla^2l(\beta_c)$  with another positive semi-definite matrix $H(\beta_c)$ such that $H(\beta_c)$ is larger than $\nabla^2 l(\beta_c)$ in the positve semi-definite ordering. More specifically supposee that we have a matrix $H(\beta_c)$ such that for all $\beta$,
+Iterating this gives us Newton--Raphson. \emph{Quasi-Newton} methods are a class of methods where we replace $\nabla^2l(\beta_c)$  with another positive semi-definite matrix $H(\beta_c)$ such that $H(\beta_c)$ is larger than $\nabla^2 l(\beta_c)$ in the positive semi-definite ordering. More specifically suppose that we have a matrix $H(\beta_c)$ such that for all $\beta$,
 \[l(\beta) \le l(\beta_c)+\nabla l(\beta_c)^T(\beta-\beta_c)+\frac{1}{2}(\beta-\beta_c)^TH(\beta_c)(\beta-\beta_c). \]
 If we set $\beta_n = \beta_c-H^{-1}\nabla l(\beta_c)$, then $\beta_n$ minimizes the above quadratic and hence,
 \[l(\beta_n) \le l(\beta_c)+\nabla l(\beta_c)^T(\beta_n-\beta_c)+\frac{1}{2}(\beta_n-\beta_c)^TH(\beta_c)(\beta_n-\beta_c) \le   l(\beta_c). \]
-Thus $\beta_n$ reduces the objective  $l$. A quasi-Newton method is an iteratative   version of this proceedure. Some examples are,
+Thus, $\beta_n$ reduces the objective  $l$. A quasi-Newton method is an iterative   version of this procedure. Some examples are,
 \begin{itemize}
     \item If $l(\beta)=\DEV(\beta|Y)$ and $H(\beta) = \E_\beta[\nabla^2 l(\beta)]$, then we get a method called \emph{Fisher scoring}. This is a common way to fit glms.
-    \item If $l$ is any objective and $H(\beta) = \la_\beta I$, then the resulting method is gradient descent with stepsize $\la_\beta^{-1}$. The stepsize has to be sufficiently small to guarantee that $H(\beta)$ is bigger than $\nabla^2 l(\beta)$ in the positive semi-definite ordering.
+    \item If $l$ is any objective and $H(\beta) = \la_\beta I$, then the resulting method is gradient descent with step-size $\la_\beta^{-1}$. The step-size has to be sufficiently small to guarantee that $H(\beta)$ is bigger than $\nabla^2 l(\beta)$ in the positive semi-definite ordering.
 \end{itemize}
 
 
