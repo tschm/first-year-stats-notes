@@ -1,0 +1,160 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305B -- Lecture 11}
+\author{Jonathon Taylor\\ Scribed by Michael Howes}
+\date{02/09/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305B -- Lecture 11}
+\lhead{02/09/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Stationary conditions for the LASSO}
+The lecture will primarily be about stationary conditions for the LASSO. As we will see, these conditions do not allow us to directly solve the LASSO, we still need an iterative method like coordinate descent to do that. The stationary conditions are still useful. They let us describe what a typical LASSO solution looks like. This can be used provide guarantees that the LASSO will select the correct coordinates or be close to the true solution. The stationary conditions can also be used to check that the iterative algorithm has indeed converged to the minimizer.
+\subsection{Sub-gradients}
+The stationary conditions for the LASSO are a bit tricky since the LASSO penalty is not smooth. If we have a smooth, convex objective function $f(\beta)$ and a smooth, convex penalty $\Po(\beta)$, then we have the first order conditions, 
+\[\wh{\beta}= \amin_\beta f(\beta)+\Po(\beta) \Longleftrightarrow \nabla f(\wh{\beta}) +\nabla \Po(\wh{\beta})= 0. \]
+If the penalty $\Po$ is convex but not necessarily smooth, then the first order conditions become
+\[\wh{\beta}= \amin_\beta f(\beta)+\Po(\beta) \Longleftrightarrow \nabla f(\wh{\beta}) +\wh{u}= 0~~~\text{for some } \wh{u} \in \partial \Po(\wh{\beta}),  \]
+where $\partial \Po(\wh{\beta})$ is the \emph{set of sub-gradients} of $\Po$ at $\wh{\beta}$. The set of sub-gradients is defined as follows
+\begin{definition}
+    Let $\Po : \R^p \to \R$ be convex. A vector $u \in \R^p$ is a \emph{sub-gradient} of $\Po$ at $\beta_0 \in \R^p$ if for all $\beta \in \R^p$,
+    \[\Po(\beta) \ge \Po(\beta_0)+u^T(\beta-\beta_0).\]
+    The set of all sub-gradients at $\beta_0$ is denoted by $\partial \Po(\beta_0)$.
+\end{definition}
+\begin{proposition}
+    Suppose that $\Po(\beta)=\norm{\beta}_q = \left(
+        \sum_{j=1}^p\abs{\beta}_j^q\right)^{1/q}$, for some $q \in [1,\infty]$. Choose $d \in [1,\infty]$ so that $\frac{1}{q}+\frac{1}{d}=1$. Then,
+        \[\partial \Po(\beta_0) = \{u \in \R^p : \norm{u}_d \le 1 \text{ and } u^T\beta = \norm{\beta_0}_q\}. \]
+        Furthermore, if $\Po(\beta) = \la\norm{\beta}_q$, then 
+        \[\partial \Po(\beta_0) = \la \partial( \norm{\cdot}_d)(\beta_0). \]
+\end{proposition}
+\begin{proof}
+    First suppose that $\norm{u}_d \le 1$ and $u^T\beta = \norm{\beta_0}_q$. Let $\beta \in \R^p$ be given, then by H\"older's inequality
+    \begin{align*}
+        \Po(\beta_0)+u^T(\beta-\beta_0) &= \norm{\beta_0}_q + u^T\beta - u^T\beta_0 \\
+        &=\norm{\beta_0}_q +u^T\beta - \norm{\beta_0}_q\\
+        &=u^T\beta \\
+        &\le \norm{u}_d\norm{\beta}_q\\
+        &\le \norm{\beta}_q\\
+        &=\Po(\beta).
+    \end{align*}
+    Thus, $u \in \partial \Po(\beta_0)$. Conversely, suppose that $u \in \partial \Po(\beta_0)$. Let $\beta = \beta_0+u$, then 
+    \begin{align*}
+        \norm{u}_d\norm{u}_q &= u^Tu\\
+        &=u^T(\beta-\beta_0)\\
+        &\le \norm{\beta}_q-\norm{\beta_0}_q.
+    \end{align*}
+    Thus, either $u = 0$ or 
+    \[\norm{u}_d \le \frac{\norm{\beta}_q-\norm{\beta_0}_q}{\norm{\beta-\beta_0}_d}\le 1. \]
+    Thus, in either case $\norm{u}_d \le1$. It remains to show that $u^T\beta_0 = \norm{\beta}_q$. By H\"older's inequality we know that $u^T\beta_0 \le \norm{\beta}_q$. For the other direction note that if $\beta = 0$, then we have
+    \[0 \ge \norm{\beta_0}_q + u^T(-\beta_0)=\norm{\beta_0}_q-u^T\beta_0. \]
+    Showing that $u^T\beta_0 \ge \norm{\beta_0}_q$. For the additional comment, note that for any convex function $\Po$,
+    \begin{align*}
+        u \in \partial(\la \Po)(\beta_0) &\Longleftrightarrow \la\Po(\beta) \ge \la\Po(\beta_0)+u^T(\beta-\beta_0) ~~~ \text{ for all } \beta\\
+        &\Longleftrightarrow \Po(\beta) \ge \Po(\beta_0)+\la^{-1}u^T(\beta-\beta_0) ~~~ \text{ for all } \beta\\
+        &\Longleftrightarrow \la^{-1}u \in \partial\Po(\beta)\\
+        &\Longleftrightarrow u \in \la\partial \Po(\beta).\qedhere 
+    \end{align*}
+\end{proof}
+\begin{corollary}
+    Let $\Po(\beta)=\la \norm{\beta}_1^1$, then $v \in \partial \Po(\beta)$ if and only if $v = \la u$ where $\norm{u}_\infty \le 1$ and $u_j = \sign(\beta_j)$ for all $j$ such that $\beta_j \neq 0$.
+\end{corollary}
+\subsection{LASSO solutions}
+Consider using the LASSO for linear regression. The objective function is thus,
+\[\wh{\beta}_\la = \amin_\beta \frac{1}{2}\norm{Y-X\beta}_2^2 + \la \norm{\beta}_1. \]
+Note that 
+\[\nabla_\beta \frac{1}{2}\norm{Y-X\beta}_2^2 = X^T(Y-X\beta). \]
+Thus, the sub-gradient condition is 
+\[-X^T(Y-X\wh{\beta}) +\la  \wh{u} = 0, \]
+where $\wh{\mu} \in \partial(\norm{\cdot}_1)(\wh{\beta})$, meaning that
+\[\wh{u}_j \in \begin{cases} \{1\} &\text{if } \wh{\beta}_j > 0,\\
+    [-1,1] & \text{if } \wh{\beta}_j = 0,\\
+    \{-1\} & \text{if } \wh{\beta}_j < 0.\end{cases}
+     \]
+ We can rewrite the sub-gradient condition as 
+ \begin{equation}\label{conds}X^T(Y-X\wh{\beta}) = \la \wh{u}.\end{equation}
+ Suppose that $\wh{\beta}$ satisfies the above equation. Let $E$ be the set of \emph{active states}. That is, $E$ contain the indices for which $\wh{\beta}_j \neq 0$. Let $\wh{\beta}_E$ be the vector in $\R^{\abs{E}}$ with the non-zero entries of $\wh{\beta}$. Define $X_E$ be the matrix containing the columns $X[\cdot,j]$ for which $j \in E$. Define $X_{-E}$ to be the matrix with columns $X[\cdot,j]$ for $j \notin  E$. Finally, let $s_E = \sign(\wh{\beta}_E)$. Since $\wh{\beta}_j = 0$ for $j \notin E$, we have 
+ \[X\wh{\beta} = X_E\wh{\beta}_E. \]
+ Thus, \eqref{conds} is equivalent to,
+\[X^T(Y-X_E\wh{\beta}_E) = \la \wh{u}. \]
+ The equations \eqref{conds} can be written as two blocks of equations. We have the equations for the active states:
+ \begin{equation}\label{active1}
+    X_E^T(Y-X_E\wh{\beta}_E) = \la\wh{u}_E = \la s_E, \end{equation}
+ since if $\wh{\beta}_j \neq 0$, then $\wh{u}_j = \sign(\wh{\beta}_j)$. Let $\bar{\beta}_E$ be the OLS solution which design matrix $X_E$. That is,
+ \[\bar{\beta}_E = (X_E^TX_E)^{-1}X_E^TY. \]
+ We know that $X_E^TY = (X_E^TX_E)\bar{\beta}_E$, by the stationary conditions for least squares.   Therefore,
+ \[X_E^TX_E(\bar{\beta}_E-\wh{\beta}_E) = X_E^T(Y-X_E\wh{\eta}_E) = \la s_E. \]
+ Thus, we have 
+ \begin{equation}\label{active2}\wh{\beta}_E = \bar{\beta}_E - \la (X_E^TX_E)^{-1}s_E. \end{equation}
+ We also have the conditions for the inactive states. These are
+\[X_{- E}(Y-X_E\wh{\beta}_E) = \la \wh{u}_{-E}. \]
+We know that for $j \notin E$, $\wh{u}_j$ can be any number in $[-1,1]$. Thus, the inactive conditions can be rewritten as
+\begin{equation}
+    \label{inactive1} \norm{X_{-E}^T(Y-X_E\wh{\beta}_E)}_\infty \le \la.
+\end{equation}
+By equation \eqref{active2}, we have
+\begin{align*}
+    \norm{X_{-E}^T(Y-X_E\wh{\beta}_E)}_\infty &=\norm{X_{-E}^T(Y- X_E(\bar{\beta}_E-\la (X_E^TX_E)^{-1}s_E))}_\infty \\
+    &=\norm{X_{-E}^T(Y-H_EY) + \la X_{-E}^TX_E(X_E^TX_E)^{-1}s_E}_{\infty},
+\end{align*}
+where $H_E = X_E(X_E^TX_E)^{-1}X_E^T$ is the hat matrix for the states in the active block $E$. By the triangle inequality,
+\begin{align*}
+    &\norm{X_{-E}^T(Y-H_EY) + \la X_{-E}^TX_E(X_E^TX_E)^{-1}s_E}_{\infty}\\
+    &\le \norm{X_{-E}^T(Y-H_EY)}_\infty + \la \norm{X_{-E}^TX_E(X_E^TX_E)^{-1}s_E}_\infty.
+\end{align*}
+Therefore, if $norm{X_{-E}^T(Y-H_EY)}_\infty  \le \la\left(1- \norm{X_{-E}^TX_E(X_E^TX_E)^{-1}s_E}_\infty\right)$, then the inactive conditions \eqref{inactive1} hold. What we have derived so far can be used to describe when the LASSO selects the correct coefficients with high probability. Suppose that $Y = X\beta^* + \eps$ where $\eps \sim \Na(0,\sigma^2I)$. Let $A$ be the set indices for the non-zero indices of $\beta^*$ and let $s_A$ be the signs of $\beta^*$. Suppose that the following hold 
+\begin{enumerate}
+    \item $\kappa = \norm{X_{-A}^TX_A(X_{A}X_{A})^{-1}s_A}_\infty < 1$.
+    \item $\la >0$ is taken to be  so large so that,
+    \[ \norm{X_{-A}^T(I-H_A)Y}_\infty \le (1-\kappa)\la, \]
+    with high probability.
+    \item And, 
+    \[\sign(\beta^* - \la(X_A^TX_A)^{-1}\sign(\beta^*_A)) = s_A. \] 
+\end{enumerate}
+Then, we have $E=A$ and $\sign(\wh{\beta}_\la)=\sign(\beta^*_A)$ with high probability. The first condition holds if the columns of $X$ are well conditioned and close to orthogonal. The next two conditions say something about the strength of the signal in the directions $A$ versus the strength of the signal in the directions $-A$. Since the $\infty$-norm is a maximum, we expect that if $\diag(X^TX)=n$, then
+\[\norm{X^T_{-A}(I-H_A)Y}\approx \sqrt{n}\sqrt{2\log(p)}. \]
+Thus, taking $\la$ to be of the order $\sqrt{n}\sqrt{2\log(p)}$ is commonly used in theory of the LASSO papers.
+\section{Log-linear models}
+Recall that a glm with a Poisson response and the canonical link function is called a log-linear model. We will see how such models can be used to model contingency tables.
+
+\subsection{Two-way tables}
+Suppose we have an $I \times J$ table. We can model the cell counts via 
+\[N_{ij} \sim \poi(\mu_{ij}), \]
+subject to certain constraints on $\mu_{ij}$. The \emph{independence model} has 
+\[\log(\mu_{ij}) = \la + \la_i^X + \la_j^Y. \]
+The \emph{saturated model} has 
+\[\log(\mu_{ij}) =  \la + \la_i^X + \la_j^Y + \la_{ij}^{XY}.\]
+In the independence model we typically set $\la_I^X=\la_J^Y=0$ to make our model identifiable. For the saturated model we set 
+\[\la_I^X = \la_J^Y = \la_{iJ}^{XY}=\la_{Ij}^{XY}=0, \]
+to make our parameters identifiable. A common theme we will see in log linear models is that the form of the regression model relates to assumptions about conditional dependence.
+
+\subsection{Three-way tables}
+Suppose we introduce an additional variable $Z$ taking values $1\le k \le K$. We now have models of the form,
+\[N_{ijk} \sim \poi(\mu_{ijk}). \]
+For a three-way table, the \emph{saturated model} is 
+\begin{align*}
+    \log(\mu_{ijk}) &=\la +\la^X_i+\la^Y_j+\la^Z_k\\
+    &+\la^{XY}_{ij}+\la^{XZ}_{ik}+\la^{YZ}_{jk}\\
+    &+\la^{XYZ}_{ijk}.
+\end{align*}
+To make this model identifiable, we set parameters equal to 0 whenever $i=I,j=J$ or $k=K$. The \emph{homogeneous association} model introduces the constraint $\la^{XYZ}_{ijk}=0$ for all $i,j,k$. That is,
+\begin{align*}
+    \log(\mu_{ijk}) &=\la +\la^X_i+\la^Y_j+\la^Z_k\\
+    &+\la^{XY}_{ij}+\la^{XZ}_{ik}+\la^{YZ}_{jk}.
+\end{align*}
+\subsection{$m$-way tables}
+It is easy to see how the saturated model would extend to the case when we have $m$ variables. Suppose the variables are $(Y_1,Y_2,\ldots,Y_m)$ each taking values $1 \le j_m \le J_m$. The homogeneous association model has only first and second order effects. That is,
+\[\log(\mu_{j_1,\ldots,j_m}) = \la + \sum_{i=1}^m \la^{Y_i}_{j_i}+\sum_{i=1}^m\sum_{l=i+1}^m \la^{Y_i,Y_l}_{j_i,j_l}. \]
+\subsection{Homogeneous association models}
+Homogeneous association models are useful for testing conditional independence. For instance one test of $X \ind Y|Z$ in a three-way table can be represented as 
+\[H_0 : \la_{ij}^XY \equiv 0, \la_{ijk}^{XYZ}\equiv 0 ~~~\text{vs}~~~H_1 : \la^{XYZ}_{ijk}\equiv 0, \]
+where $\la^{XY}_{ij}\equiv 0$ means $\la^{XY}_{ij}=0$ for all $i,j$. We could test such a model with a likelihood ratio test. Homogeneous association models are also useful since they can be represented by graphs. Each variable has a vertex and there is an edge between variables $Y_i$ and $Y_l$ if and only if $\la^{Y_i,Y_l}_{j_i,j_l} \neq 0$ for some $j_i,j_l$. Conditional independence information can easily be read off from such graphs. 
+\end{document}
