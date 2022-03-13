@@ -46,14 +46,18 @@ where $\partial \Po(\wh{\beta})$ is the \emph{set of sub-gradients} of $\Po$ at 
         &\le \norm{\beta}_q\\
         &=\Po(\beta).
     \end{align*}
-    Thus, $u \in \partial \Po(\beta_0)$. Conversely, suppose that $u \in \partial \Po(\beta_0)$. Let $\beta = \beta_0+u$, then 
+    Thus, $u \in \partial \Po(\beta_0)$. Conversely, suppose that $u \in \partial \Po(\beta_0)$. Let $\beta = \beta_0+v$ where $v_j = \sign(u_j)\abs{u_j}^{q/d}$. Then 
     \begin{align*}
-        \norm{u}_d\norm{u}_q &= u^Tu\\
-        &=u^T(\beta-\beta_0)\\
-        &\le \norm{\beta}_q-\norm{\beta_0}_q.
+        \norm{u}_d\norm{\beta-\beta_0}_q &=\left(\sum_{j=1}^p \abs{u}^{q}\right)^{1/q}\left(\sum_{j=1}^p \abs{u}^q\right)^{1/d}\\
+        &= \sum_{j=1}^p \abs{u_j}^{q}\\
+        &=\sum_{j=1}^p \abs{u_j}^{q(1/q+1/d)}\\
+        &=\sum_{j=1}^p u_j \sign(u_j)\abs{u_j}^{q/d}\\
+        &=u^T(\beta-\beta_0)
     \end{align*}
-    Thus, either $u = 0$ or 
-    \[\norm{u}_d \le \frac{\norm{\beta}_q-\norm{\beta_0}_q}{\norm{\beta-\beta_0}_d}\le 1. \]
+    Since $u \in \partial \Po(\beta_0)$ we have 
+    \[\norm{\beta}_q \ge \norm{\beta_0}_q + u^T(\beta-\beta_0).\]
+    Which implies that $\norm{u}_d\norm{\beta-\beta_0}_q \le \norm{\beta}_q-\norm{\beta_0}_q$.  Thus, either $u = 0$ or 
+    \[\norm{u}_d \le \frac{\norm{\beta}_q-\norm{\beta_0}_q}{\norm{\beta-\beta_0}_q}\le 1. \]
     Thus, in either case $\norm{u}_d \le1$. It remains to show that $u^T\beta_0 = \norm{\beta}_q$. By H\"older's inequality we know that $u^T\beta_0 \le \norm{\beta}_q$. For the other direction note that if $\beta = 0$, then we have
     \[0 \ge \norm{\beta_0}_q + u^T(-\beta_0)=\norm{\beta_0}_q-u^T\beta_0. \]
     Showing that $u^T\beta_0 \ge \norm{\beta_0}_q$. For the additional comment, note that for any convex function $\Po$,

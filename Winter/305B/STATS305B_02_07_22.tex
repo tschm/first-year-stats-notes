@@ -120,7 +120,7 @@ There are other methods that induce sparsity, but the LASSO has the following ni
     \item The LASSO minimization problem can be solved for high dimensions.
     \item Since the LASSO minimization problem is convex, the KTT conditions describe the solution. This lets us study LASSO solutions in a way that does not depend on the method used to optimize the LASSO.
 \end{itemize}
-\subsection{Solving the LASSO}
+\subsection{Fitting the LASSO}
 We will talk about two iterative methods to fit the LASSO. They are coordinate descent and proximal gradient descent.
 \subsubsection{Coordinate descent}
 If the penalty $\Po$ was a smooth function, then we could simply use Newton--Raphson to fit the penalized regression. The LASSO penalty is not differentiable at points where one of more $\beta$ coefficient is zero. But, the penalty is \emph{separable}, meaning that 

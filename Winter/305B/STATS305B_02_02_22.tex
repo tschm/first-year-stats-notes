@@ -48,7 +48,7 @@ for $1 \le j \le k-1$. As a function of $\beta$, the log-likelihood is
     \[\log\left(1+\sum_{l=1}^{k-1}\exp(X[i,\cdot]^T\beta[\cdot,l])\right),\]
     is the cumulant generating function of $Y$. Furthermore,
     \[\frac{\partial^2}{\partial \beta_{i,j}\beta_{l,m}} \log L(\beta|X) =-\sum_{c=1}^n X_{ci}X_{cl} \text{Cov}_\beta(Y_c)_{jm}, \]
-where $\text{Cov}_\beta(Y_c) = \diag(\pi_c)-\pi_c\pi_c^T$, still assuming that $N_c=1$ for all $1\le c\le n$. Since our likelihood is a function of $p \times (k-1)$ parameters, the gradient is also a $p \times (k-1)$ matrix and the Hessian is a $(p \times (k-1)) \times (p \times (k-1))$ tensor. This complicates notation but the ideas of gradient descent and quasi-Newton methods still work. Importantly baseline models can be easily fit in R by using \texttt{glm(family = 'multinomial')}. 
+where $\text{Cov}_\beta(Y_c) = \diag(\pi_c)-\pi_c\pi_c^T$, still assuming that $N_c=1$ for all $1\le c\le n$. Since our likelihood is a function of $p \times (k-1)$ parameters, the gradient is also a $p \times (k-1)$ matrix and the Hessian is a $(p \times (k-1)) \times (p \times (k-1))$ tensor. This complicates notation but the ideas of gradient descent and quasi-Newton methods still work. Importantly baseline models can be easily fit in R by using \texttt{nnet::multinom()}. 
 \subsubsection{Interpretation of parameters in baseline model}
 Like in logistic regression the parameters $\beta$ tell us something about the odds-ratios for different covariates. In particular for a fixed $1 \le i \le k-1 $ and $1 \le j\le p$, we have 
 \begin{align*}
@@ -60,7 +60,7 @@ So $\beta_{i,j}$ tells us, conditioned on the other features, how much feature $
 Suppose $U_{i,j} = X[i,\cdot]^T\beta[\cdot, j]+\eps_{i,j}$ for some noise distribution $\eps_{i,j}$ that is independent and identically distributed across $i,j$. We could turn this into a multinomial model $Y_i$ belonging to the class $l$ that satisfies,
 \[l = \amax_{1 \le j \le k} U_{i,j}. \]
 Thus, 
-\[\pi_j(X) = \Pa_\beta(Y_j = 1|X) = \Pa_\beta\left(X[i,\cdot]^T\beta[\cdot,j] + \eps_{i,j} \ge \max_{l \neq j}X[i,\cdot]^TY[\cdot,j]+\eps_{i,j}\right). \]
+\[\pi_j(X) = \Pa_\beta(Y_j = 1|X) = \Pa_\beta\left(X[i,\cdot]^T\beta[\cdot,j] + \eps_{i,j} \ge \max_{l \neq j}X[i,\cdot]^TY[\cdot,l]+\eps_{i,l}\right). \]
 If we assume that $\eps_{ij}$ follow the \texttt{cloglog} or Gumble distribution. Then we recover the baseline model with parameters $\beta[\cdot,j] -\beta[\cdot,k]$. A more natural model would be $\eps_{i,j} \sim \normal(0,1)$. In this case the likelihood become rather complicated, but data augmented sampling is relatively straight forward. Thus, using normal noise is convenient for Bayesian analysis.
 
 \subsection{Cumulative logit model}
