@@ -1,0 +1,142 @@
+\include{preamble}
+\include{definitions}
+
+
+
+\title{STATS305B -- Lecture 13}
+\author{Jonathon Taylor\\ Scribed by Michael Howes}
+\date{02/16/22}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{STATS305B -- Lecture 13}
+\lhead{02/16/22}
+\rfoot{Page \thepage}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{A connection between the log-linear model and Gaussian data}
+Suppose we have a vertex set of binary variables $V =\{X_1,\ldots,X_m\}$ and a graph $G=(V,E)$ describing the model's interactions. This model has an intensity parameter $\gamma$ and parameters for the vertexes and edges $\Ta \in \R^{m \times m}$ a symmetric matrix with $\Ta_{ij}=0$ for all $(i,j)\notin E$. The likelihood for this model is 
+\[\log(L(\gamma,\Ta,X)) = \gamma \cdot 2^m +\tr(\Ta S)-\text{sum}(N)\log \left(\sum_{x \in \{0,1\}^m}\exp(\gamma + x^T\Ta x)\right),\]
+where $N$ is a vector of counts for each of the $2^n$ assignments of variables and 
+\[S_{ij} = \begin{cases}
+    (1,1) \text{ entry of the $X_i \times X_j$ marginal table} & \text{if } i \neq j,\\
+    \text{the number of 1's in the $X_i$ marginal table} & \text{if } i=j.
+\end{cases} \]
+There is a continuous analogy of this model. Suppose we have i.i.d. data $X_i \sim \Na(0,\Sigma)$ where the covariance matrix $\Sigma$ is unknown. The likelihood can be written as
+\[\log L(\Sigma) = -\frac{n}{2}\log \abs{\det(\Ta)} - \frac{1}{2}\tr(\Ta S), \]
+where $\Ta = \Sigma^{-1}$ and $S = \sum_{i=1}^n X_iX_i^T = X^TX$. Thus, this  Gaussian model is analogous to the graphical model before. One important difference is that in the Gaussian model we know the explicit normalizing constant which in this case equals $\frac{n}{2}\log(\abs{\det(\Ta)})$. Like in the log-linear case we can penalize the off-diagonal terms to select interactions. This is done with the \emph{graphical LASSO} defined as 
+\[\wh{\Ta}_\la = \amin_\Ta \left\{-\frac{n}{2}\log(\abs{\det(\Ta)}) - \frac{1}{2}\tr(\Ta S) + \la \norm{\Ta_{\text{off-diagonal}}}_1\right\}. \]
+\section{Lindsey's method}
+Lindsey's method is a way to use a log linear model to do density estimation.
+\subsection{Discrete data}
+First, suppose that we have samples $X_1^D,\ldots,X_n^D$ discrete random variable taking values in $1,\ldots,k$. We can define new random variables
+\[N_{i}= \#\{1 \le s \le n : X_s^D=i\}. \]
+If $n$ is very large, it is sensible to use the model
+\[N_i \sim \poi(\mu_i). \]
+We can then make a log-linear model table for the parameters $\la_i$. Some examples would be 
+\begin{itemize}
+    \item The saturated model: $\log(\mu_i) = \la+\la_i$, $\la_i$ unconstrained. 
+    \item Ordinal model: $\log(\mu_i) = \la+\beta i$.
+    \item Ordinal model with basis functions $\log(\mu_i) = \la + \sum_{j=1}^p \beta_j h_j(i)$.
+\end{itemize}
+The essence of Lindsey's method is to discretize a continuous random variable and then fit a log-linear model.
+\subsection{Continuous data}
+Suppose we have samples $X_1,\ldots,X_n$ from a continuous distribution with a density $f$ supported on $[0,1]$. Fix $\Delta >0$ a small number and define 
+\[X^\Delta_s = i \Longleftrightarrow X_s \in ((i-1)\Delta,i\Delta]. \]
+Thus, $X^\Delta_s$ is a discrete random variable recording which bin $X_s$ belongs to. We can then define $N_i = \#\{1\le s \le n : X_s^\Delta = i\}$ and use a model $N_i \sim \poi(\mu_i)$. Note that 
+\[\Pa(X_s^\Delta \in ((i-1)\Delta,i\Delta]) = \int_{(i-1)\Delta}^{i\Delta} f(x)dx \approx \Delta f(i\Delta). \]
+Thus, we expect $\mu_i \approx n \Delta f(i\Delta)$ and so $\log(\mu_i) = \log(n\Delta) + \log(f(i\Delta))$. If we use an ordinal model for $N_i$, then we have 
+\[\log(\mu_i) = \la_0 + \la_1 i. \]
+Setting $\la_0+\la_1 i = \log(n \Delta)+\log(f(i\Delta))$ gives $\la_0 =\log(n \Delta)$ and for $x \in ((i-1)\Delta, i\Delta]$, 
+\begin{align*}
+    f(x) &\approx f(i\Delta)\\
+    & \propto e^{\la_1 i} \\
+    &= e^{\frac{\la_1}{\Delta} \Delta i} \\
+    & \approx e^{\beta_1 x}, \end{align*}
+where $\beta_1 = \frac{\la_1}{\Delta}$. This allows us to approximate the density $f(x)$ with functions of the form \[e^{\beta_0 + \beta_1 x}\one_{[0,1]}(x).\] We take the discretized data and fit a log-linear model of the form $\log(\mu_{i}) = \log(n \Delta)+\la_0+\la_1 i$ to get a fitted value $\wh{\la}_1$, and then we use $\wh{\beta}_1 = \frac{\wh{\la}_1}{\Delta}$. We also define $\wh{\beta}_0 = -\log\left(\int_0^1 e^{\wh{\beta}_1 x}dx\right)$. The turn $\log(n \Delta)$ can be incorporated into the glm by using the parameter \texttt{offset} is R's \texttt{glm}. Note that it is necessary to include an intercept as this contains information about the normalizing coefficient $\wh{\beta}_0$.
+
+\subsection{Basis functions}
+We don't have to restrict ourselves to a linear ordinal model. Suppose we have continuous functions $h_j:[0,1]\to \R$ for $j=1,\ldots,p$. Consider the log-linear model 
+\[\log(\mu_i) = \la_0 + \sum_{j=1}^p \la_j h_j(i\Delta), \]
+where, as before, $N_i \sim \poi(\mu_i)$ is the number of times $X_s$ lies in the bin $(\delta(i-1),i\delta]$. We can fit this log-linear model to get coefficients $\wh{\la}$. This then gives a density estimate
+\[\wh{f}(x) \propto \exp\left(\sum_{j=1}^p \wh{\la}_j h_j(x)\right)\one_{[0,1]}(x). \]
+\subsection{Other domains}
+If our density is supported on a bounded interval $[a,b]$, then we can scale the bins and use the same procedure. For a density with unbounded support we can add two infinite bins of the form $(-\infty, a]$ and $[b,\infty)$ for some $a << 0$ and $b >> 0$. 
+\subsection{Multivariate}
+Suppose we have a joint density $h_{X,Y}$. We can use a grid to discretize $(X,Y)$ and then fit an analogous log-linear model to estimate the joint density. A natural model to fit one of the form
+\[\log(\mu_{ij}) = \la + \sum_{k=1}^p \la^X_k h_k^X(\Delta i)+\sum_{k'=1}^{p'} \la^Y_{k'} h_{k'}^Y(\Delta j) + \sum_{k=1}^p \sum_{k'=1}^{p'} \la_{ij}^{XY}h_k^X(\Delta i)h_{k'}^Y(\Delta j). \]
+This ensures that the conditional densities of $X$ and $Y$ are in the same ``class'' and the densities fit in the previous section. 
+\subsection{Other options}
+This idea is very general. There are models where the bin width varies with $i$ and where other points in the interval are chosen to evaluate the function. There are endless possibilities.
+\section{Modelling interactions}
+We have seen that if we have two binary variables $X,Y$, their interaction can be described by a single parameter. Likewise, if we have two continuous variables, and we assume they are jointly Gaussian, then a single parameter describes their interaction. For categorical variables, the number of parameters increases. In general, we have,
+\begin{itemize}
+    \item $X$ and $Y$ continuous: one interaction parameter.
+    \item $X$ takes $I$ discrete values $Y$ continuous: $I-1$ interaction parameters.
+    \item $X$ continuous and $Y$ takes $J$ discrete values: $J-1$ interaction parameters.
+    \item $X$ takes $I$ discrete values and $Y$ takes $J$ discrete values: $(I-1)\times (J-1)$ interaction parameters.
+\end{itemize}
+Suppose we want to automatically select which pairs of variables should have an interaction. Unfortunately the LASSO wouldn't work in this situation. Suppose we have $X$ discrete and $Y$ continuous, then the LASSO could zero out some but not all of that $I-1$ interaction parameters. This isn't what we want. We want a penalty that can zero out a whole vector (one discrete, one continuous) or even a whole matrix (two discrete). It turns out the group LASSO penalty is the way to go!
+\subsection{Group LASSO}
+The interaction parameters fall into groups. For each unordered $(X,Y)$ pair we have a group of parameters. This group of parameters is a single number when $X$ and $Y$ are both continuous, a vector when only one is continuous and a matrix when both are discrete. For a group $g$, let $\beta_g$ be the parameters in the group $g$. Define 
+\[\norm{\beta_g}_2 = \begin{cases}
+    \abs{\beta_g} & \text{if $\beta_g$ is a number},\\
+    \norm{\beta_g}_2 & \text{if $\beta_g$ is a vector},\\
+    \norm{\beta_g}_{\text{Frob}} & \text{if $\beta_g$ is a matrix}.
+\end{cases} \] 
+The notation $\norm{M}_{\text{Frob}}$ is the \emph{Frobenious} norm of the matrix $M$ and if defined by 
+\[\norm{M}_{\text{Frob}}^2 = \sum_{i,j} M_{i,j}^2. \]
+The \emph{group LASSO penalty} is defined to be
+\[\Po(\beta) = \la\sum_{g} \w_g\norm{\beta_g}_2,  \]
+where the sum is over all groups and $\la, \w_g\ge 0$ are hyperparameters.
+\subsection{Zeroing out coefficients}
+Why does the group LASSO zero out groups coefficients? If we are using the group LASSO to select interactions, then our objective function would be 
+\[\text{minimize: } \log(L^{\text{pseudo}}(\beta)) + \Po(\beta), \]
+where $L^{\text{pseudo}}(\beta)$ is the pseudo-likelihood. Consider the simpler problem
+\[\wh{\beta} = \amin_\beta \frac{1}{2}\norm{Z-\beta}_2^2 + \la \norm{\beta}_2. \]
+The stationary conditions for $\wh{\beta}$ are 
+\[Z-\wh{\beta} = \la\wh{u}, \]
+where $\wh{u} \in \partial(\norm{\cdot}_2)(\wh{\beta})$. We have seen before that 
+\[ \partial(\norm{\cdot}_2)(\wh{\beta}) = \begin{cases}
+    \left\{\frac{\wh{\beta}}{\Vert\wh{\beta}\Vert_2}\right\} & \text{if } \wh{\beta} \neq 0,\\
+    &\\
+    \left\{\wh{u}: \norm{\wh{u}}_2 \le 1\right\} &\text{if } \wh{\beta}=0.
+\end{cases}\]
+Thus, if $\norm{Z}_2 \le \la$, then we can take $\wh{\beta}=0$ and $\wh{u}=\frac{Z}{\la}$. If $\norm{Z}_2 > \la$, then we have $Z = \left(1 + \frac{\la}{\Vert\wh{\beta}\Vert_2}\right)\wh{\beta}$. And thus,
+\[\norm{Z}_2 = \Vert \wh{\beta}\Vert_2 + \la. \]
+Which gives $\Vert \wh{\beta}\Vert_2 = \norm{Z}_2 -\la$ and hence 
+\[\wh{\beta}_2 = \frac{\Vert \wh{\beta}\Vert_2}{\Vert \wh{\beta}\Vert_2+\la}Z = \frac{\norm{Z}_2-\la}{\norm{Z}_2}Z. \]
+Thus, we have 
+\begin{align*}
+    \wh{\beta} &= \amin_\beta \frac{1}{2}\norm{Z-\beta}_2^2 + \la \norm{\beta}_2\\
+    &=\begin{cases}
+        0 & \text{if } \norm{Z}_2 \le \la,\\
+        \frac{\norm{Z}_2-\la}{\norm{Z}_2}Z & \norm{Z}_2 > \la.
+    \end{cases}\\
+    &=\max\left\{\frac{\norm{Z}_2-\la}{\norm{Z}_2}, 0\right\}Z.
+\end{align*}
+Thus, for sufficiently large $\la$, $\wh{\beta}=0$. And for small $\la$, $\wh{\beta}$ points in the same direction as $Z$ (so no coefficients are zeroed out). This shows why we expect the group LASSO to zero out entire groups of coefficients but otherwise leave the coefficients as non-zero. The map,
+\[Z \mapsto \max\left\{\frac{\norm{Z}_2-\la}{\norm{Z}_2}, 0\right\}Z, \]
+is the proximal map for the group LASSO. Thus, like the regular LASSO, the group LASSO can be fit using proximal gradient descent.
+
+\section{Matched pairs}
+Consider a square contingency table where the row names and the column names agree. Some data are naturally described by such table. For example,
+\begin{enumerate}
+    \item Voter affiliation recorded at two different times.
+    \item Presence/absence of a disease in two twins.
+    \item Student grades on two different pieces of assessment.
+\end{enumerate}
+Such a table satisfies \emph{marginal homogeneity} if $\pi_{i+}=\pi_{+i}$ for all $1 \le i \le I$. We will consider different ways of testing marginal homogeneity and fitting models that satisfy marginal homogeneity. 
+\subsection{Binary tables}
+If we have $2 \times 2$ table, then the assumption of marginal homogeneity is determined by the parameter $\delta = \pi_{+1}-\pi_{1+}$ with marginal homogeneity holding if and only if $\delta = 0$. We can estimate $\delta$ with $\wh{\delta} = \wh{\pi}_{+1}-\wh{\pi}_{1+}$. Under the null $\delta = 0$, the statistic 
+\[\wh{SE}(\wh{\delta}) = \sqrt{\frac{N_{12}+N_{21}}{N_{++}^2}}, \]
+is an estimate for the standard error of $\wh{\delta}$. This allows us to test the null hypothesis and construct confidence intervals for $\delta$. The test based on this estimate of the standard error is called \emph{McNemar's test}. 
+\subsection{Cochran--Mantel--Haenszel test}
+Suppose we have $n = N_{++}$ observations in our $2 \times 2$ contingency table. We could create a $2 \times 2 \times n$ table where in the $i^{th}$ $2 \times 2$ table we record the response of individual $i$. Let $X$ be the row variable, $Y$ be the column variable and let $Z$ be the third variable that records the index of the observation. Marginal homogeneity is equivalent to $X \ind Y | Z$. That is, conditional on the individual observation, $X$ and $Y$ are independent. The Cochran--Mantel--Haenszel test is similar to Fisher's exact test. Consider the $i^{th}$ $2 \times 2$ table and suppose we condition on the marginals $N_{1+i}$ and $N_{+1i}$. Given these marginals, the values in the table are determined by $N_{11i}$ and, under $H_0$,
+\[N_{11+} \sim \hyper. \]
+We can define $\mu_{i} = \E_{H_0}[N_{11+}|N_{1+i},N_{+1i}]$ and $\sigma^2_i = \V_{H_0}(N_{11+}|N_{1+i},N_{+1i})$. The \emph{Cochran--Mantel--Haenszel test statistic} is 
+\[z = \frac{\sum_{i=1}^n N_{11+}-\mu_{i}}{\sqrt{\sum_{i=1}^n \sigma^2_i}}.\]
+\end{document}
