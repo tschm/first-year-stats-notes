@@ -21,10 +21,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           output-folder: /Winter/310B
 
-      # One file does not properly compile and requires a revisit
-      #- name: Build Winter/305B
-      #  uses: cvxgrp/.github/actions/latex@main
-      #  with:
-      #    paper: Winter/305B/STATS*.tex
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #    output-folder: /Winter/305B
+       # One file does not properly compile and requires a revisit
+      - name: Build Winter/305B
+        uses: cvxgrp/.github/actions/latex@main
+        with:
+          paper: Winter/305B/STATS*.tex
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          output-folder: /Winter/305B
