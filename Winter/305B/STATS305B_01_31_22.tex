@@ -83,7 +83,7 @@ The log-likelihood from $\beta$ is,
     &=\sum_{i=1}^n \sum_{j=1}^{k-1} Y_{i,j}X[i,\cdot]^T\beta[\cdot,j]+\sum_{i=1}^n N_i\log\left(\frac{1}{1+\sum_{l=1}^{k-1}\exp(X[i,\cdot]^T \beta[\cdot,l])}\right)\\
     &=\sum_{i=1}^n \sum_{j=1}^{k-1} Y_{i,j}X[i,\cdot]^T\beta[\cdot,j]-\sum_{i=1}^n N_i\log\left({1+\sum_{l=1}^{k-1}\exp(X[i,\cdot]^T \beta[\cdot,l])}\right)\\
     &=\sum_{i=1}^n Y_i^T(X\beta)[i,\cdot]-\sum_{i=1}^n N_i\log\left({1+\sum_{l=1}^{k-1}\exp(X[i,\cdot]^T \beta[\cdot,l])}\right)\\
-    &=\Tr((X\beta )Y^T)-\sum_{i=1}^n N_i\log\left({1+\sum_{l=1}^{k-1}\exp(X[i,\cdot]^T \beta[\cdot,l])}\right).
+    &=\tr((X\beta )Y^T)-\sum_{i=1}^n N_i\log\left({1+\sum_{l=1}^{k-1}\exp(X[i,\cdot]^T \beta[\cdot,l])}\right).
 \end{align*}
 Note that we can write,
 \[-\log L(\beta|Y) = \sum_{i=1}^n \left[Y_i^T(X_i\beta) - \Lambda(X_i^T\beta)\right], \]
